@@ -17,10 +17,26 @@ router.get('/adventures/available', authMiddleware, (req, res) => {
     res.redirect('/play');
 });
 
-// Start specific adventure
+// Start specific adventure (Legacy Scene Mode)
 router.get('/adventure/:adventureId', authMiddleware, PlayController.startAdventure);
 
-// Process scene interaction
+// Process scene interaction (Legacy Scene Mode)
 router.post('/adventure/:adventureId/scene/:sceneId', authMiddleware, PlayController.processScene);
+
+// =================================================================
+// QUIZ ROUTES
+// =================================================================
+
+// Start Quiz (Initializes session)
+router.get('/quiz/:adventureId/:characterId', authMiddleware, PlayController.startQuiz);
+
+// Show Current Question
+router.get('/quiz/:adventureId/:characterId/question', authMiddleware, PlayController.showQuestion);
+
+// Process Answer
+router.post('/quiz/:adventureId/:characterId/answer', authMiddleware, PlayController.processAnswer);
+
+// Show Result
+router.get('/quiz/:adventureId/:characterId/result', authMiddleware, PlayController.showResult);
 
 module.exports = router;

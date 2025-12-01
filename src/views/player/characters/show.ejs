@@ -10,7 +10,7 @@
             </div>
 
             <div class="row">
-                <!-- Character Info -->
+                <!-- Character Info (Left Column) -->
                 <div class="col-md-4 mb-4">
                     <div class="card card-custom h-100">
                         <div class="card-body text-center">
@@ -45,7 +45,7 @@
 
                             <div class="text-start">
                                 <h6 class="fw-bold mb-3">Atributos</h6>
-                                <ul class="list-group list-group-flush">
+                                <ul class="list-group list-group-flush" id="attributesList">
                                     <% const attributes=[ { key: 'strength' , label: 'Força' , icon: '💪' }, {
                                         key: 'dexterity' , label: 'Destreza' , icon: '🏃' }, { key: 'constitution' ,
                                         label: 'Constituição' , icon: '🛡️' }, { key: 'intelligence' ,
@@ -60,32 +60,45 @@
                                                         <%= attr.label %>
                                                 </span>
                                                 <div class="d-flex align-items-center gap-2">
-                                                    <span class="badge bg-secondary rounded-pill fs-6">
+                                                    <span class="badge bg-secondary rounded-pill fs-6"
+                                                        style="min-width: 30px;" id="attr-<%= attr.key %>">
                                                         <%= character[attr.key] %>
                                                     </span>
-                                                    <% if (character.evolution_points> 0) { %>
-                                                        <form action="/my/characters/<%= character.id %>/upgrade"
-                                                            method="POST" class="d-inline">
-                                                            <input type="hidden" name="attribute"
-                                                                value="<%= attr.key %>">
-                                                            <button type="submit"
-                                                                class="btn btn-sm btn-outline-success rounded-circle p-0 d-flex align-items-center justify-content-center"
-                                                                style="width: 24px; height: 24px;"
-                                                                title="Evoluir Atributo">
-                                                                <i class="bi bi-plus"></i>
-                                                            </button>
-                                                        </form>
-                                                        <% } %>
+
+                                                    <!-- Increase Button -->
+                                                    <button type="button"
+                                                        class="btn btn-sm btn-outline-success rounded-circle p-0 d-flex align-items-center justify-content-center increase-btn"
+                                                        style="width: 24px; height: 24px;" title="Evoluir Atributo"
+                                                        data-attribute="<%= attr.key %>"
+                                                        onclick="increaseAttribute('<%= attr.key %>')">
+                                                        <i class="bi bi-plus"></i>
+                                                    </button>
                                                 </div>
                                             </li>
                                             <% }); %>
                                 </ul>
+
+                                <!-- Save/Cancel Buttons (Hidden by default) -->
+                                <div id="saveControls" class="mt-3" style="display: none;">
+                                    <div class="alert alert-info border-0 mb-2">
+                                        <small><strong>Pontos gastos:</strong> <span id="pointsSpent">0</span></small>
+                                    </div>
+                                    <div class="d-grid gap-2">
+                                        <button type="button" class="btn btn-success" onclick="saveChanges()">
+                                            <i class="bi bi-check-circle me-2"></i>Salvar Alterações
+                                        </button>
+                                        <button type="button" class="btn btn-outline-secondary"
+                                            onclick="cancelChanges()">
+                                            <i class="bi bi-x-circle me-2"></i>Cancelar
+                                        </button>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>
                 </div>
 
-                <!-- Affinities & Powers -->
+                <!-- Affinities & Powers (Right Column) -->
                 <div class="col-md-8">
                     <!-- Affinities -->
                     <div class="card card-custom mb-4">
@@ -210,5 +223,129 @@
                 </div>
             </div>
         </div>
+
+        <script>
+            // Original values from database
+            const originalData = {
+                strength: <%= character.strength %>,
+                dexterity: <%= character.dexterity %>,
+                constitution: <%= character.constitution %>,
+                intelligence: <%= character.intelligence %>,
+                reasoning: <%= character.reasoning %>,
+                luck: <%= character.luck %>,
+                evolution_points: <%= character.evolution_points %>
+    };
+
+            // Current staged values
+            let currentData = { ...originalData };
+            let changes = {};
+
+            function updateUI() {
+                // Update attribute displays
+                for (const attr in currentData) {
+                    if (attr !== 'evolution_points') {
+                        const element = document.getElementById(`attr-${attr}`);
+                        if (element) {
+                            element.textContent = currentData[attr];
+                        }
+                    }
+                }
+
+                // Update evolution points display
+                const pointsElement = document.querySelector('.alert.alert-light.border strong');
+                if (pointsElement) {
+                    pointsElement.textContent = currentData.evolution_points;
+                }
+
+                // Calculate points spent
+                let pointsSpent = 0;
+                for (const attr in changes) {
+                    pointsSpent += changes[attr];
+                }
+
+                // Update points spent display
+                document.getElementById('pointsSpent').textContent = pointsSpent;
+
+                // Show/hide save controls
+                const saveControls = document.getElementById('saveControls');
+                if (pointsSpent > 0) {
+                    saveControls.style.display = 'block';
+                } else {
+                    saveControls.style.display = 'none';
+                }
+
+                // Enable/disable increase buttons
+                const increaseButtons = document.querySelectorAll('.increase-btn');
+                increaseButtons.forEach(btn => {
+                    if (currentData.evolution_points <= 0) {
+                        btn.disabled = true;
+                        btn.classList.remove('btn-outline-success');
+                        btn.classList.add('btn-outline-secondary');
+                        btn.style.opacity = '0.5';
+                    } else {
+                        btn.disabled = false;
+                        btn.classList.remove('btn-outline-secondary');
+                        btn.classList.add('btn-outline-success');
+                        btn.style.opacity = '1';
+                    }
+                });
+            }
+
+            function increaseAttribute(attr) {
+                if (currentData.evolution_points <= 0) return;
+
+                // Increase attribute
+                currentData[attr]++;
+                currentData.evolution_points--;
+
+                // Track change
+                if (!changes[attr]) {
+                    changes[attr] = 0;
+                }
+                changes[attr]++;
+
+                updateUI();
+            }
+
+            function cancelChanges() {
+                // Reset to original values
+                currentData = { ...originalData };
+                changes = {};
+                updateUI();
+            }
+
+            async function saveChanges() {
+                try {
+                    const response = await fetch('/my/characters/<%= character.id %>/attributes/save', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({ changes })
+                    });
+
+                    const result = await response.json();
+
+                    if (result.success) {
+                        // Update original data with saved values
+                        Object.assign(originalData, result.character);
+                        currentData = { ...originalData };
+                        changes = {};
+                        updateUI();
+
+                        // Show success message
+                        alert(result.message);
+                    } else {
+                        alert(result.error || 'Erro ao salvar atributos');
+                    }
+                } catch (error) {
+                    console.error('Error:', error);
+                    alert('Erro ao salvar atributos');
+                }
+            }
+
+            // Initialize UI on page load
+            updateUI();
+        </script>
 
         <%- include('../../partials/footer') %>

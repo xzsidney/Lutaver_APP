@@ -200,29 +200,76 @@ const MyCharacterController = {
     },
 
     /**
-     * Upgrade Attribute
+     * Save Attribute Changes
      */
-    upgradeAttribute: async (req, res) => {
+    saveAttributes: async (req, res) => {
         try {
             const userId = req.session.user.id;
             const character = await Character.findOne({
                 where: { id: req.params.id, user_id: userId }
             });
 
-            if (!character) return res.status(403).send('Acesso negado');
+            if (!character) return res.status(403).json({ error: 'Acesso negado' });
 
-            const { attribute } = req.body;
-            const validAttributes = ['strength', 'dexterity', 'constitution', 'intelligence', 'reasoning', 'luck'];
+            const { changes } = req.body; // Expected format: { strength: 2, dexterity: 1, ... }
 
-            if (validAttributes.includes(attribute) && character.evolution_points > 0) {
-                character[attribute] += 1;
-                character.evolution_points -= 1;
-                await character.save();
+            if (!changes || typeof changes !== 'object') {
+                return res.status(400).json({ error: 'Dados inválidos' });
             }
 
-            res.redirect(`/my/characters/${character.id}`);
+            const validAttributes = ['strength', 'dexterity', 'constitution', 'intelligence', 'reasoning', 'luck'];
+
+            // Calculate total points needed
+            let totalPointsNeeded = 0;
+            const updates = {};
+
+            for (const [attr, increment] of Object.entries(changes)) {
+                // Validate attribute name
+                if (!validAttributes.includes(attr)) {
+                    return res.status(400).json({ error: `Atributo inválido: ${attr}` });
+                }
+
+                // Validate increment is positive integer
+                const incrementValue = parseInt(increment);
+                if (isNaN(incrementValue) || incrementValue < 0) {
+                    return res.status(400).json({ error: `Valor inválido para ${attr}` });
+                }
+
+                if (incrementValue > 0) {
+                    totalPointsNeeded += incrementValue;
+                    updates[attr] = character[attr] + incrementValue;
+                }
+            }
+
+            // Validate sufficient evolution points
+            if (totalPointsNeeded > character.evolution_points) {
+                return res.status(400).json({ error: 'Pontos de evolução insuficientes' });
+            }
+
+            // Apply all changes
+            for (const [attr, newValue] of Object.entries(updates)) {
+                character[attr] = newValue;
+            }
+            character.evolution_points -= totalPointsNeeded;
+
+            await character.save();
+
+            res.json({
+                success: true,
+                message: 'Atributos atualizados com sucesso!',
+                character: {
+                    strength: character.strength,
+                    dexterity: character.dexterity,
+                    constitution: character.constitution,
+                    intelligence: character.intelligence,
+                    reasoning: character.reasoning,
+                    luck: character.luck,
+                    evolution_points: character.evolution_points
+                }
+            });
         } catch (error) {
-            res.status(500).send('Erro ao evoluir atributo');
+            console.error(error);
+            res.status(500).json({ error: 'Erro ao salvar atributos' });
         }
     },
 

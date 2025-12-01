@@ -24,7 +24,7 @@ router.post('/:id', MyCharacterController.update);
 router.post('/:id/delete', MyCharacterController.delete);
 
 // Actions
-router.post('/:id/attributes', MyCharacterController.upgradeAttribute);
+router.post('/:id/attributes/save', MyCharacterController.saveAttributes);
 router.post('/:id/powers', MyCharacterController.learnPower);
 
 module.exports = router;

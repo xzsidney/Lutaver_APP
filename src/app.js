@@ -115,6 +115,13 @@ Character.belongsToMany(Power, { through: CharacterPower, foreignKey: 'character
 Power.belongsToMany(Character, { through: CharacterPower, foreignKey: 'power_id', as: 'characters' });
 Character.hasMany(CharacterPower, { foreignKey: 'character_id' }); // Direct access if needed
 
+// Adventure Progress
+const AdventureProgress = require('./models/AdventureProgress');
+Character.hasMany(AdventureProgress, { foreignKey: 'character_id', as: 'progress' });
+AdventureProgress.belongsTo(Character, { foreignKey: 'character_id', as: 'character' });
+Adventure.hasMany(AdventureProgress, { foreignKey: 'adventure_id', as: 'progress' });
+AdventureProgress.belongsTo(Adventure, { foreignKey: 'adventure_id', as: 'adventure' });
+
 // Routes
 app.use('/', routes);
 
