@@ -1,0 +1,160 @@
+<%- include('../partials/admin/header') %>
+    <%- include('../partials/admin/navbar', { page: 'dashboard' }) %>
+
+        <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4 main-content">
+            <div
+                class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+                <h1 class="h2 text-primary fw-bold">Painel Administrativo</h1>
+                <div class="btn-toolbar mb-2 mb-md-0">
+                    <div class="btn-group me-2">
+                        <button type="button" class="btn btn-sm btn-outline-secondary">Compartilhar</button>
+                        <button type="button" class="btn btn-sm btn-outline-secondary">Exportar</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Stats Cards -->
+            <div class="row g-4 mb-4">
+                <!-- Users Card -->
+                <div class="col-xl-3 col-md-6">
+                    <div class="card card-custom h-100 border-start border-4 border-primary">
+                        <div class="card-body">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <div>
+                                    <div class="text-uppercase text-muted small fw-bold mb-1">Usuários</div>
+                                    <div class="h3 mb-0 fw-bold text-dark">
+                                        <%= stats.usersCount || 0 %>
+                                    </div>
+                                </div>
+                                <div class="fs-1 text-primary opacity-25">
+                                    <i class="bi bi-people-fill"></i>
+                                </div>
+                            </div>
+                            <div class="mt-3">
+                                <a href="/admin/users" class="btn btn-sm btn-light text-primary w-100">Gerenciar <i
+                                        class="bi bi-arrow-right"></i></a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Disciplines Card -->
+                <div class="col-xl-3 col-md-6">
+                    <div class="card card-custom h-100 border-start border-4 border-warning">
+                        <div class="card-body">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <div>
+                                    <div class="text-uppercase text-muted small fw-bold mb-1">Disciplinas</div>
+                                    <div class="h3 mb-0 fw-bold text-dark">
+                                        <%= stats.disciplinesCount || 0 %>
+                                    </div>
+                                </div>
+                                <div class="fs-1 text-warning opacity-25">
+                                    <i class="bi bi-book-fill"></i>
+                                </div>
+                            </div>
+                            <div class="mt-3">
+                                <a href="/admin/disciplines" class="btn btn-sm btn-light text-warning w-100">Gerenciar
+                                    <i class="bi bi-arrow-right"></i></a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Adventures Card -->
+                <div class="col-xl-3 col-md-6">
+                    <div class="card card-custom h-100 border-start border-4 border-success">
+                        <div class="card-body">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <div>
+                                    <div class="text-uppercase text-muted small fw-bold mb-1">Aventuras</div>
+                                    <div class="h3 mb-0 fw-bold text-dark">
+                                        <%= stats.adventuresCount || 0 %>
+                                    </div>
+                                </div>
+                                <div class="fs-1 text-success opacity-25">
+                                    <i class="bi bi-map-fill"></i>
+                                </div>
+                            </div>
+                            <div class="mt-3">
+                                <a href="/admin/adventures" class="btn btn-sm btn-light text-success w-100">Gerenciar <i
+                                        class="bi bi-arrow-right"></i></a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Questions Card -->
+                <div class="col-xl-3 col-md-6">
+                    <div class="card card-custom h-100 border-start border-4 border-info">
+                        <div class="card-body">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <div>
+                                    <div class="text-uppercase text-muted small fw-bold mb-1">Questões</div>
+                                    <div class="h3 mb-0 fw-bold text-dark">
+                                        <%= stats.questionsCount || 0 %>
+                                    </div>
+                                </div>
+                                <div class="fs-1 text-info opacity-25">
+                                    <i class="bi bi-question-circle-fill"></i>
+                                </div>
+                            </div>
+                            <div class="mt-3">
+                                <a href="/admin/questions" class="btn btn-sm btn-light text-info w-100">Gerenciar <i
+                                        class="bi bi-arrow-right"></i></a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Recent Activity / Quick Actions -->
+            <div class="row">
+                <div class="col-md-8 mb-4">
+                    <div class="card card-custom">
+                        <div class="card-header bg-white border-0 pt-4 ps-4">
+                            <h5 class="fw-bold mb-0">Ações Rápidas</h5>
+                        </div>
+                        <div class="card-body p-4">
+                            <div class="d-grid gap-3 d-md-flex">
+                                <a href="/admin/users/new" class="btn btn-outline-primary">
+                                    <i class="bi bi-person-plus"></i> Novo Usuário
+                                </a>
+                                <a href="/admin/adventures/new" class="btn btn-outline-success">
+                                    <i class="bi bi-plus-circle"></i> Nova Aventura
+                                </a>
+                                <a href="/admin/questions/new" class="btn btn-outline-info">
+                                    <i class="bi bi-pencil-square"></i> Nova Questão
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-4 mb-4">
+                    <div class="card card-custom bg-primary text-white">
+                        <div class="card-body p-4 text-center">
+                            <h4 class="fw-bold">Lutaver Admin</h4>
+                            <p class="opacity-75">Versão 2.0.0</p>
+                            <hr class="bg-white opacity-25">
+                            <div class="d-flex justify-content-around">
+                                <div class="text-center">
+                                    <div class="h4 mb-0">
+                                        <%= stats.charactersCount || 0 %>
+                                    </div>
+                                    <div class="small opacity-75">Personagens</div>
+                                </div>
+                                <div class="text-center">
+                                    <div class="h4 mb-0">
+                                        <%= stats.scenesCount || 0 %>
+                                    </div>
+                                    <div class="small opacity-75">Cenas</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+
+        <%- include('../partials/admin/footer') %>

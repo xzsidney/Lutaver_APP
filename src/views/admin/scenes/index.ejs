@@ -1,0 +1,112 @@
+<%- include('../../partials/admin/header') %>
+    <%- include('../../partials/admin/navbar', { page: 'scenes' }) %>
+
+        <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4 main-content">
+            <div
+                class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+                <h1 class="h2 text-primary fw-bold">Gerenciar Cenas</h1>
+                <div class="btn-toolbar mb-2 mb-md-0">
+                    <a href="/admin/scenes/new" class="btn btn-sm btn-magic">
+                        <i class="bi bi-plus-circle"></i> Nova Cena
+                    </a>
+                </div>
+            </div>
+
+            <!-- Filter -->
+            <div class="card card-custom mb-4">
+                <div class="card-body py-3">
+                    <form action="/admin/scenes" method="GET" class="row g-3 align-items-center">
+                        <div class="col-auto">
+                            <label for="adventure_id" class="col-form-label fw-bold">Filtrar por Aventura:</label>
+                        </div>
+                        <div class="col-auto flex-grow-1">
+                            <select class="form-select" id="adventure_id" name="adventure_id"
+                                onchange="this.form.submit()">
+                                <option value="">Todas as Aventuras</option>
+                                <% adventures.forEach(adv=> { %>
+                                    <option value="<%= adv.id %>" <%=(selectedAdventureId==adv.id) ? 'selected' : '' %>>
+                                        <%= adv.title %>
+                                    </option>
+                                    <% }); %>
+                            </select>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <div class="card card-custom">
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table table-hover table-custom align-middle">
+                            <thead>
+                                <tr>
+                                    <th>Ordem</th>
+                                    <th>Título</th>
+                                    <th>NPC</th>
+                                    <th>Tipo de Teste</th>
+                                    <th>Final?</th>
+                                    <th>Ações</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <% if (scenes.length===0) { %>
+                                    <tr>
+                                        <td colspan="6" class="text-center py-4 text-muted">
+                                            Nenhuma cena encontrada.
+                                        </td>
+                                    </tr>
+                                    <% } else { %>
+                                        <% scenes.forEach(scene=> { %>
+                                            <tr>
+                                                <td><span class="badge bg-secondary rounded-circle">
+                                                        <%= scene.order_index %>
+                                                    </span></td>
+                                                <td class="fw-bold">
+                                                    <%= scene.title %>
+                                                </td>
+                                                <td>
+                                                    <%= scene.npc_name || '-' %>
+                                                </td>
+                                                <td>
+                                                    <% if (scene.test_type) { %>
+                                                        <span class="badge bg-warning text-dark">
+                                                            <%= scene.test_type %>
+                                                        </span>
+                                                        <% } else { %>
+                                                            <span class="text-muted">Nenhum</span>
+                                                            <% } %>
+                                                </td>
+                                                <td>
+                                                    <% if (scene.is_end_scene) { %>
+                                                        <span class="badge bg-danger">Sim</span>
+                                                        <% } else { %>
+                                                            <span class="badge bg-light text-dark border">Não</span>
+                                                            <% } %>
+                                                </td>
+                                                <td>
+                                                    <div class="btn-group btn-group-sm">
+                                                        <a href="/admin/scenes/<%= scene.id %>/edit"
+                                                            class="btn btn-outline-primary" title="Editar">
+                                                            <i class="bi bi-pencil"></i>
+                                                        </a>
+                                                        <form action="/admin/scenes/<%= scene.id %>/delete"
+                                                            method="POST" class="d-inline"
+                                                            onsubmit="return confirm('Tem certeza que deseja excluir esta cena?');">
+                                                            <button type="submit" class="btn btn-outline-danger"
+                                                                title="Excluir">
+                                                                <i class="bi bi-trash"></i>
+                                                            </button>
+                                                        </form>
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                            <% }); %>
+                                                <% } %>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </main>
+
+        <%- include('../../partials/admin/footer') %>

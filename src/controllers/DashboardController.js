@@ -1,0 +1,69 @@
+const User = require('../models/User');
+const Discipline = require('../models/Discipline');
+const Adventure = require('../models/Adventure');
+const Scene = require('../models/Scene');
+const Question = require('../models/Question');
+const Character = require('../models/Character');
+
+const DashboardController = {
+    /**
+     * Main dashboard - redirects to role-specific dashboard
+     */
+    index: (req, res) => {
+        const userRole = req.session.user.role;
+
+        switch (userRole) {
+            case 'admin':
+                return res.redirect('/admin/dashboard');
+            case 'teacher':
+                return res.redirect('/teacher/dashboard');
+            case 'player':
+                return res.redirect('/player/dashboard');
+            default:
+                return res.redirect('/login');
+        }
+    },
+
+    /**
+     * Admin Dashboard
+     */
+    adminDashboard: async (req, res) => {
+        try {
+            const stats = {
+                usersCount: await User.count(),
+                disciplinesCount: await Discipline.count(),
+                adventuresCount: await Adventure.count(),
+                scenesCount: await Scene.count(),
+                questionsCount: await Question.count(),
+                charactersCount: await Character.count()
+            };
+
+            res.render('admin/dashboard', {
+                user: req.session.user,
+                stats
+            });
+        } catch (error) {
+            console.error(error);
+            res.render('admin/dashboard', {
+                user: req.session.user,
+                stats: {}
+            });
+        }
+    },
+
+    /**
+     * Teacher Dashboard
+     */
+    teacherDashboard: (req, res) => {
+        res.render('dashboard/teacher', { user: req.session.user });
+    },
+
+    /**
+     * Player Dashboard
+     */
+    playerDashboard: (req, res) => {
+        res.render('dashboard/player', { user: req.session.user });
+    }
+};
+
+module.exports = DashboardController;

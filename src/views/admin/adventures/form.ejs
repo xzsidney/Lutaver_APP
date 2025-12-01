@@ -1,0 +1,146 @@
+<%- include('../../partials/admin/header') %>
+    <%- include('../../partials/admin/navbar', { page: 'adventures' }) %>
+
+        <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4 main-content">
+            <div
+                class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+                <h1 class="h2 text-primary fw-bold">
+                    <%= adventure ? 'Editar Aventura' : 'Nova Aventura' %>
+                </h1>
+                <div class="btn-toolbar mb-2 mb-md-0">
+                    <a href="/admin/adventures" class="btn btn-sm btn-outline-secondary">
+                        <i class="bi bi-arrow-left"></i> Voltar
+                    </a>
+                </div>
+            </div>
+
+            <div class="row justify-content-center">
+                <div class="col-md-10">
+                    <div class="card card-custom">
+                        <div class="card-body p-4">
+                            <% if (error) { %>
+                                <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                                    <%= error %>
+                                        <button type="button" class="btn-close" data-bs-dismiss="alert"
+                                            aria-label="Close"></button>
+                                </div>
+                                <% } %>
+
+                                    <form
+                                        action="<%= adventure ? '/admin/adventures/' + adventure.id : '/admin/adventures' %>"
+                                        method="POST">
+                                        <div class="row mb-3">
+                                            <div class="col-md-8">
+                                                <label for="title" class="form-label fw-bold">Título da Aventura</label>
+                                                <input type="text" class="form-control" id="title" name="title"
+                                                    value="<%= adventure ? adventure.title : '' %>" required>
+                                            </div>
+                                            <div class="col-md-4">
+                                                <label for="discipline_id" class="form-label fw-bold">Disciplina</label>
+                                                <select class="form-select" id="discipline_id" name="discipline_id"
+                                                    required>
+                                                    <option value="">Selecione...</option>
+                                                    <% disciplines.forEach(d=> { %>
+                                                        <option value="<%= d.id %>" <%=(adventure &&
+                                                            adventure.discipline_id===d.id) ? 'selected' : '' %>>
+                                                            <%= d.name %> (<%= d.school_level %>)
+                                                        </option>
+                                                        <% }); %>
+                                                </select>
+                                            </div>
+                                        </div>
+
+                                        <div class="row mb-3">
+                                            <div class="col-md-4">
+                                                <label for="school_year" class="form-label fw-bold">Ano Escolar</label>
+                                                <select class="form-select" id="school_year" name="school_year"
+                                                    required>
+                                                    <% for(let i=1; i<=9; i++) { %>
+                                                        <option value="<%= i %>" <%=(adventure &&
+                                                            adventure.school_year===i) ? 'selected' : '' %>><%= i %>º
+                                                                Ano</option>
+                                                        <% } %>
+                                                            <option value="10" <%=(adventure &&
+                                                                adventure.school_year===10) ? 'selected' : '' %>>1º Ano
+                                                                Médio</option>
+                                                            <option value="11" <%=(adventure &&
+                                                                adventure.school_year===11) ? 'selected' : '' %>>2º Ano
+                                                                Médio</option>
+                                                            <option value="12" <%=(adventure &&
+                                                                adventure.school_year===12) ? 'selected' : '' %>>3º Ano
+                                                                Médio</option>
+                                                </select>
+                                            </div>
+                                            <div class="col-md-4">
+                                                <label for="difficulty" class="form-label fw-bold">Dificuldade</label>
+                                                <select class="form-select" id="difficulty" name="difficulty" required>
+                                                    <option value="1" <%=(adventure && adventure.difficulty===1)
+                                                        ? 'selected' : '' %>>⭐ Muito Fácil</option>
+                                                    <option value="2" <%=(adventure && adventure.difficulty===2)
+                                                        ? 'selected' : '' %>>⭐⭐ Fácil</option>
+                                                    <option value="3" <%=(adventure && adventure.difficulty===3)
+                                                        ? 'selected' : '' %>>⭐⭐⭐ Médio</option>
+                                                    <option value="4" <%=(adventure && adventure.difficulty===4)
+                                                        ? 'selected' : '' %>>⭐⭐⭐⭐ Difícil</option>
+                                                    <option value="5" <%=(adventure && adventure.difficulty===5)
+                                                        ? 'selected' : '' %>>⭐⭐⭐⭐⭐ Muito Difícil</option>
+                                                </select>
+                                            </div>
+                                            <div class="col-md-4">
+                                                <label for="reward_xp" class="form-label fw-bold">Recompensa
+                                                    (XP)</label>
+                                                <input type="number" class="form-control" id="reward_xp"
+                                                    name="reward_xp"
+                                                    value="<%= adventure ? adventure.reward_xp : '100' %>" min="0">
+                                            </div>
+                                        </div>
+
+                                        <div class="mb-3">
+                                            <label for="reward_item" class="form-label fw-bold">Item de Recompensa
+                                                (Opcional)</label>
+                                            <input type="text" class="form-control" id="reward_item" name="reward_item"
+                                                value="<%= adventure ? adventure.reward_item : '' %>"
+                                                placeholder="Ex: Poção de Sabedoria">
+                                        </div>
+
+                                        <div class="mb-3">
+                                            <label for="description" class="form-label fw-bold">Descrição da
+                                                Aventura</label>
+                                            <textarea class="form-control" id="description" name="description" rows="3"
+                                                required><%= adventure ? adventure.description : '' %></textarea>
+                                            <div class="form-text">Uma breve introdução que aparecerá para o jogador
+                                                antes de começar.</div>
+                                        </div>
+
+                                        <div class="mb-3">
+                                            <label for="objectives" class="form-label fw-bold">Objetivos de
+                                                Aprendizagem</label>
+                                            <textarea class="form-control" id="objectives" name="objectives"
+                                                rows="3"><%= adventure ? adventure.objectives : '' %></textarea>
+                                            <div class="form-text">O que o aluno vai aprender com esta aventura?</div>
+                                        </div>
+
+                                        <div class="mb-3">
+                                            <div class="form-check">
+                                                <input class="form-check-input" type="checkbox" id="is_active"
+                                                    name="is_active" <%=(!adventure || adventure.is_active) ? 'checked'
+                                                    : '' %>>
+                                                <label class="form-check-label" for="is_active">
+                                                    Aventura Ativa (Visível para jogadores)
+                                                </label>
+                                            </div>
+                                        </div>
+
+                                        <div class="d-grid gap-2 d-md-flex justify-content-md-end mt-4">
+                                            <button type="submit" class="btn btn-magic px-4">
+                                                <i class="bi bi-save"></i> Salvar
+                                            </button>
+                                        </div>
+                                    </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+
+        <%- include('../../partials/admin/footer') %>

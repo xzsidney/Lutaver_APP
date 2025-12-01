@@ -1,0 +1,68 @@
+<%- include('../../partials/header') %>
+    <%- include('../../partials/navbar') %>
+
+        <div class="container mt-4">
+            <div class="row justify-content-center">
+                <div class="col-md-8">
+                    <div class="card shadow-sm card-custom">
+                        <div class="card-header bg-white py-3">
+                            <h4 class="mb-0 fw-bold text-primary">
+                                <%= character ? 'Editar Personagem' : 'Novo Personagem' %>
+                            </h4>
+                        </div>
+                        <div class="card-body p-4">
+                            <% if (error) { %>
+                                <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                                    <%= error %>
+                                        <button type="button" class="btn-close" data-bs-dismiss="alert"
+                                            aria-label="Close"></button>
+                                </div>
+                                <% } %>
+
+                                    <form
+                                        action="<%= character ? '/my/characters/' + character.id : '/my/characters' %>"
+                                        method="POST">
+                                        <div class="mb-3">
+                                            <label for="name" class="form-label fw-bold">Nome do Personagem</label>
+                                            <input type="text" class="form-control form-control-lg" id="name"
+                                                name="name" value="<%= character ? character.name : '' %>" required
+                                                placeholder="Ex: Arthur, o Sábio">
+                                            <div class="form-text">Escolha um nome heróico para sua jornada!</div>
+                                        </div>
+
+                                        <div class="mb-4">
+                                            <label for="school_year" class="form-label fw-bold">Ano Escolar</label>
+                                            <select class="form-select" id="school_year" name="school_year" required>
+                                                <option value="" disabled <%=!character ? 'selected' : '' %>>Selecione
+                                                    seu ano...</option>
+                                                <% for(let i=1; i<=9; i++) { %>
+                                                    <option value="<%= i %>" <%=(character && character.school_year===i)
+                                                        ? 'selected' : '' %>><%= i %>º Ano do Fundamental</option>
+                                                    <% } %>
+                                                        <option value="10" <%=(character && character.school_year===10)
+                                                            ? 'selected' : '' %>>1º Ano do Ensino Médio</option>
+                                                        <option value="11" <%=(character && character.school_year===11)
+                                                            ? 'selected' : '' %>>2º Ano do Ensino Médio</option>
+                                                        <option value="12" <%=(character && character.school_year===12)
+                                                            ? 'selected' : '' %>>3º Ano do Ensino Médio</option>
+                                            </select>
+                                            <div class="form-text">Isso ajudará a definir a dificuldade das aventuras.
+                                            </div>
+                                        </div>
+
+                                        <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                                            <a href="/my/characters"
+                                                class="btn btn-outline-secondary me-md-2">Cancelar</a>
+                                            <button type="submit" class="btn btn-magic px-4">
+                                                <i class="bi bi-star-fill"></i>
+                                                <%= character ? 'Salvar Alterações' : 'Criar Personagem' %>
+                                            </button>
+                                        </div>
+                                    </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <%- include('../../partials/footer') %>

@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nova Cena - <%= adventure.title %> - Lutaver</title>
+    <link rel="stylesheet" href="/css/lutaver.css">
+</head>
+
+<body>
+    <%- include('../partials/navbar', { user }) %>
+
+        <div class="dashboard-container">
+            <div class="header">
+                <h1>📖 Nova Cena</h1>
+                <p>Crie uma nova cena para <strong>
+                        <%= adventure.title %>
+                    </strong></p>
+            </div>
+
+            <div
+                style="background: white; padding: 30px; border-radius: 10px; box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); max-width: 1000px;">
+                <% if (error) { %>
+                    <div class="error-message">
+                        <%= error %>
+                    </div>
+                    <% } %>
+
+                        <form action="/adventures/<%= adventure.id %>/scenes" method="POST">
+                            <!-- Informações Básicas -->
+                            <fieldset
+                                style="border: 2px solid #1E90FF; padding: 20px; border-radius: 10px; margin-bottom: 25px;">
+                                <legend style="color: #1E90FF; font-weight: 600; padding: 0 10px;">📌 Informações
+                                    Básicas</legend>
+
+                                <div class="form-row">
+                                    <div class="form-group">
+                                        <label for="order_index">Ordem da Cena *</label>
+                                        <input type="number" id="order_index" name="order_index"
+                                            value="<%= existingScenes.length + 1 %>" required min="1">
+                                        <small style="color: #666;">Posição desta cena na narrativa</small>
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label for="title">Título da Cena *</label>
+                                        <input type="text" id="title" name="title" required
+                                            placeholder="Ex: O Encontro na Biblioteca">
+                                    </div>
+                                </div>
+                            </fieldset>
+
+                            <!-- Personagens e Ambiente -->
+                            <fieldset
+                                style="border: 2px solid #F7D046; padding: 20px; border-radius: 10px; margin-bottom: 25px;">
+                                <legend style="color: #F7D046; font-weight: 600; padding: 0 10px;">🎭 Personagens e
+                                    Ambiente</legend>
+
+                                <div class="form-row">
+                                    <div class="form-group">
+                                        <label for="npc_name">Nome do NPC</label>
+                                        <input type="text" id="npc_name" name="npc_name"
+                                            placeholder="Ex: Professor Sábio">
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label for="npc_mood">Humor do NPC</label>
+                                        <select id="npc_mood" name="npc_mood">
+                                            <option value="">Selecione</option>
+                                            <option value="amigável">Amigável</option>
+                                            <option value="neutro">Neutro</option>
+                                            <option value="hostil">Hostil</option>
+                                            <option value="misterioso">Misterioso</option>
+                                            <option value="preocupado">Preocupado</option>
+                                        </select>
+                                    </div>
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="player_feeling">Sentimento do Jogador</label>
+                                    <input type="text" id="player_feeling" name="player_feeling"
+                                        placeholder="Ex: Curioso, Nervoso, Confiante">
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="environment_description">Descrição do Ambiente</label>
+                                    <textarea id="environment_description" name="environment_description" rows="2"
+                                        placeholder="Descreva o local onde a cena acontece..."></textarea>
+                                </div>
+                            </fieldset>
+
+                            <!-- Narrativa -->
+                            <fieldset
+                                style="border: 2px solid #34D399; padding: 20px; border-radius: 10px; margin-bottom: 25px;">
+                                <legend style="color: #34D399; font-weight: 600; padding: 0 10px;">📜 Narrativa</legend>
+
+                                <div class="form-group">
+                                    <label for="scene_text">Texto da Cena *</label>
+                                    <textarea id="scene_text" name="scene_text" rows="6" required
+                                        placeholder="Escreva a narrativa desta cena..."></textarea>
+                                    <small style="color: #666;">O texto que o jogador lerá ao chegar nesta cena</small>
+                                </div>
+                            </fieldset>
+
+                            <!-- Sistema de Teste -->
+                            <fieldset
+                                style="border: 2px solid #9333EA; padding: 20px; border-radius: 10px; margin-bottom: 25px;">
+                                <legend style="color: #9333EA; font-weight: 600; padding: 0 10px;">⚔️ Sistema de Teste
+                                </legend>
+
+                                <div class="form-row">
+                                    <div class="form-group">
+                                        <label for="test_type">Tipo de Teste *</label>
+                                        <select id="test_type" name="test_type" required
+                                            onchange="toggleTestFields(this.value)">
+                                            <option value="nenhum">Nenhum</option>
+                                            <option value="fisico">Físico</option>
+                                            <option value="mental">Mental</option>
+                                            <option value="social">Social</option>
+                                        </select>
+                                    </div>
+
+                                    <div class="form-group" id="difficulty-group" style="display: none;">
+                                        <label for="difficulty">Dificuldade</label>
+                                        <select id="difficulty" name="difficulty">
+                                            <option value="">Selecione</option>
+                                            <option value="1">⭐ Muito Fácil</option>
+                                            <option value="2">⭐⭐ Fácil</option>
+                                            <option value="3">⭐⭐⭐ Médio</option>
+                                            <option value="4">⭐⭐⭐⭐ Difícil</option>
+                                            <option value="5">⭐⭐⭐⭐⭐ Muito Difícil</option>
+                                        </select>
+                                    </div>
+                                </div>
+
+                                <div class="form-group" id="attribute-group" style="display: none;">
+                                    <label for="attribute_used">Atributo Usado</label>
+                                    <input type="text" id="attribute_used" name="attribute_used"
+                                        placeholder="Ex: Lógica, Criatividade, Memória">
+                                </div>
+
+                                <div class="form-row" id="branching-group" style="display: none;">
+                                    <div class="form-group">
+                                        <label for="success_scene_id">Cena em Caso de Sucesso</label>
+                                        <select id="success_scene_id" name="success_scene_id">
+                                            <option value="">Nenhuma (fim)</option>
+                                            <% existingScenes.forEach(s=> { %>
+                                                <option value="<%= s.id %>">Cena <%= s.order_index %>: <%= s.title %>
+                                                </option>
+                                                <% }); %>
+                                        </select>
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label for="failure_scene_id">Cena em Caso de Falha</label>
+                                        <select id="failure_scene_id" name="failure_scene_id">
+                                            <option value="">Nenhuma (fim)</option>
+                                            <% existingScenes.forEach(s=> { %>
+                                                <option value="<%= s.id %>">Cena <%= s.order_index %>: <%= s.title %>
+                                                </option>
+                                                <% }); %>
+                                        </select>
+                                    </div>
+                                </div>
+                            </fieldset>
+
+                            <!-- Opções -->
+                            <div class="form-group">
+                                <div class="checkbox-group">
+                                    <input type="checkbox" id="is_ending" name="is_ending">
+                                    <label for="is_ending" style="margin: 0;">🏁 Esta é uma cena final da
+                                        aventura?</label>
+                                </div>
+                            </div>
+
+                            <div style="display: flex; gap: 10px; margin-top: 30px;">
+                                <button type="submit" class="btn btn-success">Criar Cena</button>
+                                <a href="/adventures/<%= adventure.id %>/scenes" class="btn btn-secondary">Cancelar</a>
+                            </div>
+                        </form>
+            </div>
+        </div>
+
+        <script>
+            function toggleTestFields(testType) {
+                const difficultyGroup = document.getElementById('difficulty-group');
+                const attributeGroup = document.getElementById('attribute-group');
+                const branchingGroup = document.getElementById('branching-group');
+
+                if (testType === 'nenhum') {
+                    difficultyGroup.style.display = 'none';
+                    attributeGroup.style.display = 'none';
+                    branchingGroup.style.display = 'none';
+                } else {
+                    difficultyGroup.style.display = 'block';
+                    attributeGroup.style.display = 'block';
+                    branchingGroup.style.display = 'grid';
+                }
+            }
+        </script>
+</body>
+
+</html>

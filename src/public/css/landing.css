@@ -1,0 +1,706 @@
+/* ====================================================================
+   🎨 LUTAVER LANDING PAGE - PALETA OFICIAL
+   Azul Mágico #1E90FF | Amarelo Faísca #F7D046 | 
+   Verde Energia #34D399 | Branco Radiante #FFFFFF
+   ==================================================================== */
+
+:root {
+    --lutaver-blue: #1E90FF;
+    --lutaver-blue-dark: #0066CC;
+    --lutaver-yellow: #F7D046;
+    --lutaver-green: #34D399;
+    --lutaver-white: #FFFFFF;
+    --lutaver-text: #1A1A1A;
+    --lutaver-gray: #666;
+}
+
+/* ====================================================================
+   RESET E BASE
+   ==================================================================== */
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+html {
+    scroll-behavior: smooth;
+}
+
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    line-height: 1.6;
+    color: var(--lutaver-text);
+    background: var(--lutaver-white);
+}
+
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 20px;
+}
+
+/* ====================================================================
+   NAVBAR - AZUL MÁGICO
+   ==================================================================== */
+
+.navbar {
+    background: var(--lutaver-blue);
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 1000;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+.nav-wrapper {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px 0;
+}
+
+.logo {
+    font-size: 24px;
+    font-weight: 700;
+    color: var(--lutaver-white);
+    text-decoration: none;
+    transition: color 0.3s;
+}
+
+.logo:hover {
+    color: var(--lutaver-yellow);
+}
+
+.menu-toggle {
+    display: none;
+    flex-direction: column;
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 5px;
+}
+
+.menu-toggle span {
+    width: 25px;
+    height: 3px;
+    background: var(--lutaver-white);
+    margin: 3px 0;
+    transition: 0.3s;
+    border-radius: 3px;
+}
+
+.nav-menu {
+    display: flex;
+    list-style: none;
+    gap: 30px;
+    align-items: center;
+}
+
+.nav-link {
+    color: var(--lutaver-white);
+    text-decoration: none;
+    font-weight: 500;
+    padding: 8px 16px;
+    border-radius: 5px;
+    transition: all 0.3s;
+}
+
+.nav-link:hover {
+    background: var(--lutaver-yellow);
+    color: var(--lutaver-text);
+}
+
+.btn-nav {
+    background: var(--lutaver-green);
+    color: var(--lutaver-white);
+    padding: 10px 20px;
+    border-radius: 5px;
+    text-decoration: none;
+    font-weight: 600;
+    transition: all 0.3s;
+}
+
+.btn-nav:hover {
+    background: var(--lutaver-yellow);
+    color: var(--lutaver-text);
+    transform: translateY(-2px);
+}
+
+/* Mobile Menu */
+@media (max-width: 768px) {
+    .menu-toggle {
+        display: flex;
+    }
+
+    .nav-menu {
+        position: fixed;
+        left: -100%;
+        top: 60px;
+        flex-direction: column;
+        background: var(--lutaver-blue);
+        width: 100%;
+        text-align: center;
+        transition: 0.3s;
+        box-shadow: 0 10px 27px rgba(0, 0, 0, 0.05);
+        padding: 20px 0;
+        gap: 0;
+    }
+
+    .nav-menu.active {
+        left: 0;
+    }
+
+    .nav-menu li {
+        margin: 10px 0;
+    }
+}
+
+/* ====================================================================
+   HERO SECTION
+   ==================================================================== */
+
+.hero {
+    background: linear-gradient(135deg, var(--lutaver-blue) 0%, var(--lutaver-blue-dark) 100%);
+    color: var(--lutaver-white);
+    padding: 120px 0 80px;
+    margin-top: 60px;
+    position: relative;
+    overflow: hidden;
+}
+
+.hero-content {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 60px;
+    align-items: center;
+}
+
+.hero-title {
+    font-size: 48px;
+    margin-bottom: 20px;
+    line-height: 1.2;
+}
+
+.hero-subtitle {
+    font-size: 20px;
+    margin-bottom: 30px;
+    opacity: 0.95;
+}
+
+.hero-buttons {
+    display: flex;
+    gap: 15px;
+    flex-wrap: wrap;
+}
+
+.btn {
+    padding: 12px 30px;
+    border-radius: 8px;
+    text-decoration: none;
+    font-weight: 600;
+    transition: all 0.3s;
+    display: inline-block;
+    border: none;
+    cursor: pointer;
+    font-size: 16px;
+}
+
+.btn-primary {
+    background: var(--lutaver-green);
+    color: var(--lutaver-white);
+}
+
+.btn-primary:hover {
+    background: var(--lutaver-yellow);
+    color: var(--lutaver-text);
+    transform: translateY(-3px);
+    box-shadow: 0 10px 20px rgba(247, 208, 70, 0.3);
+}
+
+.btn-secondary {
+    background: transparent;
+    color: var(--lutaver-white);
+    border: 2px solid var(--lutaver-white);
+}
+
+.btn-secondary:hover {
+    background: var(--lutaver-white);
+    color: var(--lutaver-blue);
+}
+
+.btn-large {
+    padding: 15px 40px;
+    font-size: 18px;
+}
+
+/* Tower Illustration */
+.tower-illustration {
+    display: flex;
+    flex-direction: column-reverse;
+    gap: 15px;
+    align-items: center;
+}
+
+.tower-level {
+    font-size: 80px;
+    animation: float 3s ease-in-out infinite;
+}
+
+.tower-level:nth-child(2) {
+    animation-delay: 0.5s;
+}
+
+.tower-level:nth-child(3) {
+    animation-delay: 1s;
+}
+
+@keyframes float {
+
+    0%,
+    100% {
+        transform: translateY(0);
+    }
+
+    50% {
+        transform: translateY(-20px);
+    }
+}
+
+.hero-wave {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 100px;
+    background: var(--lutaver-white);
+    clip-path: polygon(0 50%, 100% 0, 100% 100%, 0 100%);
+}
+
+@media (max-width: 768px) {
+    .hero-content {
+        grid-template-columns: 1fr;
+        text-align: center;
+    }
+
+    .hero-title {
+        font-size: 32px;
+    }
+
+    .hero-subtitle {
+        font-size: 16px;
+    }
+
+    .hero-buttons {
+        justify-content: center;
+    }
+
+    .tower-illustration {
+        flex-direction: row;
+    }
+
+    .tower-level {
+        font-size: 50px;
+    }
+}
+
+/* ====================================================================
+   SECTIONS
+   ==================================================================== */
+
+section {
+    padding: 80px 0;
+}
+
+.section-title {
+    font-size: 40px;
+    text-align: center;
+    margin-bottom: 15px;
+    color: var(--lutaver-blue);
+}
+
+.section-subtitle {
+    text-align: center;
+    font-size: 18px;
+    color: var(--lutaver-gray);
+    margin-bottom: 50px;
+}
+
+@media (max-width: 768px) {
+    section {
+        padding: 50px 0;
+    }
+
+    .section-title {
+        font-size: 28px;
+    }
+
+    .section-subtitle {
+        font-size: 16px;
+    }
+}
+
+/* ====================================================================
+   ABOUT SECTION
+   ==================================================================== */
+
+.about {
+    background: #F9FAFB;
+}
+
+.about-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 30px;
+}
+
+.about-card {
+    background: var(--lutaver-white);
+    padding: 30px;
+    border-radius: 15px;
+    text-align: center;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+    transition: all 0.3s;
+    border-top: 4px solid var(--lutaver-yellow);
+}
+
+.about-card:hover {
+    transform: translateY(-10px);
+    box-shadow: 0 15px 30px rgba(0, 0, 0, 0.15);
+    border-top-color: var(--lutaver-blue);
+}
+
+.card-icon {
+    font-size: 60px;
+    margin-bottom: 20px;
+}
+
+.about-card h3 {
+    font-size: 24px;
+    margin-bottom: 15px;
+    color: var(--lutaver-blue);
+}
+
+.about-card p {
+    color: var(--lutaver-gray);
+    line-height: 1.8;
+}
+
+/* ====================================================================
+   ADVENTURES SECTION
+   ==================================================================== */
+
+.adventures {
+    background: var(--lutaver-white);
+}
+
+.adventures-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 30px;
+}
+
+.adventure-card {
+    background: var(--lutaver-white);
+    padding: 30px;
+    border-radius: 15px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+    border-top: 5px solid;
+    transition: all 0.3s;
+}
+
+.adventure-card:hover {
+    transform: translateY(-10px);
+    box-shadow: 0 15px 30px rgba(0, 0, 0, 0.2);
+}
+
+.adventure-icon {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 40px;
+    margin-bottom: 20px;
+}
+
+.adventure-card h3 {
+    font-size: 24px;
+    margin-bottom: 15px;
+    color: var(--lutaver-text);
+}
+
+.adventure-info {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 15px;
+}
+
+.badge {
+    background: var(--lutaver-blue);
+    color: var(--lutaver-white);
+    padding: 5px 15px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 600;
+}
+
+.difficulty {
+    font-size: 16px;
+}
+
+.adventure-card p {
+    color: var(--lutaver-gray);
+    margin-bottom: 15px;
+    line-height: 1.6;
+}
+
+.recommended {
+    display: block;
+    font-size: 12px;
+    color: var(--lutaver-gray);
+    margin-bottom: 20px;
+    font-style: italic;
+}
+
+.btn-outline {
+    background: transparent;
+    color: var(--lutaver-blue);
+    border: 2px solid var(--lutaver-blue);
+    width: 100%;
+    text-align: center;
+}
+
+.btn-outline:hover {
+    background: var(--lutaver-blue);
+    color: var(--lutaver-white);
+}
+
+/* ====================================================================
+   QUIZ SECTION
+   ==================================================================== */
+
+.quiz-section {
+    background: linear-gradient(135deg, var(--lutaver-green) 0%, #10B981 100%);
+    color: var(--lutaver-white);
+}
+
+.quiz-content {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 60px;
+    align-items: center;
+}
+
+.quiz-text h2 {
+    font-size: 36px;
+    margin-bottom: 20px;
+}
+
+.quiz-text p {
+    font-size: 18px;
+    margin-bottom: 25px;
+    opacity: 0.95;
+}
+
+.quiz-features {
+    list-style: none;
+    margin-bottom: 30px;
+}
+
+.quiz-features li {
+    font-size: 16px;
+    margin-bottom: 12px;
+    padding-left: 10px;
+}
+
+.btn-success {
+    background: var(--lutaver-yellow);
+    color: var(--lutaver-text);
+}
+
+.btn-success:hover {
+    background: var(--lutaver-white);
+    color: var(--lutaver-green);
+    transform: translateY(-3px);
+}
+
+/* Quiz Visual Demo */
+.quiz-card-demo {
+    background: var(--lutaver-white);
+    padding: 40px;
+    border-radius: 20px;
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
+}
+
+.demo-question {
+    font-size: 80px;
+    text-align: center;
+    margin-bottom: 30px;
+}
+
+.demo-options {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 15px;
+}
+
+.demo-option {
+    background: var(--lutaver-blue);
+    color: var(--lutaver-white);
+    padding: 20px;
+    border-radius: 10px;
+    text-align: center;
+    font-size: 24px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.3s;
+}
+
+.demo-option:hover {
+    background: var(--lutaver-yellow);
+    color: var(--lutaver-text);
+    transform: scale(1.05);
+}
+
+@media (max-width: 768px) {
+    .quiz-content {
+        grid-template-columns: 1fr;
+        text-align: center;
+    }
+
+    .quiz-text h2 {
+        font-size: 28px;
+    }
+}
+
+/* ====================================================================
+   CONTACT SECTION
+   ==================================================================== */
+
+.contact {
+    background: #F9FAFB;
+}
+
+.contact-form {
+    max-width: 600px;
+    margin: 0 auto;
+    background: var(--lutaver-white);
+    padding: 40px;
+    border-radius: 15px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+}
+
+.form-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+}
+
+.form-group {
+    margin-bottom: 20px;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 8px;
+    color: var(--lutaver-text);
+    font-weight: 500;
+}
+
+.form-group input,
+.form-group textarea {
+    width: 100%;
+    padding: 12px;
+    border: 2px solid #E5E7EB;
+    border-radius: 8px;
+    font-size: 14px;
+    font-family: inherit;
+    transition: all 0.3s;
+}
+
+.form-group input:focus,
+.form-group textarea:focus {
+    outline: none;
+    border-color: var(--lutaver-yellow);
+    box-shadow: 0 0 0 3px rgba(247, 208, 70, 0.1);
+}
+
+@media (max-width: 768px) {
+    .form-row {
+        grid-template-columns: 1fr;
+    }
+}
+
+/* ====================================================================
+   FOOTER
+   ==================================================================== */
+
+.footer {
+    background: var(--lutaver-blue);
+    color: var(--lutaver-white);
+    padding: 50px 0 20px;
+}
+
+.footer-content {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 40px;
+    margin-bottom: 30px;
+}
+
+.footer-section h3,
+.footer-section h4 {
+    margin-bottom: 15px;
+}
+
+.footer-section p {
+    opacity: 0.9;
+    line-height: 1.8;
+}
+
+.footer-section ul {
+    list-style: none;
+}
+
+.footer-section ul li {
+    margin-bottom: 10px;
+}
+
+.footer-section ul li a {
+    color: var(--lutaver-white);
+    text-decoration: none;
+    opacity: 0.9;
+    transition: all 0.3s;
+}
+
+.footer-section ul li a:hover {
+    color: var(--lutaver-yellow);
+    opacity: 1;
+    padding-left: 5px;
+}
+
+.social-links {
+    display: flex;
+    gap: 15px;
+    font-size: 24px;
+}
+
+.social-links a {
+    transition: transform 0.3s;
+}
+
+.social-links a:hover {
+    transform: scale(1.2);
+}
+
+.footer-bottom {
+    text-align: center;
+    padding-top: 30px;
+    border-top: 1px solid rgba(255, 255, 255, 0.2);
+    opacity: 0.8;
+}

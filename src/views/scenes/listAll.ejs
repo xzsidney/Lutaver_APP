@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Todas as Cenas - Lutaver</title>
+    <link rel="stylesheet" href="/css/lutaver.css">
+</head>
+
+<body>
+    <%- include('../partials/navbar', { user }) %>
+
+        <div class="dashboard-container">
+            <div class="header">
+                <h1>🎬 Todas as Cenas</h1>
+                <p>Visão global de cenas por aventura</p>
+            </div>
+
+            <div
+                style="background: white; padding: 20px; border-radius: 10px; box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);">
+                <table style="width: 100%; border-collapse: collapse;">
+                    <thead>
+                        <tr style="background: #f8f9fa; border-bottom: 2px solid #e9ecef;">
+                            <th style="padding: 12px; text-align: left;">Aventura</th>
+                            <th style="padding: 12px; text-align: center;">Ordem</th>
+                            <th style="padding: 12px; text-align: left;">Título da Cena</th>
+                            <th style="padding: 12px; text-align: left;">NPC</th>
+                            <th style="padding: 12px; text-align: center;">Tipo</th>
+                            <th style="padding: 12px; text-align: center;">Ações</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <% scenes.forEach(scene=> { %>
+                            <tr style="border-bottom: 1px solid #eee;">
+                                <td style="padding: 12px; color: #666;">
+                                    <%= scene.adventure ? scene.adventure.title : 'Sem Aventura' %>
+                                </td>
+                                <td style="padding: 12px; text-align: center;">
+                                    <span class="badge" style="background: #eee; color: #333;">#<%= scene.order_index %>
+                                            </span>
+                                </td>
+                                <td style="padding: 12px;">
+                                    <strong>
+                                        <%= scene.title %>
+                                    </strong>
+                                    <% if (scene.is_ending) { %>
+                                        <span class="badge"
+                                            style="background: #F7D046; color: #1A1A1A; font-size: 10px;">FIM</span>
+                                        <% } %>
+                                </td>
+                                <td style="padding: 12px;">
+                                    <%= scene.npc_name || '-' %>
+                                </td>
+                                <td style="padding: 12px; text-align: center;">
+                                    <% if (scene.test_type) { %>
+                                        <span class="badge" style="background: #e0f2fe; color: #0284c7;">
+                                            <%= scene.test_type %>
+                                        </span>
+                                        <% } else { %>
+                                            <span class="badge"
+                                                style="background: #f3f4f6; color: #666;">Narrativa</span>
+                                            <% } %>
+                                </td>
+                                <td style="padding: 12px; text-align: center;">
+                                    <a href="/scenes/<%= scene.id %>/edit" class="btn btn-warning btn-sm">✏️</a>
+                                    <form action="/scenes/<%= scene.id %>/delete" method="POST" style="display: inline;"
+                                        onsubmit="return confirm('Excluir cena?');">
+                                        <button type="submit" class="btn btn-danger btn-sm">🗑️</button>
+                                    </form>
+                                </td>
+                            </tr>
+                            <% }); %>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+</body>
+
+</html>

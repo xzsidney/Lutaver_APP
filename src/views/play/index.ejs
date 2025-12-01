@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Jogar - Lutaver</title>
+    <link rel="stylesheet" href="/css/lutaver.css">
+</head>
+
+<body>
+    <%- include('../partials/navbar', { user }) %>
+
+        <div class="dashboard-container">
+            <div class="header">
+                <h1>🎮 Aventuras Disponíveis</h1>
+                <p>Escolha uma missão e comece sua jornada!</p>
+            </div>
+
+            <% if (!character) { %>
+                <div
+                    style="background: #fff3cd; color: #856404; padding: 20px; border-radius: 10px; margin-bottom: 20px; border: 1px solid #ffeeba;">
+                    <strong>⚠️ Atenção:</strong> Você ainda não criou seu personagem!
+                    <a href="/my/characters/new" style="color: #856404; text-decoration: underline;">Clique aqui para
+                        criar</a> antes de jogar.
+                </div>
+                <% } %>
+
+                    <% if (adventures.length===0) { %>
+                        <div
+                            style="background: white; padding: 60px; border-radius: 10px; text-align: center; box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);">
+                            <div style="font-size: 80px; margin-bottom: 20px;">🗺️</div>
+                            <h3 style="color: #666; margin-bottom: 10px;">Nenhuma aventura disponível</h3>
+                            <p style="color: #999;">Os professores ainda estão preparando as missões. Volte mais tarde!
+                            </p>
+                        </div>
+                        <% } else { %>
+                            <div class="cards-grid">
+                                <% adventures.forEach(adv=> { %>
+                                    <div class="card"
+                                        style="border-top: 5px solid <%= adv.discipline ? adv.discipline.color_theme : '#ccc' %>;">
+                                        <div
+                                            style="display: flex; justify-content: space-between; align-items: start; margin-bottom: 15px;">
+                                            <div>
+                                                <span class="badge"
+                                                    style="background: <%= adv.discipline ? adv.discipline.color_theme : '#ccc' %>;">
+                                                    <%= adv.discipline ? adv.discipline.name : 'Geral' %>
+                                                </span>
+                                                <h3 style="color: #333; margin: 10px 0 5px 0;">
+                                                    <%= adv.title %>
+                                                </h3>
+                                                <div style="color: #F7D046; font-size: 14px;">
+                                                    <% for(let i=0; i < adv.difficulty; i++) { %>⭐<% } %>
+                                                            <% for(let i=adv.difficulty; i < 5; i++) { %>☆<% } %>
+                                                </div>
+                                            </div>
+                                            <div style="font-size: 30px;">
+                                                <%= adv.discipline ? adv.discipline.icon : '🗺️' %>
+                                            </div>
+                                        </div>
+
+                                        <p style="color: #666; font-size: 14px; margin-bottom: 15px; line-height: 1.5;">
+                                            <%= adv.description.substring(0, 100) %>...
+                                        </p>
+
+                                        <div
+                                            style="display: flex; justify-content: space-between; align-items: center; margin-top: auto;">
+                                            <span style="color: #34D399; font-weight: bold;">+<%= adv.reward_xp %>
+                                                    XP</span>
+                                            <% if (character) { %>
+                                                <a href="/play/adventure/<%= adv.id %>" class="btn btn-primary">Jogar
+                                                    Agora</a>
+                                                <% } else { %>
+                                                    <button disabled class="btn btn-secondary"
+                                                        style="opacity: 0.5; cursor: not-allowed;">Crie um
+                                                        Personagem</button>
+                                                    <% } %>
+                                        </div>
+                                    </div>
+                                    <% }); %>
+                            </div>
+                            <% } %>
+        </div>
+</body>
+
+</html>

@@ -1,0 +1,98 @@
+<%- include('../../partials/admin/header') %>
+    <%- include('../../partials/admin/navbar', { page: 'users' }) %>
+
+        <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4 main-content">
+            <div
+                class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+                <h1 class="h2 text-primary fw-bold">
+                    <%= userToEdit ? 'Editar Usuário' : 'Novo Usuário' %>
+                </h1>
+                <div class="btn-toolbar mb-2 mb-md-0">
+                    <a href="/admin/users" class="btn btn-sm btn-outline-secondary">
+                        <i class="bi bi-arrow-left"></i> Voltar
+                    </a>
+                </div>
+            </div>
+
+            <div class="row justify-content-center">
+                <div class="col-md-8">
+                    <div class="card card-custom">
+                        <div class="card-body p-4">
+                            <% if (error) { %>
+                                <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                                    <%= error %>
+                                        <button type="button" class="btn-close" data-bs-dismiss="alert"
+                                            aria-label="Close"></button>
+                                </div>
+                                <% } %>
+
+                                    <form action="<%= userToEdit ? '/admin/users/' + userToEdit.id : '/admin/users' %>"
+                                        method="POST">
+                                        <div class="mb-3">
+                                            <label for="name" class="form-label fw-bold">Nome Completo</label>
+                                            <input type="text" class="form-control" id="name" name="name"
+                                                value="<%= userToEdit ? userToEdit.name : '' %>" required>
+                                        </div>
+
+                                        <div class="mb-3">
+                                            <label for="email" class="form-label fw-bold">E-mail</label>
+                                            <input type="email" class="form-control" id="email" name="email"
+                                                value="<%= userToEdit ? userToEdit.email : '' %>" required>
+                                        </div>
+
+                                        <% if (!userToEdit) { %>
+                                            <div class="mb-3">
+                                                <label for="password" class="form-label fw-bold">Senha</label>
+                                                <input type="password" class="form-control" id="password"
+                                                    name="password" required>
+                                            </div>
+                                            <% } else { %>
+                                                <div class="mb-3">
+                                                    <label for="password" class="form-label fw-bold">Nova Senha (deixe
+                                                        em branco para manter)</label>
+                                                    <input type="password" class="form-control" id="password"
+                                                        name="password">
+                                                </div>
+                                                <% } %>
+
+                                                    <div class="row mb-3">
+                                                        <div class="col-md-6">
+                                                            <label for="role" class="form-label fw-bold">Papel
+                                                                (Role)</label>
+                                                            <select class="form-select" id="role" name="role">
+                                                                <option value="player" <%=(userToEdit &&
+                                                                    userToEdit.role==='player' ) ? 'selected' : '' %>
+                                                                    >Jogador</option>
+                                                                <option value="teacher" <%=(userToEdit &&
+                                                                    userToEdit.role==='teacher' ) ? 'selected' : '' %>
+                                                                    >Professor</option>
+                                                                <option value="admin" <%=(userToEdit &&
+                                                                    userToEdit.role==='admin' ) ? 'selected' : '' %>
+                                                                    >Administrador</option>
+                                                            </select>
+                                                        </div>
+                                                        <div class="col-md-6 d-flex align-items-end">
+                                                            <div class="form-check mb-2">
+                                                                <input class="form-check-input" type="checkbox"
+                                                                    id="is_active" name="is_active" <%=(!userToEdit ||
+                                                                    userToEdit.is_active) ? 'checked' : '' %>>
+                                                                <label class="form-check-label" for="is_active">
+                                                                    Usuário Ativo
+                                                                </label>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+
+                                                    <div class="d-grid gap-2 d-md-flex justify-content-md-end mt-4">
+                                                        <button type="submit" class="btn btn-magic px-4">
+                                                            <i class="bi bi-save"></i> Salvar
+                                                        </button>
+                                                    </div>
+                                    </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+
+        <%- include('../../partials/admin/footer') %>

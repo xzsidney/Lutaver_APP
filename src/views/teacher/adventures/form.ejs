@@ -1,0 +1,131 @@
+<%- include('../../partials/teacher/header') %>
+    <%- include('../../partials/teacher/navbar') %>
+
+        <main class="container mb-5">
+            <div class="row justify-content-center">
+                <div class="col-lg-8">
+                    <div class="d-flex justify-content-between align-items-center mb-4">
+                        <h1 class="fw-bold text-primary">
+                            <%= (typeof adventure !=='undefined' && adventure) ? 'Editar Aventura' : 'Nova Aventura' %>
+                        </h1>
+                        <a href="/teacher/adventures" class="btn btn-outline-secondary">
+                            <i class="bi bi-arrow-left me-2"></i>Voltar
+                        </a>
+                    </div>
+
+                    <div class="card card-custom">
+                        <div class="card-body p-4">
+                            <form
+                                action="<%= (typeof adventure !== 'undefined' && adventure) ? '/teacher/adventures/' + adventure.id : '/teacher/adventures' %>"
+                                method="POST">
+
+                                <!-- Basic Info -->
+                                <h5 class="fw-bold text-primary mb-3 border-bottom pb-2">Informações Básicas</h5>
+
+                                <div class="mb-3">
+                                    <label for="title" class="form-label fw-bold">Título da Aventura</label>
+                                    <input type="text" class="form-control form-control-lg" id="title" name="title"
+                                        value="<%= (typeof adventure !== 'undefined' && adventure) ? adventure.title : '' %>"
+                                        required placeholder="Ex: A Jornada dos Números Primos">
+                                </div>
+
+                                <div class="row mb-3">
+                                    <div class="col-md-6">
+                                        <label for="discipline_id" class="form-label fw-bold">Disciplina</label>
+                                        <select class="form-select" id="discipline_id" name="discipline_id" required>
+                                            <option value="">Selecione...</option>
+                                            <% if (typeof disciplines !=='undefined' ) { %>
+                                                <% disciplines.forEach(d=> { %>
+                                                    <option value="<%= d.id %>" <%=(typeof adventure !=='undefined' &&
+                                                        adventure && adventure.discipline_id===d.id) ? 'selected' : ''
+                                                        %>><%= d.name %>
+                                                    </option>
+                                                    <% }); %>
+                                                        <% } %>
+                                        </select>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label for="school_year" class="form-label fw-bold">Ano Escolar</label>
+                                        <select class="form-select" id="school_year" name="school_year" required>
+                                            <option value="">Selecione...</option>
+                                            <% for(let i=1; i<=9; i++) { %>
+                                                <option value="<%= i %>" <%=(typeof adventure !=='undefined' &&
+                                                    adventure && adventure.school_year===i) ? 'selected' : '' %>><%= i
+                                                        %>º Ano</option>
+                                                <% } %>
+                                        </select>
+                                    </div>
+                                </div>
+
+                                <div class="mb-3">
+                                    <label for="description" class="form-label fw-bold">Descrição da Aventura</label>
+                                    <textarea class="form-control" id="description" name="description" rows="3"
+                                        placeholder="Descreva o cenário e o contexto da aventura para os alunos..."><%= (typeof adventure !== 'undefined' && adventure) ? adventure.description : '' %></textarea>
+                                </div>
+
+                                <!-- Configuration -->
+                                <h5 class="fw-bold text-primary mb-3 border-bottom pb-2 mt-4">Configuração e Recompensas
+                                </h5>
+
+                                <div class="row mb-3">
+                                    <div class="col-md-4">
+                                        <label for="difficulty" class="form-label fw-bold">Dificuldade</label>
+                                        <select class="form-select" id="difficulty" name="difficulty">
+                                            <option value="1" <%=(typeof adventure !=='undefined' && adventure &&
+                                                adventure.difficulty===1) ? 'selected' : '' %>>Muito Fácil</option>
+                                            <option value="2" <%=(typeof adventure !=='undefined' && adventure &&
+                                                adventure.difficulty===2) ? 'selected' : '' %>>Fácil</option>
+                                            <option value="3" <%=(typeof adventure !=='undefined' && adventure &&
+                                                adventure.difficulty===3) ? 'selected' : '' %>>Médio</option>
+                                            <option value="4" <%=(typeof adventure !=='undefined' && adventure &&
+                                                adventure.difficulty===4) ? 'selected' : '' %>>Difícil</option>
+                                            <option value="5" <%=(typeof adventure !=='undefined' && adventure &&
+                                                adventure.difficulty===5) ? 'selected' : '' %>>Muito Difícil</option>
+                                        </select>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <label for="xp_reward" class="form-label fw-bold">Recompensa (XP)</label>
+                                        <div class="input-group">
+                                            <span class="input-group-text bg-warning text-dark"><i
+                                                    class="bi bi-star-fill"></i></span>
+                                            <input type="number" class="form-control" id="xp_reward" name="xp_reward"
+                                                value="<%= (typeof adventure !== 'undefined' && adventure) ? adventure.xp_reward : '100' %>">
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <label for="item_reward" class="form-label fw-bold">Item Especial
+                                            (Opcional)</label>
+                                        <input type="text" class="form-control" id="item_reward" name="item_reward"
+                                            value="<%= (typeof adventure !== 'undefined' && adventure) ? adventure.item_reward : '' %>"
+                                            placeholder="Ex: Medalha da Sabedoria">
+                                    </div>
+                                </div>
+
+                                <div class="mb-4">
+                                    <label for="learning_objectives" class="form-label fw-bold">Objetivos de
+                                        Aprendizagem</label>
+                                    <textarea class="form-control" id="learning_objectives" name="learning_objectives"
+                                        rows="2"
+                                        placeholder="O que os alunos vão aprender com esta aventura?"><%= (typeof adventure !== 'undefined' && adventure) ? adventure.learning_objectives : '' %></textarea>
+                                </div>
+
+                                <div class="form-check form-switch mb-4 p-3 bg-light rounded">
+                                    <input class="form-check-input" type="checkbox" role="switch" id="is_active"
+                                        name="is_active" <%=(typeof adventure !=='undefined' && adventure &&
+                                        adventure.is_active) ? 'checked' : '' %>>
+                                    <label class="form-check-label fw-bold ms-2" for="is_active">Aventura Ativa (Visível
+                                        para alunos)</label>
+                                </div>
+
+                                <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                                    <a href="/teacher/adventures" class="btn btn-light border me-md-2">Cancelar</a>
+                                    <button type="submit" class="btn btn-magic px-5">Salvar Aventura</button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+
+        <%- include('../../partials/teacher/footer') %>

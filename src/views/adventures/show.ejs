@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>
+        <%= adventure.title %> - Lutaver
+    </title>
+    <link rel="stylesheet" href="/css/lutaver.css">
+</head>
+
+<body>
+    <%- include('../partials/navbar', { user }) %>
+
+        <div class="dashboard-container">
+            <div class="header">
+                <div style="display: flex; align-items: center; gap: 15px;">
+                    <a href="/adventures" class="btn btn-secondary">← Voltar</a>
+                    <div>
+                        <h1 style="margin: 0;">
+                            <%= adventure.title %>
+                        </h1>
+                        <p style="margin: 5px 0;">Detalhes da Aventura</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card">
+                <div style="display: flex; justify-content: space-between; margin-bottom: 20px;">
+                    <div>
+                        <span class="badge"
+                            style="background: <%= adventure.discipline ? adventure.discipline.color_theme : '#ccc' %>;">
+                            <%= adventure.discipline ? adventure.discipline.name : 'Sem Disciplina' %>
+                        </span>
+                        <span class="badge" style="background: #34D399; color: white;">
+                            <%= adventure.reward_xp %> XP
+                        </span>
+                        <span class="badge" style="background: #F7D046; color: #1A1A1A;">
+                            <%= adventure.school_year %>º Ano
+                        </span>
+                    </div>
+                    <div>
+                        <span class="badge <%= adventure.is_active ? 'badge-active' : 'badge-inactive' %>">
+                            <%= adventure.is_active ? 'Ativa' : 'Inativa' %>
+                        </span>
+                    </div>
+                </div>
+
+                <div style="margin-bottom: 20px;">
+                    <h3>📜 Descrição</h3>
+                    <p style="color: #666; line-height: 1.6;">
+                        <%= adventure.description %>
+                    </p>
+                </div>
+
+                <div style="margin-bottom: 20px;">
+                    <h3>🎯 Objetivos</h3>
+                    <p style="color: #666; line-height: 1.6;">
+                        <%= adventure.objectives %>
+                    </p>
+                </div>
+
+                <% if (adventure.reward_item) { %>
+                    <div style="margin-bottom: 20px;">
+                        <h3>🎁 Recompensa Extra</h3>
+                        <p style="color: #666;">Item: <strong>
+                                <%= adventure.reward_item %>
+                            </strong></p>
+                    </div>
+                    <% } %>
+
+                        <hr style="margin: 30px 0; border: 0; border-top: 1px solid #eee;">
+
+                        <div
+                            style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+                            <h3>🎬 Cenas da Aventura</h3>
+                            <a href="/adventures/<%= adventure.id %>/scenes/new" class="btn btn-primary btn-sm">+ Nova
+                                Cena</a>
+                        </div>
+
+                        <% if (scenes && scenes.length> 0) { %>
+                            <div class="table-container">
+                                <table>
+                                    <thead>
+                                        <tr>
+                                            <th>Ordem</th>
+                                            <th>Título</th>
+                                            <th>NPC</th>
+                                            <th>Tipo</th>
+                                            <th>Ações</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <% scenes.forEach(scene=> { %>
+                                            <tr>
+                                                <td style="text-align: center;"><span class="badge"
+                                                        style="background: #eee; color: #333;">#<%= scene.order_index %>
+                                                            </span></td>
+                                                <td>
+                                                    <strong>
+                                                        <%= scene.title %>
+                                                    </strong>
+                                                    <% if (scene.is_ending) { %>
+                                                        <span class="badge"
+                                                            style="background: #F7D046; color: #1A1A1A; font-size: 10px;">FIM</span>
+                                                        <% } %>
+                                                </td>
+                                                <td>
+                                                    <%= scene.npc_name || '-' %>
+                                                </td>
+                                                <td>
+                                                    <%= scene.test_type || 'Narrativa' %>
+                                                </td>
+                                                <td>
+                                                    <div style="display: flex; gap: 5px;">
+                                                        <a href="/scenes/<%= scene.id %>/edit"
+                                                            class="btn btn-warning btn-sm">✏️</a>
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                            <% }); %>
+                                    </tbody>
+                                </table>
+                            </div>
+                            <% } else { %>
+                                <div
+                                    style="text-align: center; padding: 40px; background: #f9f9f9; border-radius: 8px; color: #999;">
+                                    <p>Nenhuma cena criada para esta aventura ainda.</p>
+                                    <a href="/adventures/<%= adventure.id %>/scenes/new" class="btn btn-primary btn-sm"
+                                        style="margin-top: 10px;">Criar Primeira Cena</a>
+                                </div>
+                                <% } %>
+            </div>
+        </div>
+</body>
+
+</html>

@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Editar Aventura - Lutaver</title>
+    <link rel="stylesheet" href="/css/lutaver.css">
+</head>
+
+<body>
+    <%- include('../partials/navbar', { user }) %>
+
+        <div class="dashboard-container">
+            <div class="header">
+                <h1>🗺️ Editar Aventura</h1>
+                <p>Atualize os dados da aventura <%= adventure.title %>
+                </p>
+            </div>
+
+            <div
+                style="background: white; padding: 30px; border-radius: 10px; box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); max-width: 900px;">
+                <% if (error) { %>
+                    <div class="error-message">
+                        <%= error %>
+                    </div>
+                    <% } %>
+
+                        <form action="/adventures/<%= adventure.id %>" method="POST">
+                            <div class="form-group">
+                                <label for="title">Título da Aventura *</label>
+                                <input type="text" id="title" name="title" value="<%= adventure.title %>" required>
+                            </div>
+
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label for="discipline_id">Disciplina *</label>
+                                    <select id="discipline_id" name="discipline_id" required>
+                                        <option value="">Selecione uma disciplina</option>
+                                        <% disciplines.forEach(d=> { %>
+                                            <option value="<%= d.id %>" <%=adventure.discipline_id===d.id ? 'selected'
+                                                : '' %>>
+                                                <%= d.icon || '📚' %>
+                                                    <%= d.name %>
+                                            </option>
+                                            <% }); %>
+                                    </select>
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="school_year">Ano Escolar *</label>
+                                    <select id="school_year" name="school_year" required>
+                                        <option value="6º ano" <%=adventure.school_year==='6º ano' ? 'selected' : '' %>
+                                            >6º ano</option>
+                                        <option value="7º ano" <%=adventure.school_year==='7º ano' ? 'selected' : '' %>
+                                            >7º ano</option>
+                                        <option value="8º ano" <%=adventure.school_year==='8º ano' ? 'selected' : '' %>
+                                            >8º ano</option>
+                                        <option value="9º ano" <%=adventure.school_year==='9º ano' ? 'selected' : '' %>
+                                            >9º ano</option>
+                                        <option value="1º ano EM" <%=adventure.school_year==='1º ano EM' ? 'selected'
+                                            : '' %>>1º ano EM</option>
+                                        <option value="2º ano EM" <%=adventure.school_year==='2º ano EM' ? 'selected'
+                                            : '' %>>2º ano EM</option>
+                                        <option value="3º ano EM" <%=adventure.school_year==='3º ano EM' ? 'selected'
+                                            : '' %>>3º ano EM</option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label for="difficulty">Dificuldade *</label>
+                                    <select id="difficulty" name="difficulty" required>
+                                        <option value="1" <%=adventure.difficulty===1 ? 'selected' : '' %>>⭐ Muito Fácil
+                                        </option>
+                                        <option value="2" <%=adventure.difficulty===2 ? 'selected' : '' %>>⭐⭐ Fácil
+                                        </option>
+                                        <option value="3" <%=adventure.difficulty===3 ? 'selected' : '' %>>⭐⭐⭐ Médio
+                                        </option>
+                                        <option value="4" <%=adventure.difficulty===4 ? 'selected' : '' %>>⭐⭐⭐⭐ Difícil
+                                        </option>
+                                        <option value="5" <%=adventure.difficulty===5 ? 'selected' : '' %>>⭐⭐⭐⭐⭐ Muito
+                                            Difícil</option>
+                                    </select>
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="reward_xp">Recompensa XP *</label>
+                                    <input type="number" id="reward_xp" name="reward_xp"
+                                        value="<%= adventure.reward_xp %>" required min="1">
+                                    <small style="color: #666;">XP ganho ao completar a aventura</small>
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="description">Descrição</label>
+                                <textarea id="description" name="description"
+                                    rows="3"><%= adventure.description || '' %></textarea>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="objectives">Objetivos de Aprendizagem</label>
+                                <textarea id="objectives" name="objectives"
+                                    rows="3"><%= adventure.objectives || '' %></textarea>
+                                <small style="color: #666;">O que o aluno aprenderá ao completar esta aventura?</small>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="reward_item">Item de Recompensa (Opcional)</label>
+                                <input type="text" id="reward_item" name="reward_item"
+                                    value="<%= adventure.reward_item || '' %>">
+                                <small style="color: #666;">Item especial que o jogador ganha ao completar</small>
+                            </div>
+
+                            <div class="form-group">
+                                <div class="checkbox-group">
+                                    <input type="checkbox" id="is_active" name="is_active" <%=adventure.is_active
+                                        ? 'checked' : '' %>>
+                                    <label for="is_active" style="margin: 0;">Aventura ativa?</label>
+                                </div>
+                            </div>
+
+                            <div style="display: flex; gap: 10px; margin-top: 30px;">
+                                <button type="submit" class="btn btn-success">Salvar Alterações</button>
+                                <a href="/adventures" class="btn btn-secondary">Cancelar</a>
+                            </div>
+                        </form>
+            </div>
+        </div>
+</body>
+
+</html>

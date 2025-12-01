@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Disciplinas - Lutaver</title>
+    <link rel="stylesheet" href="/css/lutaver.css">
+</head>
+
+<body>
+    <%- include('../partials/navbar', { user }) %>
+
+        <div class="dashboard-container">
+            <div class="header">
+                <h1>📚 Gerenciar Disciplinas</h1>
+                <p>Gerencie as disciplinas disponíveis no sistema Lutaver</p>
+            </div>
+
+            <div style="margin-bottom: 20px;">
+                <a href="/disciplines/new" class="btn btn-primary">+ Nova Disciplina</a>
+            </div>
+
+            <div class="table-container">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Ícone</th>
+                            <th>Código</th>
+                            <th>Nome</th>
+                            <th>Nível Escolar</th>
+                            <th>Cor Tema</th>
+                            <th>Status</th>
+                            <th>Ações</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <% if (disciplines.length===0) { %>
+                            <tr>
+                                <td colspan="7" style="text-align: center; padding: 40px; color: #999;">
+                                    Nenhuma disciplina cadastrada
+                                </td>
+                            </tr>
+                            <% } else { %>
+                                <% disciplines.forEach(d=> { %>
+                                    <tr>
+                                        <td style="font-size: 24px;">
+                                            <%= d.icon || '📚' %>
+                                        </td>
+                                        <td><strong>
+                                                <%= d.code %>
+                                            </strong></td>
+                                        <td>
+                                            <%= d.name %>
+                                        </td>
+                                        <td>
+                                            <% if (d.school_level==='fundamental_1' ) { %>
+                                                Fundamental I (1º-5º)
+                                                <% } else if (d.school_level==='fundamental_2' ) { %>
+                                                    Fundamental II (6º-9º)
+                                                    <% } else { %>
+                                                        Ensino Médio
+                                                        <% } %>
+                                        </td>
+                                        <td>
+                                            <div style="display: flex; align-items: center; gap: 10px;">
+                                                <div
+                                                    style="width: 30px; height: 30px; background: <%= d.color_theme %>; border-radius: 5px; border: 2px solid #ddd;">
+                                                </div>
+                                                <code><%= d.color_theme %></code>
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <span class="badge <%= d.is_active ? 'badge-active' : 'badge-inactive' %>">
+                                                <%= d.is_active ? 'Ativa' : 'Inativa' %>
+                                            </span>
+                                        </td>
+                                        <td>
+                                            <div style="display: flex; gap: 5px;">
+                                                <a href="/disciplines/<%= d.id %>/edit"
+                                                    class="btn btn-warning btn-sm">Editar</a>
+                                                <form action="/disciplines/<%= d.id %>/delete" method="POST"
+                                                    style="display: inline;"
+                                                    onsubmit="return confirm('Tem certeza que deseja excluir esta disciplina?');">
+                                                    <button type="submit" class="btn btn-danger btn-sm">Excluir</button>
+                                                </form>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    <% }); %>
+                                        <% } %>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+</body>
+
+</html>

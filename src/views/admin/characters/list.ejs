@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin - Personagens - Lutaver</title>
+    <link rel="stylesheet" href="/css/lutaver.css">
+</head>
+
+<body>
+    <%- include('../../partials/navbar', { user }) %>
+
+        <div class="dashboard-container">
+            <div class="header">
+                <h1>🛡️ Admin: Todos os Personagens</h1>
+                <p>Gerenciamento global de heróis</p>
+            </div>
+
+            <div
+                style="background: white; padding: 20px; border-radius: 10px; box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);">
+                <table style="width: 100%; border-collapse: collapse;">
+                    <thead>
+                        <tr style="background: #f8f9fa; border-bottom: 2px solid #e9ecef;">
+                            <th style="padding: 12px; text-align: left;">ID</th>
+                            <th style="padding: 12px; text-align: left;">Nome</th>
+                            <th style="padding: 12px; text-align: left;">Dono</th>
+                            <th style="padding: 12px; text-align: left;">Série</th>
+                            <th style="padding: 12px; text-align: left;">Nível</th>
+                            <th style="padding: 12px; text-align: left;">Ações</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <% characters.forEach(char=> { %>
+                            <tr style="border-bottom: 1px solid #eee;">
+                                <td style="padding: 12px;">
+                                    <%= char.id %>
+                                </td>
+                                <td style="padding: 12px;"><strong>
+                                        <%= char.name %>
+                                    </strong></td>
+                                <td style="padding: 12px;">
+                                    <%= char.user ? char.user.name : 'Sistema' %>
+                                </td>
+                                <td style="padding: 12px;">
+                                    <%= char.school_year %>º
+                                </td>
+                                <td style="padding: 12px;">
+                                    <%= char.level %>
+                                </td>
+                                <td style="padding: 12px;">
+                                    <form action="/admin/characters/<%= char.id %>/delete" method="POST"
+                                        style="display: inline;"
+                                        onsubmit="return confirm('Excluir personagem permanentemente?');">
+                                        <button type="submit" class="btn btn-danger btn-sm">Excluir</button>
+                                    </form>
+                                </td>
+                            </tr>
+                            <% }); %>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+</body>
+
+</html>

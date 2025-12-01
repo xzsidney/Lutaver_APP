@@ -1,0 +1,158 @@
+<%- include('../partials/teacher/header') %>
+    <%- include('../partials/teacher/navbar') %>
+
+        <main class="container mb-5">
+            <div class="row align-items-center mb-4">
+                <div class="col-md-8">
+                    <h1 class="fw-bold text-primary">Painel do Professor</h1>
+                    <p class="text-muted fs-5">Olá, Prof. <%= user.name %>! Aqui está o resumo das suas atividades.</p>
+                </div>
+                <div class="col-md-4 text-md-end">
+                    <a href="/teacher/adventures/new" class="btn btn-magic shadow-sm">
+                        <i class="bi bi-plus-lg me-2"></i>Nova Aventura
+                    </a>
+                </div>
+            </div>
+
+            <!-- Stats Cards -->
+            <div class="row g-4 mb-5">
+                <!-- Adventures Count -->
+                <div class="col-md-6 col-lg-3">
+                    <div class="card card-custom h-100 border-start border-4 border-primary">
+                        <div class="card-body">
+                            <div class="d-flex align-items-center justify-content-between mb-3">
+                                <div class="bg-primary bg-opacity-10 p-3 rounded-circle text-primary">
+                                    <i class="bi bi-map fs-4"></i>
+                                </div>
+                                <span class="badge bg-primary rounded-pill">Total</span>
+                            </div>
+                            <h2 class="fw-bold mb-0">
+                                <%= stats.adventuresCount || 0 %>
+                            </h2>
+                            <p class="text-muted small mb-3">Aventuras Criadas</p>
+                            <a href="/teacher/adventures"
+                                class="btn btn-sm btn-outline-primary w-100 stretched-link">Ver Detalhes</a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Questions Count -->
+                <div class="col-md-6 col-lg-3">
+                    <div class="card card-custom h-100 border-start border-4 border-warning">
+                        <div class="card-body">
+                            <div class="d-flex align-items-center justify-content-between mb-3">
+                                <div class="bg-warning bg-opacity-10 p-3 rounded-circle text-warning">
+                                    <i class="bi bi-question-lg fs-4"></i>
+                                </div>
+                                <span class="badge bg-warning text-dark rounded-pill">Total</span>
+                            </div>
+                            <h2 class="fw-bold mb-0">
+                                <%= stats.questionsCount || 0 %>
+                            </h2>
+                            <p class="text-muted small mb-3">Questões Cadastradas</p>
+                            <a href="/teacher/questions"
+                                class="btn btn-sm btn-outline-warning text-dark w-100 stretched-link">Gerenciar</a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Students Count -->
+                <div class="col-md-6 col-lg-3">
+                    <div class="card card-custom h-100 border-start border-4 border-success">
+                        <div class="card-body">
+                            <div class="d-flex align-items-center justify-content-between mb-3">
+                                <div class="bg-success bg-opacity-10 p-3 rounded-circle text-success">
+                                    <i class="bi bi-people fs-4"></i>
+                                </div>
+                                <span class="badge bg-success rounded-pill">Ativos</span>
+                            </div>
+                            <h2 class="fw-bold mb-0">
+                                <%= stats.studentsCount || 0 %>
+                            </h2>
+                            <p class="text-muted small mb-3">Alunos Acompanhados</p>
+                            <a href="/teacher/reports/students"
+                                class="btn btn-sm btn-outline-success w-100 stretched-link">Ver Desempenho</a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Quizzes Count -->
+                <div class="col-md-6 col-lg-3">
+                    <div class="card card-custom h-100 border-start border-4 border-info">
+                        <div class="card-body">
+                            <div class="d-flex align-items-center justify-content-between mb-3">
+                                <div class="bg-info bg-opacity-10 p-3 rounded-circle text-info">
+                                    <i class="bi bi-check2-circle fs-4"></i>
+                                </div>
+                                <span class="badge bg-info text-dark rounded-pill">Engajamento</span>
+                            </div>
+                            <h2 class="fw-bold mb-0">
+                                <%= stats.quizzesCount || 0 %>
+                            </h2>
+                            <p class="text-muted small mb-3">Quizzes Respondidos</p>
+                            <a href="/teacher/reports/adventures"
+                                class="btn btn-sm btn-outline-info text-dark w-100 stretched-link">Relatórios</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Quick Actions / Recent Activity Placeholder -->
+            <div class="row">
+                <div class="col-lg-8">
+                    <div class="card card-custom mb-4">
+                        <div class="card-header bg-white py-3 border-bottom-0">
+                            <h5 class="fw-bold mb-0 text-primary"><i class="bi bi-clock-history me-2"></i>Atividades
+                                Recentes</h5>
+                        </div>
+                        <div class="card-body pt-0">
+                            <div class="list-group list-group-flush">
+                                <!-- Placeholder items -->
+                                <div class="list-group-item px-0 py-3 d-flex align-items-center">
+                                    <div class="bg-light rounded p-2 me-3 text-primary"><i
+                                            class="bi bi-pencil-square"></i></div>
+                                    <div class="flex-grow-1">
+                                        <h6 class="mb-0 fw-bold">Nova questão adicionada</h6>
+                                        <small class="text-muted">Matemática - Frações</small>
+                                    </div>
+                                    <small class="text-muted">Hoje</small>
+                                </div>
+                                <div class="list-group-item px-0 py-3 d-flex align-items-center">
+                                    <div class="bg-light rounded p-2 me-3 text-success"><i class="bi bi-trophy"></i>
+                                    </div>
+                                    <div class="flex-grow-1">
+                                        <h6 class="mb-0 fw-bold">Aluno completou uma aventura</h6>
+                                        <small class="text-muted">João Silva - A Floresta dos Números</small>
+                                    </div>
+                                    <small class="text-muted">Ontem</small>
+                                </div>
+                                <div class="list-group-item px-0 py-3 d-flex align-items-center">
+                                    <div class="bg-light rounded p-2 me-3 text-warning"><i class="bi bi-star"></i></div>
+                                    <div class="flex-grow-1">
+                                        <h6 class="mb-0 fw-bold">Aventura publicada</h6>
+                                        <small class="text-muted">História - Revolução Industrial</small>
+                                    </div>
+                                    <small class="text-muted">2 dias atrás</small>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-4">
+                    <div class="card card-custom bg-primary text-white h-100">
+                        <div class="card-body p-4 position-relative overflow-hidden">
+                            <div class="position-absolute top-0 end-0 opacity-25 translate-middle-y me-n3 mt-3">
+                                <i class="bi bi-lightbulb fs-1" style="font-size: 8rem !important;"></i>
+                            </div>
+                            <h4 class="fw-bold mb-3">Dica do Dia</h4>
+                            <p class="mb-4 opacity-75">Gamificação aumenta o engajamento! Tente criar aventuras com
+                                narrativas envolventes para motivar seus alunos a resolverem mais questões.</p>
+                            <a href="/teacher/adventures/new" class="btn btn-light text-primary fw-bold w-100">Criar
+                                Nova Aventura</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+
+        <%- include('../partials/teacher/footer') %>

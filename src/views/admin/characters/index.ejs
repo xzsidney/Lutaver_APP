@@ -1,0 +1,79 @@
+<%- include('../../partials/admin/header') %>
+    <%- include('../../partials/admin/navbar', { page: 'characters' }) %>
+
+        <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4 main-content">
+            <div
+                class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+                <h1 class="h2 text-primary fw-bold">Gerenciar Personagens</h1>
+            </div>
+
+            <div class="card card-custom">
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table table-hover table-custom align-middle">
+                            <thead>
+                                <tr>
+                                    <th>Nome</th>
+                                    <th>Jogador (Dono)</th>
+                                    <th>Nível</th>
+                                    <th>Ano Escolar</th>
+                                    <th>XP</th>
+                                    <th>Ações</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <% if (characters.length===0) { %>
+                                    <tr>
+                                        <td colspan="6" class="text-center py-4 text-muted">
+                                            Nenhum personagem encontrado.
+                                        </td>
+                                    </tr>
+                                    <% } else { %>
+                                        <% characters.forEach(char=> { %>
+                                            <tr>
+                                                <td class="fw-bold">
+                                                    <%= char.name %>
+                                                </td>
+                                                <td>
+                                                    <% if (char.user) { %>
+                                                        <%= char.user.name %> <small class="text-muted">(<%=
+                                                                    char.user.email %>)</small>
+                                                            <% } else { %>
+                                                                <span class="text-muted">Sem dono</span>
+                                                                <% } %>
+                                                </td>
+                                                <td><span class="badge bg-info text-dark">Lvl <%= char.level %></span>
+                                                </td>
+                                                <td>
+                                                    <%= char.school_year %>º Ano
+                                                </td>
+                                                <td>
+                                                    <%= char.experience %> XP
+                                                </td>
+                                                <td>
+                                                    <div class="btn-group btn-group-sm">
+                                                        <a href="/admin/characters/<%= char.id %>"
+                                                            class="btn btn-outline-info" title="Ver Ficha Completa">
+                                                            <i class="bi bi-eye"></i>
+                                                        </a>
+                                                        <form action="/admin/characters/<%= char.id %>/delete"
+                                                            method="POST" class="d-inline"
+                                                            onsubmit="return confirm('Tem certeza que deseja excluir este personagem? Esta ação não pode ser desfeita.');">
+                                                            <button type="submit" class="btn btn-outline-danger"
+                                                                title="Excluir">
+                                                                <i class="bi bi-trash"></i>
+                                                            </button>
+                                                        </form>
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                            <% }); %>
+                                                <% } %>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </main>
+
+        <%- include('../../partials/admin/footer') %>

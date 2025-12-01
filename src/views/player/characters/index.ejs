@@ -1,0 +1,67 @@
+<%- include('../../partials/header') %>
+    <%- include('../../partials/navbar') %>
+
+        <div class="container mt-4">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <h1 class="display-6 fw-bold text-primary">Meus Personagens</h1>
+                <a href="/my/characters/new" class="btn btn-magic">
+                    <i class="bi bi-plus-circle"></i> Novo Personagem
+                </a>
+            </div>
+
+            <% if (characters.length===0) { %>
+                <div class="alert alert-info text-center py-5">
+                    <h4 class="alert-heading">Você ainda não tem personagens!</h4>
+                    <p>Crie seu primeiro personagem para começar a jogar.</p>
+                    <a href="/my/characters/new" class="btn btn-primary mt-3">Criar Personagem</a>
+                </div>
+                <% } else { %>
+                    <div class="row">
+                        <% characters.forEach(char=> { %>
+                            <div class="col-md-4 mb-4">
+                                <div class="card h-100 shadow-sm card-custom">
+                                    <div class="card-body text-center">
+                                        <div class="mb-3">
+                                            <div
+                                                style="width: 80px; height: 80px; background-color: #eee; border-radius: 50%; margin: 0 auto; display: flex; align-items: center; justify-content: center; font-size: 2rem;">
+                                                👤
+                                            </div>
+                                        </div>
+                                        <h5 class="card-title fw-bold">
+                                            <%= char.name %>
+                                        </h5>
+                                        <p class="card-text text-muted">
+                                            <%= char.school_year %>º Ano
+                                        </p>
+                                        <div class="d-flex justify-content-center gap-2 mb-3">
+                                            <span class="badge bg-warning text-dark">Nível <%= char.level %></span>
+                                            <span class="badge bg-info text-dark">
+                                                <%= char.experience %> XP
+                                            </span>
+                                        </div>
+                                        <a href="/my/characters/<%= char.id %>" class="btn btn-outline-primary w-100">
+                                            <i class="bi bi-play-circle"></i> Jogar / Ver Ficha
+                                        </a>
+                                    </div>
+                                    <div class="card-footer bg-white border-top-0 d-flex justify-content-between">
+                                        <a href="/my/characters/<%= char.id %>/edit"
+                                            class="btn btn-sm btn-link text-secondary text-decoration-none">
+                                            <i class="bi bi-pencil"></i> Editar
+                                        </a>
+                                        <form action="/my/characters/<%= char.id %>/delete" method="POST"
+                                            class="d-inline"
+                                            onsubmit="return confirm('Tem certeza que deseja excluir este personagem?');">
+                                            <button type="submit"
+                                                class="btn btn-sm btn-link text-danger text-decoration-none">
+                                                <i class="bi bi-trash"></i> Excluir
+                                            </button>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                            <% }); %>
+                    </div>
+                    <% } %>
+        </div>
+
+        <%- include('../../partials/footer') %>

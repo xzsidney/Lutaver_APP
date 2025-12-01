@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Acesso Negado - Lutaver</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            /* Azul Mágico #1E90FF para fundo */
+            background: linear-gradient(135deg, #1E90FF 0%, #0066CC 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .error-container {
+            /* Branco Radiante #FFFFFF */
+            background: #FFFFFF;
+            padding: 50px;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            text-align: center;
+            max-width: 500px;
+            width: 100%;
+            /* Borda com Amarelo Faísca #F7D046 */
+            border-top: 5px solid #F7D046;
+        }
+
+        .error-icon {
+            font-size: 80px;
+            margin-bottom: 20px;
+        }
+
+        .error-title {
+            color: #e74c3c;
+            font-size: 32px;
+            margin-bottom: 15px;
+            font-weight: 700;
+        }
+
+        .error-message {
+            color: #555;
+            font-size: 16px;
+            margin-bottom: 10px;
+            line-height: 1.6;
+        }
+
+        .error-details {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 20px 0;
+            font-size: 14px;
+            color: #666;
+            /* Borda com Amarelo Faísca #F7D046 */
+            border-left: 4px solid #F7D046;
+        }
+
+        .error-details strong {
+            color: #333;
+        }
+
+        .btn-home {
+            display: inline-block;
+            padding: 14px 30px;
+            /* Verde Energia #34D399 para ação positiva */
+            background: #34D399;
+            color: white;
+            text-decoration: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            margin-top: 20px;
+            transition: all 0.3s;
+        }
+
+        .btn-home:hover {
+            transform: translateY(-2px);
+            /* Amarelo Faísca #F7D046 para hover */
+            background: #F7D046;
+            color: #1A1A1A;
+            box-shadow: 0 5px 15px rgba(247, 208, 70, 0.4);
+        }
+
+        .btn-logout {
+            display: inline-block;
+            padding: 12px 25px;
+            /* Azul Mágico #1E90FF */
+            background: #1E90FF;
+            color: white;
+            text-decoration: none;
+            border-radius: 8px;
+            font-size: 14px;
+            margin-top: 10px;
+            margin-left: 10px;
+            transition: all 0.3s;
+        }
+
+        .btn-logout:hover {
+            /* Amarelo Faísca #F7D046 para hover */
+            background: #F7D046;
+            color: #1A1A1A;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="error-container">
+        <div class="error-icon">🚫</div>
+        <h1 class="error-title">Acesso Negado</h1>
+        <p class="error-message">
+            Você não tem permissão para acessar esta área do sistema.
+        </p>
+
+        <div class="error-details">
+            <strong>Seu perfil:</strong>
+            <%= user.role==='admin' ? 'Administrador' : user.role==='teacher' ? 'Professor' : 'Jogador' %>
+                <br>
+                <strong>Perfis necessários:</strong>
+                <%= requiredRoles.map(r=> r === 'admin' ? 'Administrador' : r === 'teacher' ? 'Professor' :
+                    'Jogador').join(', ') %>
+        </div>
+
+        <p class="error-message">
+            Entre em contato com um administrador se você acredita que deveria ter acesso a esta página.
+        </p>
+
+        <div>
+            <a href="/dashboard" class="btn-home">Voltar para o Início</a>
+            <a href="/logout" class="btn-logout">Sair</a>
+        </div>
+    </div>
+</body>
+
+</html>
