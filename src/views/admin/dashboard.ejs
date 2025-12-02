@@ -84,6 +84,29 @@
                     </div>
                 </div>
 
+                <!-- Scenes Card -->
+                <div class="col-xl-3 col-md-6">
+                    <div class="card card-custom h-100 border-start border-4 border-info">
+                        <div class="card-body">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <div>
+                                    <div class="text-uppercase text-muted small fw-bold mb-1">Cenas</div>
+                                    <div class="h3 mb-0 fw-bold text-dark">
+                                        <%= stats.scenesCount || 0 %>
+                                    </div>
+                                </div>
+                                <div class="fs-1 text-info opacity-25">
+                                    <i class="bi bi-question-circle-fill"></i>
+                                </div>
+                            </div>
+                            <div class="mt-3">
+                                <a href="/admin/scenes" class="btn btn-sm btn-light text-info w-100">Gerenciar <i
+                                        class="bi bi-arrow-right"></i></a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
                 <!-- Questions Card -->
                 <div class="col-xl-3 col-md-6">
                     <div class="card card-custom h-100 border-start border-4 border-info">
@@ -130,6 +153,31 @@
                         </div>
                     </div>
                 </div>
+                <!-- NPCs Card -->
+                <div class="col-xl-3 col-md-6">
+                    <div class="card card-custom h-100 border-start border-4 border-indigo"
+                        style="border-color: #6610f2 !important;">
+                        <div class="card-body">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <div>
+                                    <div class="text-uppercase text-muted small fw-bold mb-1">NPCs</div>
+                                    <div class="h3 mb-0 fw-bold text-dark">
+                                        <%= stats.npcsCount || 0 %>
+                                    </div>
+                                </div>
+                                <div class="fs-1 text-indigo opacity-25" style="color: #6610f2 !important;">
+                                    <i class="bi bi-person-vcard-fill"></i>
+                                </div>
+                            </div>
+                            <div class="mt-3">
+                                <a href="/admin/npcs" class="btn btn-sm btn-light text-indigo w-100"
+                                    style="color: #6610f2 !important;">Gerenciar <i class="bi bi-arrow-right"></i></a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+
             </div>
 
             <!-- Recent Activity / Quick Actions -->
@@ -154,6 +202,11 @@
                                     style="color: #6f42c1; border-color: #6f42c1;">
                                     <i class="bi bi-lightning-charge"></i> Novo Poder
                                 </a>
+                                <a href="/admin/npcs/new" class="btn btn-outline-indigo"
+                                    style="color: #6610f2; border-color: #6610f2;">
+                                    <i class="bi bi-person-plus-fill"></i> Novo NPC
+                                </a>
+
                             </div>
                         </div>
                     </div>

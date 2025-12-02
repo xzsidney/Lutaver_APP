@@ -16,7 +16,7 @@ const adminCharacterRoutes = require('./adminCharacterRoutes');
 
 router.use('/', authRoutes);
 router.use('/', dashboardRoutes);
-router.use('/users', userRoutes);
+router.use('/admin/users', userRoutes);
 
 // Protected routes
 router.use('/admin/questions', questionRoutes);

@@ -5,6 +5,7 @@ const Scene = require('../models/Scene');
 const Question = require('../models/Question');
 const Character = require('../models/Character');
 const Power = require('../models/Power');
+const Npc = require('../models/Npc');
 
 const DashboardController = {
     /**
@@ -37,7 +38,8 @@ const DashboardController = {
                 scenesCount: await Scene.count(),
                 questionsCount: await Question.count(),
                 charactersCount: await Character.count(),
-                powersCount: await Power.count()
+                powersCount: await Power.count(),
+                npcsCount: await Npc.count()
             };
 
             res.render('admin/dashboard', {
