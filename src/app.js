@@ -154,6 +154,35 @@ CharacterItem.belongsTo(Item, { foreignKey: 'item_id', as: 'item' });
 Item.hasMany(CharacterItem, { foreignKey: 'item_id' });
 
 
+// Narrative Story System
+const Story = require('./models/Story');
+const StoryScene = require('./models/StoryScene');
+const StoryChoice = require('./models/StoryChoice');
+
+// Story <-> StoryScene
+Story.hasMany(StoryScene, { foreignKey: 'story_id', as: 'scenes' });
+StoryScene.belongsTo(Story, { foreignKey: 'story_id', as: 'story' });
+
+// StoryScene <-> StoryChoice
+StoryScene.hasMany(StoryChoice, { foreignKey: 'story_scene_id', as: 'choices' });
+StoryChoice.belongsTo(StoryScene, { foreignKey: 'story_scene_id', as: 'scene' });
+
+// StoryScene Self-referencing (Success/Failure scenes)
+StoryScene.belongsTo(StoryScene, { foreignKey: 'success_scene_id', as: 'successScene' });
+StoryScene.belongsTo(StoryScene, { foreignKey: 'failure_scene_id', as: 'failureScene' });
+
+// StoryChoice -> StoryScene (Next scene)
+StoryChoice.belongsTo(StoryScene, { foreignKey: 'next_scene_id', as: 'nextScene' });
+StoryChoice.belongsTo(StoryScene, { foreignKey: 'success_scene_id', as: 'successScene' });
+StoryChoice.belongsTo(StoryScene, { foreignKey: 'failure_scene_id', as: 'failureScene' });
+
+// Story <-> Item (Reward)
+Story.belongsTo(Item, { foreignKey: 'reward_item_id', as: 'rewardItem' });
+
+// StoryScene <-> NPC
+StoryScene.belongsTo(require('./models/Npc'), { foreignKey: 'npc_id', as: 'npc' });
+
+
 // Routes
 app.use('/', routes);
 
@@ -161,7 +190,8 @@ app.use('/', routes);
 sequelize.sync() // Removed { alter: true } to prevent ER_TOO_MANY_KEYS error on disciplines table
     .then(() => {
         console.log('✅ Database connected and synchronized');
-        app.listen(PORT, () => {
+        const HOST = process.env.HOST || '0.0.0.0';
+        app.listen(PORT, HOST, () => {
             console.log(`🚀 Server running on http://localhost:${PORT}`);
             console.log(`🎮 Lutaver is ready!`);
         });

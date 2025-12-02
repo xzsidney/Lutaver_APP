@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>História Concluída - Lutaver</title>
+    <link rel="stylesheet" href="/css/lutaver.css">
+</head>
+
+<body>
+    <%- include('../../partials/navbar', { user }) %>
+
+        <div class="dashboard-container">
+            <div class="header">
+                <h1>🎉 História Concluída!</h1>
+                <p>Parabéns, <strong>
+                        <%= character.name %>
+                    </strong>!</p>
+            </div>
+
+            <div
+                style="background: white; padding: 40px; border-radius: 10px; box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); text-align: center; max-width: 800px; margin: 0 auto; border-top: 5px solid #34D399;">
+                <h2 style="color: #34D399; margin-bottom: 20px;">
+                    <%= story.title %>
+                </h2>
+
+                <p style="font-size: 18px; color: #666; margin-bottom: 40px;">
+                    Você completou esta aventura com sucesso.
+                </p>
+
+                <h3 style="color: #333; margin-bottom: 20px;">Recompensas Recebidas</h3>
+
+                <div
+                    style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px; margin-bottom: 40px;">
+                    <div style="background: #FFFBEB; padding: 20px; border-radius: 8px; border: 2px solid #F7D046;">
+                        <div style="font-size: 30px; margin-bottom: 10px;">⭐</div>
+                        <h4 style="margin: 0; color: #B45309;">XP</h4>
+                        <p style="font-size: 24px; font-weight: bold; margin: 0; color: #333;">+<%= story.reward_xp %>
+                        </p>
+                    </div>
+
+                    <div style="background: #FFFBEB; padding: 20px; border-radius: 8px; border: 2px solid #F7D046;">
+                        <div style="font-size: 30px; margin-bottom: 10px;">💰</div>
+                        <h4 style="margin: 0; color: #B45309;">Moedas</h4>
+                        <p style="font-size: 24px; font-weight: bold; margin: 0; color: #333;">+<%= story.reward_coins
+                                %>
+                        </p>
+                    </div>
+
+                    <% if (rewardItemName) { %>
+                        <div style="background: #ECFDF5; padding: 20px; border-radius: 8px; border: 2px solid #34D399;">
+                            <div style="font-size: 30px; margin-bottom: 10px;">🎁</div>
+                            <h4 style="margin: 0; color: #047857;">Item</h4>
+                            <p style="font-size: 18px; font-weight: bold; margin: 0; color: #333;">
+                                <%= rewardItemName %>
+                            </p>
+                        </div>
+                        <% } %>
+                </div>
+
+                <div style="display: flex; gap: 15px; justify-content: center;">
+                    <a href="/stories" class="btn btn-secondary btn-large">
+                        📖 Outras Histórias
+                    </a>
+                    <a href="/player/dashboard" class="btn btn-primary btn-large">
+                        🏠 Voltar ao Painel
+                    </a>
+                </div>
+            </div>
+        </div>
+</body>
+
+</html>

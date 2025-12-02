@@ -53,6 +53,10 @@ router.use('/teacher', teacherRoutes);
 
 router.use('/admin', sceneRoutes); // Scenes are nested under adventures but also have global routes
 
+// Story Routes (Narrative System)
+const storyRoutes = require('./storyRoutes');
+router.use('/stories', storyRoutes);
+
 // Root route - Landing Page
 router.get('/', (req, res) => {
     res.sendFile(path.join(__dirname, '../public/landing.html'));
