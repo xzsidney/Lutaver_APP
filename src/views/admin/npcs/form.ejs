@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>
+        <%= npc ? 'Editar NPC' : 'Novo NPC' %> - Lutaver
+    </title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.7.2/font/bootstrap-icons.css">
+</head>
+
+<body>
+    <%- include('../../partials/navbar') %>
+
+        <div class="container mt-4 mb-5">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <h1>
+                    <%= npc ? 'Editar NPC' : 'Novo NPC' %>
+                </h1>
+                <a href="/admin/npcs" class="btn btn-outline-secondary">
+                    <i class="bi bi-arrow-left"></i> Voltar
+                </a>
+            </div>
+
+            <form action="/admin/npcs<%= npc ? '/' + npc.id : '' %>" method="POST">
+
+                <!-- Navegação por Abas -->
+                <ul class="nav nav-tabs mb-4" id="npcTabs" role="tablist">
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link active" id="identity-tab" data-bs-toggle="tab"
+                            data-bs-target="#identity" type="button" role="tab">🟦 Identidade</button>
+                    </li>
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link" id="role-tab" data-bs-toggle="tab" data-bs-target="#role" type="button"
+                            role="tab">🟩 Função</button>
+                    </li>
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link" id="stats-tab" data-bs-toggle="tab" data-bs-target="#stats"
+                            type="button" role="tab">🟧 Características</button>
+                    </li>
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link" id="dialogue-tab" data-bs-toggle="tab" data-bs-target="#dialogue"
+                            type="button" role="tab">🟨 Diálogos</button>
+                    </li>
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link" id="integration-tab" data-bs-toggle="tab" data-bs-target="#integration"
+                            type="button" role="tab">🟥 Integrações</button>
+                    </li>
+                </ul>
+
+                <div class="tab-content" id="npcTabsContent">
+
+                    <!-- BLOCO 01: IDENTIDADE -->
+                    <div class="tab-pane fade show active" id="identity" role="tabpanel">
+                        <div class="card p-4">
+                            <div class="row g-3">
+                                <div class="col-md-6">
+                                    <label class="form-label">Nome do NPC *</label>
+                                    <input type="text" class="form-control" name="name"
+                                        value="<%= npc ? npc.name : '' %>" required>
+                                </div>
+                                <div class="col-md-3">
+                                    <label class="form-label">Tipo *</label>
+                                    <select class="form-select" name="type" required>
+                                        <option value="teacher" <%=npc && npc.type==='teacher' ? 'selected' : '' %>
+                                            >Professor</option>
+                                        <option value="student" <%=npc && npc.type==='student' ? 'selected' : '' %>
+                                            >Aluno</option>
+                                        <option value="staff" <%=npc && npc.type==='staff' ? 'selected' : '' %>
+                                            >Funcionário</option>
+                                        <option value="boss" <%=npc && npc.type==='boss' ? 'selected' : '' %>>Boss
+                                        </option>
+                                        <option value="npc" <%=npc && npc.type==='npc' ? 'selected' : '' %>
+                                            >Figurante/Outro</option>
+                                    </select>
+                                </div>
+                                <div class="col-md-3">
+                                    <label class="form-label">Local *</label>
+                                    <input type="text" class="form-control" name="location"
+                                        value="<%= npc ? npc.location : '' %>" required placeholder="Ex: Biblioteca">
+                                </div>
+
+                                <div class="col-md-4">
+                                    <label class="form-label">Disciplina (se Professor)</label>
+                                    <input type="text" class="form-control" name="subject"
+                                        value="<%= npc ? npc.subject : '' %>">
+                                </div>
+                                <div class="col-md-4">
+                                    <label class="form-label">Série/Ano</label>
+                                    <input type="text" class="form-control" name="grade_level"
+                                        value="<%= npc ? npc.grade_level : '' %>" placeholder="Ex: 1º Ano">
+                                </div>
+                                <div class="col-md-4">
+                                    <label class="form-label">Personalidade</label>
+                                    <input type="text" class="form-control" name="personality"
+                                        value="<%= npc ? npc.personality : '' %>" placeholder="Ex: Severo, Alegre">
+                                </div>
+
+                                <div class="col-md-12">
+                                    <label class="form-label">Avatar (URL)</label>
+                                    <input type="text" class="form-control" name="avatar"
+                                        value="<%= npc ? npc.avatar : '' %>" placeholder="http://...">
+                                </div>
+
+                                <div class="col-md-12">
+                                    <label class="form-label">Descrição Curta (1 linha) *</label>
+                                    <input type="text" class="form-control" name="short_description"
+                                        value="<%= npc ? npc.short_description : '' %>" required>
+                                </div>
+                                <div class="col-md-12">
+                                    <label class="form-label">Descrição Longa / Bio</label>
+                                    <textarea class="form-control" name="long_description"
+                                        rows="4"><%= npc ? npc.long_description : '' %></textarea>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- BLOCO 02: FUNÇÃO -->
+                    <div class="tab-pane fade" id="role" role="tabpanel">
+                        <div class="card p-4">
+                            <div class="row g-3">
+                                <div class="col-md-12">
+                                    <label class="form-label">Papéis no Jogo (Flags)</label>
+                                    <div class="form-text mb-2">Separe por vírgula: quest_giver, shop, quiz, boss</div>
+                                    <input type="text" class="form-control" name="role_flags"
+                                        value="<%= npc ? npc.role_flags : '' %>">
+                                </div>
+
+                                <div class="col-md-6">
+                                    <label class="form-label">Zona do Mapa *</label>
+                                    <input type="text" class="form-control" name="map_zone"
+                                        value="<%= npc ? npc.map_zone : '' %>" required
+                                        placeholder="Ex: corredor_térreo">
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label">Disciplina Principal (Quiz)</label>
+                                    <input type="text" class="form-control" name="main_discipline"
+                                        value="<%= npc ? npc.main_discipline : '' %>">
+                                </div>
+
+                                <div class="col-md-6">
+                                    <label class="form-label">ID da Loja (se vendedor)</label>
+                                    <input type="number" class="form-control" name="shop_id"
+                                        value="<%= npc ? npc.shop_id : '' %>">
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label">IDs de Aventuras que Inicia</label>
+                                    <input type="text" class="form-control" name="starts_adventure_ids"
+                                        value="<%= npc ? npc.starts_adventure_ids : '' %>" placeholder="Ex: [1, 5]">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- BLOCO 03: CARACTERÍSTICAS -->
+                    <div class="tab-pane fade" id="stats" role="tabpanel">
+                        <div class="card p-4">
+                            <div class="row g-3">
+                                <div class="col-md-4">
+                                    <label class="form-label">Dificuldade</label>
+                                    <select class="form-select" name="difficulty">
+                                        <option value="easy" <%=npc && npc.difficulty==='easy' ? 'selected' : '' %>
+                                            >Fácil</option>
+                                        <option value="medium" <%=npc && npc.difficulty==='medium' ? 'selected' : '' %>
+                                            >Médio</option>
+                                        <option value="hard" <%=npc && npc.difficulty==='hard' ? 'selected' : '' %>
+                                            >Difícil</option>
+                                        <option value="boss" <%=npc && npc.difficulty==='boss' ? 'selected' : '' %>>Boss
+                                        </option>
+                                    </select>
+                                </div>
+                                <div class="col-md-4 d-flex align-items-end">
+                                    <div class="form-check mb-2">
+                                        <input class="form-check-input" type="checkbox" name="participates_in_battle"
+                                            id="participates_in_battle" <%=npc && npc.participates_in_battle ? 'checked'
+                                            : '' %>>
+                                        <label class="form-check-label" for="participates_in_battle">
+                                            Participa de Combate?
+                                        </label>
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <label class="form-label">Afinidade Matemática</label>
+                                    <input type="number" class="form-control" name="math_affinity"
+                                        value="<%= npc ? npc.math_affinity : 0 %>">
+                                </div>
+
+                                <div class="col-12">
+                                    <hr>
+                                    <h6>Atributos</h6>
+                                </div>
+
+                                <div class="col-md-2">
+                                    <label class="form-label">Força</label>
+                                    <input type="number" class="form-control" name="stat_strength"
+                                        value="<%= npc ? npc.stat_strength : 0 %>">
+                                </div>
+                                <div class="col-md-2">
+                                    <label class="form-label">Destreza</label>
+                                    <input type="number" class="form-control" name="stat_dexterity"
+                                        value="<%= npc ? npc.stat_dexterity : 0 %>">
+                                </div>
+                                <div class="col-md-2">
+                                    <label class="form-label">Constituição</label>
+                                    <input type="number" class="form-control" name="stat_constitution"
+                                        value="<%= npc ? npc.stat_constitution : 0 %>">
+                                </div>
+                                <div class="col-md-2">
+                                    <label class="form-label">Inteligência</label>
+                                    <input type="number" class="form-control" name="stat_intelligence"
+                                        value="<%= npc ? npc.stat_intelligence : 0 %>">
+                                </div>
+                                <div class="col-md-2">
+                                    <label class="form-label">Raciocínio</label>
+                                    <input type="number" class="form-control" name="stat_reasoning"
+                                        value="<%= npc ? npc.stat_reasoning : 0 %>">
+                                </div>
+                                <div class="col-md-2">
+                                    <label class="form-label">Sorte</label>
+                                    <input type="number" class="form-control" name="stat_luck"
+                                        value="<%= npc ? npc.stat_luck : 0 %>">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- BLOCO 04: DIÁLOGOS -->
+                    <div class="tab-pane fade" id="dialogue" role="tabpanel">
+                        <div class="card p-4">
+                            <div class="row g-3">
+                                <div class="col-md-12">
+                                    <label class="form-label">👋 Apresentação (Greeting)</label>
+                                    <textarea class="form-control" name="dialogue_greeting"
+                                        rows="2"><%= npc ? npc.dialogue_greeting : '' %></textarea>
+                                </div>
+                                <div class="col-md-12">
+                                    <label class="form-label">👋 Despedida (Farewell)</label>
+                                    <textarea class="form-control" name="dialogue_farewell"
+                                        rows="2"><%= npc ? npc.dialogue_farewell : '' %></textarea>
+                                </div>
+                                <div class="col-md-12">
+                                    <label class="form-label">⚔️ Iniciar Aventura/Missão</label>
+                                    <textarea class="form-control" name="dialogue_start_quest"
+                                        rows="2"><%= npc ? npc.dialogue_start_quest : '' %></textarea>
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label">✅ Sucesso</label>
+                                    <textarea class="form-control" name="dialogue_success"
+                                        rows="2"><%= npc ? npc.dialogue_success : '' %></textarea>
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label">❌ Falha</label>
+                                    <textarea class="form-control" name="dialogue_failure"
+                                        rows="2"><%= npc ? npc.dialogue_failure : '' %></textarea>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- BLOCO 05: INTEGRAÇÕES -->
+                    <div class="tab-pane fade" id="integration" role="tabpanel">
+                        <div class="card p-4">
+                            <div class="row g-3">
+                                <div class="col-md-6">
+                                    <label class="form-label">Chave de Loja Vinculada</label>
+                                    <input type="text" class="form-control" name="linked_shop_key"
+                                        value="<%= npc ? npc.linked_shop_key : '' %>">
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label">Disciplina do Quiz Vinculado</label>
+                                    <input type="text" class="form-control" name="linked_quiz_discipline"
+                                        value="<%= npc ? npc.linked_quiz_discipline : '' %>">
+                                </div>
+                                <div class="col-md-12">
+                                    <label class="form-label">Chaves de Aventuras Vinculadas (JSON)</label>
+                                    <input type="text" class="form-control" name="linked_adventure_keys"
+                                        value="<%= npc ? npc.linked_adventure_keys : '' %>">
+                                </div>
+                                <div class="col-md-12">
+                                    <label class="form-label">Informações de Recompensa Especial</label>
+                                    <textarea class="form-control" name="special_reward_info"
+                                        rows="3"><%= npc ? npc.special_reward_info : '' %></textarea>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+
+                <div class="mt-4 d-flex justify-content-end gap-2">
+                    <a href="/admin/npcs" class="btn btn-secondary">Cancelar</a>
+                    <button type="submit" class="btn btn-success px-4">
+                        <i class="bi bi-check-lg"></i> Salvar NPC
+                    </button>
+                </div>
+            </form>
+        </div>
+
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+
+</html>

@@ -158,7 +158,7 @@ Item.hasMany(CharacterItem, { foreignKey: 'item_id' });
 app.use('/', routes);
 
 // Database sync and server start
-sequelize.sync({ alter: true }) // Use { alter: true } to update existing tables structure
+sequelize.sync() // Removed { alter: true } to prevent ER_TOO_MANY_KEYS error on disciplines table
     .then(() => {
         console.log('✅ Database connected and synchronized');
         app.listen(PORT, () => {

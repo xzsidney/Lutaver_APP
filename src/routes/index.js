@@ -30,6 +30,9 @@ router.use('/admin/effects', effectRoutes);
 const itemRoutes = require('./itemRoutes');
 router.use('/admin/items', itemRoutes);
 
+const adminNpcRoutes = require('./adminNpcRoutes');
+router.use('/admin/npcs', adminNpcRoutes);
+
 // Character Routes
 router.use('/my/characters', myCharacterRoutes);
 router.use('/admin/characters', adminCharacterRoutes);

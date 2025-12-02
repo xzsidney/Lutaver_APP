@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gerenciar NPCs - Lutaver</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.7.2/font/bootstrap-icons.css">
+</head>
+
+<body>
+    <%- include('../../partials/navbar') %>
+
+        <div class="container mt-4">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <h1><i class="bi bi-people-fill"></i> Gerenciar NPCs</h1>
+                <a href="/admin/npcs/new" class="btn btn-primary">
+                    <i class="bi bi-plus-lg"></i> Novo NPC
+                </a>
+            </div>
+
+            <div class="card shadow-sm">
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table table-hover align-middle">
+                            <thead class="table-light">
+                                <tr>
+                                    <th>Nome</th>
+                                    <th>Tipo</th>
+                                    <th>Local</th>
+                                    <th>Disciplina</th>
+                                    <th>Papel</th>
+                                    <th class="text-end">Ações</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <% if (npcs && npcs.length> 0) { %>
+                                    <% npcs.forEach(npc=> { %>
+                                        <tr>
+                                            <td>
+                                                <div class="d-flex align-items-center">
+                                                    <% if (npc.avatar) { %>
+                                                        <img src="<%= npc.avatar %>" alt="" class="rounded-circle me-2"
+                                                            width="32" height="32" style="object-fit: cover;">
+                                                        <% } else { %>
+                                                            <div class="rounded-circle bg-secondary text-white d-flex align-items-center justify-content-center me-2"
+                                                                style="width: 32px; height: 32px;">
+                                                                <i class="bi bi-person"></i>
+                                                            </div>
+                                                            <% } %>
+                                                                <strong>
+                                                                    <%= npc.name %>
+                                                                </strong>
+                                                </div>
+                                            </td>
+                                            <td>
+                                                <% if (npc.type==='teacher' ) { %>
+                                                    <span class="badge bg-primary">Professor</span>
+                                                    <% } else if (npc.type==='student' ) { %>
+                                                        <span class="badge bg-success">Aluno</span>
+                                                        <% } else if (npc.type==='boss' ) { %>
+                                                            <span class="badge bg-danger">Boss</span>
+                                                            <% } else if (npc.type==='staff' ) { %>
+                                                                <span
+                                                                    class="badge bg-warning text-dark">Funcionário</span>
+                                                                <% } else { %>
+                                                                    <span class="badge bg-secondary">Outro</span>
+                                                                    <% } %>
+                                            </td>
+                                            <td>
+                                                <%= npc.location %>
+                                            </td>
+                                            <td>
+                                                <%= npc.subject || '-' %>
+                                            </td>
+                                            <td>
+                                                <% if (npc.role_flags) { %>
+                                                    <% if (npc.role_flags.includes('quest_giver')) { %> <i
+                                                            class="bi bi-exclamation-circle text-warning"
+                                                            title="Dá Missão"></i>
+                                                        <% } %>
+                                                            <% if (npc.role_flags.includes('shop')) { %> <i
+                                                                    class="bi bi-shop text-success"
+                                                                    title="Vendedor"></i>
+                                                                <% } %>
+                                                                    <% if (npc.role_flags.includes('quiz')) { %> <i
+                                                                            class="bi bi-question-circle text-info"
+                                                                            title="Quiz"></i>
+                                                                        <% } %>
+                                                                            <% if (npc.role_flags.includes('boss')) { %>
+                                                                                <i class="bi bi-lightning-fill text-danger"
+                                                                                    title="Boss"></i>
+                                                                                <% } %>
+                                                                                    <% } else { %>
+                                                                                        <small
+                                                                                            class="text-muted">Nenhum</small>
+                                                                                        <% } %>
+                                            </td>
+                                            <td class="text-end">
+                                                <a href="/admin/npcs/<%= npc.id %>"
+                                                    class="btn btn-sm btn-info text-white" title="Ver Ficha">
+                                                    <i class="bi bi-eye"></i>
+                                                </a>
+                                                <a href="/admin/npcs/<%= npc.id %>/edit"
+                                                    class="btn btn-sm btn-warning text-white" title="Editar">
+                                                    <i class="bi bi-pencil"></i>
+                                                </a>
+                                                <form action="/admin/npcs/<%= npc.id %>/delete" method="POST"
+                                                    class="d-inline"
+                                                    onsubmit="return confirm('Tem certeza que deseja excluir este NPC?');">
+                                                    <button type="submit" class="btn btn-sm btn-danger" title="Excluir">
+                                                        <i class="bi bi-trash"></i>
+                                                    </button>
+                                                </form>
+                                            </td>
+                                        </tr>
+                                        <% }); %>
+                                            <% } else { %>
+                                                <tr>
+                                                    <td colspan="6" class="text-center py-4 text-muted">
+                                                        <i class="bi bi-inbox fs-2 d-block mb-2"></i>
+                                                        Nenhum NPC cadastrado ainda.
+                                                    </td>
+                                                </tr>
+                                                <% } %>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+
+</html>
