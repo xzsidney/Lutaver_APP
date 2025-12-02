@@ -4,6 +4,7 @@ const Adventure = require('../models/Adventure');
 const Scene = require('../models/Scene');
 const Question = require('../models/Question');
 const Character = require('../models/Character');
+const Power = require('../models/Power');
 
 const DashboardController = {
     /**
@@ -35,7 +36,8 @@ const DashboardController = {
                 adventuresCount: await Adventure.count(),
                 scenesCount: await Scene.count(),
                 questionsCount: await Question.count(),
-                charactersCount: await Character.count()
+                charactersCount: await Character.count(),
+                powersCount: await Power.count()
             };
 
             res.render('admin/dashboard', {

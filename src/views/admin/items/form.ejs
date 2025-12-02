@@ -1,0 +1,196 @@
+<%- include('../../partials/admin/header') %>
+    <%- include('../../partials/admin/navbar', { page: 'items' }) %>
+
+        <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4 main-content">
+            <div
+                class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+                <h1 class="h2 text-primary fw-bold">
+                    <i class="bi bi-box-seam"></i>
+                    <%= title %>
+                </h1>
+                <div class="btn-toolbar mb-2 mb-md-0">
+                    <a href="/admin/items" class="btn btn-sm btn-outline-secondary">
+                        <i class="bi bi-arrow-left"></i> Voltar
+                    </a>
+                </div>
+            </div>
+
+            <div class="row justify-content-center">
+                <div class="col-lg-10">
+                    <div class="card card-custom border-0 shadow-sm">
+                        <div class="card-body p-4">
+                            <form action="<%= action %>" method="POST" id="itemForm">
+                                <div class="row g-3">
+                                    <!-- Basic Info -->
+                                    <div class="col-md-7">
+                                        <label for="name" class="form-label fw-bold">Nome do Item</label>
+                                        <input type="text" class="form-control" id="name" name="name"
+                                            value="<%= item.name || '' %>" required placeholder="Ex: Poção de Cura">
+                                    </div>
+                                    <div class="col-md-2">
+                                        <label for="icon" class="form-label fw-bold">Ícone</label>
+                                        <input type="text" class="form-control text-center fs-3" id="icon" name="icon"
+                                            value="<%= item.icon || '📦' %>" placeholder="📦">
+                                    </div>
+                                    <div class="col-md-3">
+                                        <label for="price" class="form-label fw-bold">Preço 🪙</label>
+                                        <input type="number" class="form-control" id="price" name="price"
+                                            value="<%= item.price || 0 %>" min="0" required>
+                                    </div>
+
+                                    <!-- Type and Rarity -->
+                                    <div class="col-md-6">
+                                        <label for="type" class="form-label fw-bold">Tipo</label>
+                                        <select class="form-select" id="type" name="type" required
+                                            onchange="toggleSlotField()">
+                                            <option value="" disabled <%=!item.type ? 'selected' : '' %>>Selecione...
+                                            </option>
+                                            <option value="consumable" <%=item.type==='consumable' ? 'selected' : '' %>
+                                                >🧪 Consumível</option>
+                                            <option value="equipment" <%=item.type==='equipment' ? 'selected' : '' %>
+                                                >🛡️ Equipamento</option>
+                                            <option value="key" <%=item.type==='key' ? 'selected' : '' %>>🔑 Chave
+                                            </option>
+                                            <option value="cosmetic" <%=item.type==='cosmetic' ? 'selected' : '' %>>✨
+                                                Cosmético</option>
+                                        </select>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label for="rarity" class="form-label fw-bold">Raridade</label>
+                                        <select class="form-select" id="rarity" name="rarity" required>
+                                            <option value="comum" <%=item.rarity==='comum' ? 'selected' : '' %>>Comum
+                                            </option>
+                                            <option value="raro" <%=item.rarity==='raro' ? 'selected' : '' %>>Raro
+                                            </option>
+                                            <option value="épico" <%=item.rarity==='épico' ? 'selected' : '' %>>Épico
+                                            </option>
+                                            <option value="lendário" <%=item.rarity==='lendário' ? 'selected' : '' %>
+                                                >Lendário</option>
+                                        </select>
+                                    </div>
+
+                                    <!-- Description -->
+                                    <div class="col-12">
+                                        <label for="description" class="form-label fw-bold">Descrição</label>
+                                        <textarea class="form-control" id="description" name="description" rows="3"
+                                            placeholder="Descreva o item..."><%= item.description || '' %></textarea>
+                                    </div>
+
+                                    <!-- Equipment Slot (only for equipment) -->
+                                    <div class="col-md-6" id="slotContainer" style="display: none;">
+                                        <label for="slot" class="form-label fw-bold">Slot de Equipamento</label>
+                                        <select class="form-select" id="slot" name="slot">
+                                            <option value="">Nenhum</option>
+                                            <option value="head" <%=item.slot==='head' ? 'selected' : '' %>>🎩 Cabeça
+                                            </option>
+                                            <option value="body" <%=item.slot==='body' ? 'selected' : '' %>>👕 Corpo
+                                            </option>
+                                            <option value="feet" <%=item.slot==='feet' ? 'selected' : '' %>>👟 Pés
+                                            </option>
+                                            <option value="accessory" <%=item.slot==='accessory' ? 'selected' : '' %>>💍
+                                                Acessório</option>
+                                        </select>
+                                    </div>
+
+                                    <!-- Stackable -->
+                                    <div class="col-md-6">
+                                        <label class="form-label fw-bold">Empilhável?</label>
+                                        <div class="form-check form-switch">
+                                            <input class="form-check-input" type="checkbox" id="stackable"
+                                                name="stackable" <%=item.stackable ? 'checked' : '' %>
+                                            onchange="toggleMaxStack()">
+                                            <label class="form-check-label" for="stackable">Permitir
+                                                empilhamento</label>
+                                        </div>
+                                        <div id="maxStackContainer" style="display: none;" class="mt-2">
+                                            <label for="max_stack" class="form-label small">Máximo por pilha</label>
+                                            <input type="number" class="form-control form-control-sm" id="max_stack"
+                                                name="max_stack" value="<%= item.max_stack || 99 %>" min="1" max="999">
+                                        </div>
+                                    </div>
+
+                                    <!-- Unique Item -->
+                                    <div class="col-md-6">
+                                        <label class="form-label fw-bold">Item Único?</label>
+                                        <div class="form-check form-switch">
+                                            <input class="form-check-input" type="checkbox" id="is_unique"
+                                                name="is_unique" <%=item.is_unique ? 'checked' : '' %>>
+                                            <label class="form-check-label" for="is_unique">Jogador só pode ter
+                                                um</label>
+                                        </div>
+                                    </div>
+
+                                    <!-- Effects Section -->
+                                    <div class="col-12 mt-4">
+                                        <h5 class="fw-bold border-bottom pb-2 mb-3">
+                                            <i class="bi bi-stars"></i> Efeitos e Bônus
+                                        </h5>
+
+                                        <div class="row g-3">
+                                            <div class="col-md-6">
+                                                <label for="effect_id" class="form-label fw-bold">Efeito (do
+                                                    sistema)</label>
+                                                <select class="form-select" id="effect_id" name="effect_id">
+                                                    <option value="">Nenhum</option>
+                                                    <% effects.forEach(eff=> { %>
+                                                        <option value="<%= eff.id %>" <%=item.effect_id==eff.id
+                                                            ? 'selected' : '' %>>
+                                                            <%= eff.icon %>
+                                                                <%= eff.name %> (<%= eff.effect_type %>)
+                                                        </option>
+                                                        <% }); %>
+                                                </select>
+                                                <div class="form-text">Vincular a um efeito existente</div>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <label for="bonus_json" class="form-label fw-bold">Bônus JSON
+                                                    (opcional)</label>
+                                                <textarea class="form-control font-monospace" id="bonus_json"
+                                                    name="bonus_json" rows="3"
+                                                    placeholder='{"str": 2, "hp": 10}'><%= item.bonus_json ? JSON.stringify(item.bonus_json) : '' %></textarea>
+                                                <div class="form-text">Para bônus simples de atributos</div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-12 mt-4 text-end">
+                                        <button type="submit" class="btn btn-primary px-4">
+                                            <i class="bi bi-save"></i> Salvar Item
+                                        </button>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+
+        <script>
+            function toggleSlotField() {
+                const type = document.getElementById('type').value;
+                const slotContainer = document.getElementById('slotContainer');
+                if (type === 'equipment') {
+                    slotContainer.style.display = 'block';
+                } else {
+                    slotContainer.style.display = 'none';
+                    document.getElementById('slot').value = '';
+                }
+            }
+
+            function toggleMaxStack() {
+                const stackable = document.getElementById('stackable').checked;
+                const maxStackContainer = document.getElementById('maxStackContainer');
+                if (stackable) {
+                    maxStackContainer.style.display = 'block';
+                } else {
+                    maxStackContainer.style.display = 'none';
+                }
+            }
+
+            // Run on load
+            toggleSlotField();
+            toggleMaxStack();
+        </script>
+
+        <%- include('../../partials/admin/footer') %>

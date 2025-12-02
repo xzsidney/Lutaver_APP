@@ -52,6 +52,12 @@ const Character = sequelize.define('Character', {
         type: DataTypes.INTEGER,
         defaultValue: 1
     },
+    coins: {
+        type: DataTypes.INTEGER,
+        defaultValue: 0,
+        allowNull: false,
+        comment: 'In-game currency for shop purchases'
+    },
     inventory_json: {
         type: DataTypes.JSON,
         allowNull: true,

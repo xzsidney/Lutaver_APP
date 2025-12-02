@@ -1,0 +1,170 @@
+<%- include('../../partials/admin/header') %>
+    <%- include('../../partials/admin/navbar', { page: 'effects' }) %>
+
+        <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4 main-content">
+            <div
+                class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+                <h1 class="h2 text-primary fw-bold">
+                    <i class="bi bi-stars"></i>
+                    <%= title %>
+                </h1>
+                <div class="btn-toolbar mb-2 mb-md-0">
+                    <a href="/admin/effects" class="btn btn-sm btn-outline-secondary">
+                        <i class="bi bi-arrow-left"></i> Voltar
+                    </a>
+                </div>
+            </div>
+
+            <div class="row justify-content-center">
+                <div class="col-lg-8">
+                    <div class="card card-custom border-0 shadow-sm">
+                        <div class="card-body p-4">
+                            <form action="<%= action %>" method="POST">
+                                <div class="row g-3">
+                                    <!-- Basic Info -->
+                                    <div class="col-md-8">
+                                        <label for="name" class="form-label fw-bold">Nome do Efeito</label>
+                                        <input type="text" class="form-control" id="name" name="name"
+                                            value="<%= effect.name || '' %>" required
+                                            placeholder="Ex: Bola de Fogo, Cura Leve">
+                                    </div>
+                                    <div class="col-md-4">
+                                        <label for="icon" class="form-label fw-bold">Ícone (Emoji)</label>
+                                        <input type="text" class="form-control text-center" id="icon" name="icon"
+                                            value="<%= effect.icon || '✨' %>" placeholder="✨">
+                                    </div>
+
+                                    <!-- Types -->
+                                    <div class="col-md-6">
+                                        <label for="effect_type" class="form-label fw-bold">Tipo de Efeito</label>
+                                        <select class="form-select" id="effect_type" name="effect_type" required>
+                                            <option value="" disabled <%=!effect.effect_type ? 'selected' : '' %>
+                                                >Selecione...</option>
+                                            <option value="dano" <%=effect.effect_type==='dano' ? 'selected' : '' %>
+                                                >Dano</option>
+                                            <option value="cura" <%=effect.effect_type==='cura' ? 'selected' : '' %>
+                                                >Cura</option>
+                                            <option value="buff" <%=effect.effect_type==='buff' ? 'selected' : '' %>
+                                                >Buff (Melhoria)</option>
+                                            <option value="debuff" <%=effect.effect_type==='debuff' ? 'selected' : '' %>
+                                                >Debuff (Penalidade)</option>
+                                            <option value="status_positivo" <%=effect.effect_type==='status_positivo'
+                                                ? 'selected' : '' %>>Status Positivo</option>
+                                            <option value="status_negativo" <%=effect.effect_type==='status_negativo'
+                                                ? 'selected' : '' %>>Status Negativo</option>
+                                        </select>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label for="target_type" class="form-label fw-bold">Alvo</label>
+                                        <select class="form-select" id="target_type" name="target_type" required>
+                                            <option value="enemy" <%=effect.target_type==='enemy' ? 'selected' : '' %>
+                                                >Inimigo</option>
+                                            <option value="self" <%=effect.target_type==='self' ? 'selected' : '' %>>Si
+                                                mesmo</option>
+                                            <option value="ally" <%=effect.target_type==='ally' ? 'selected' : '' %>
+                                                >Aliado</option>
+                                            <option value="all" <%=effect.target_type==='all' ? 'selected' : '' %>>Todos
+                                            </option>
+                                        </select>
+                                    </div>
+
+                                    <!-- Mechanics -->
+                                    <div class="col-md-6">
+                                        <label for="attribute_target" class="form-label fw-bold">Atributo
+                                            Afetado</label>
+                                        <select class="form-select" id="attribute_target" name="attribute_target">
+                                            <option value="" <%=!effect.attribute_target ? 'selected' : '' %>>Nenhum /
+                                                Geral</option>
+                                            <option value="hp" <%=effect.attribute_target==='hp' ? 'selected' : '' %>>HP
+                                                (Vida)</option>
+                                            <option value="mp" <%=effect.attribute_target==='mp' ? 'selected' : '' %>>MP
+                                                (Mana)</option>
+                                            <option value="forca" <%=effect.attribute_target==='forca' ? 'selected' : ''
+                                                %>>Força</option>
+                                            <option value="destreza" <%=effect.attribute_target==='destreza'
+                                                ? 'selected' : '' %>>Destreza</option>
+                                            <option value="inteligencia" <%=effect.attribute_target==='inteligencia'
+                                                ? 'selected' : '' %>>Inteligência</option>
+                                            <option value="defesa" <%=effect.attribute_target==='defesa' ? 'selected'
+                                                : '' %>>Defesa</option>
+                                        </select>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <label for="base_value" class="form-label fw-bold">Valor Base</label>
+                                        <input type="number" class="form-control" id="base_value" name="base_value"
+                                            value="<%= effect.base_value || '' %>" placeholder="Ex: 10">
+                                    </div>
+                                    <div class="col-md-3">
+                                        <label for="intensity_label" class="form-label fw-bold">Intensidade</label>
+                                        <input type="text" class="form-control" id="intensity_label"
+                                            name="intensity_label" value="<%= effect.intensity_label || '' %>"
+                                            placeholder="Ex: Leve">
+                                    </div>
+
+                                    <!-- Duration -->
+                                    <div class="col-md-6">
+                                        <label for="duration_type" class="form-label fw-bold">Tipo de Duração</label>
+                                        <select class="form-select" id="duration_type" name="duration_type"
+                                            onchange="toggleDurationValue()">
+                                            <option value="instant" <%=effect.duration_type==='instant' ? 'selected'
+                                                : '' %>>Instantâneo</option>
+                                            <option value="turns" <%=effect.duration_type==='turns' ? 'selected' : '' %>
+                                                >Turnos</option>
+                                            <option value="scene" <%=effect.duration_type==='scene' ? 'selected' : '' %>
+                                                >Cena Inteira</option>
+                                            <option value="permanent" <%=effect.duration_type==='permanent' ? 'selected'
+                                                : '' %>>Permanente</option>
+                                        </select>
+                                    </div>
+                                    <div class="col-md-6" id="duration_value_container">
+                                        <label for="duration_value" class="form-label fw-bold">Duração (Valor)</label>
+                                        <input type="number" class="form-control" id="duration_value"
+                                            name="duration_value" value="<%= effect.duration_value || '' %>"
+                                            placeholder="Nº de turnos">
+                                    </div>
+
+                                    <div class="col-12">
+                                        <div class="form-check form-switch">
+                                            <input class="form-check-input" type="checkbox" id="can_stack"
+                                                name="can_stack" <%=effect.can_stack ? 'checked' : '' %>>
+                                            <label class="form-check-label fw-bold" for="can_stack">Efeito
+                                                Acumulativo?</label>
+                                            <div class="form-text">Se marcado, o efeito pode ser aplicado múltiplas
+                                                vezes no mesmo alvo.</div>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-12">
+                                        <label for="description" class="form-label fw-bold">Descrição Temática</label>
+                                        <textarea class="form-control" id="description" name="description" rows="3"
+                                            placeholder="Descreva como o efeito se manifesta..."><%= effect.description || '' %></textarea>
+                                    </div>
+
+                                    <div class="col-12 mt-4 text-end">
+                                        <button type="submit" class="btn btn-primary px-4">
+                                            <i class="bi bi-save"></i> Salvar Efeito
+                                        </button>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+
+        <script>
+            function toggleDurationValue() {
+                const type = document.getElementById('duration_type').value;
+                const container = document.getElementById('duration_value_container');
+                if (type === 'instant' || type === 'permanent' || type === 'scene') {
+                    container.style.display = 'none';
+                } else {
+                    container.style.display = 'block';
+                }
+            }
+            // Run on load
+            toggleDurationValue();
+        </script>
+
+        <%- include('../../partials/admin/footer') %>

@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <%- include('../../partials/header') %>
+</head>
+
+<body>
+    <%- include('../../partials/navbar') %>
+
+        <div class="container mt-4">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <h1 class="text-primary fw-bold">
+                    <i class="bi bi-lightning-charge-fill me-2"></i>Poderes
+                </h1>
+                <a href="/admin/powers/new" class="btn btn-primary">
+                    <i class="bi bi-plus-lg me-1"></i>Novo Poder
+                </a>
+            </div>
+
+            <div class="card shadow-sm border-0">
+                <div class="card-body p-0">
+                    <div class="table-responsive">
+                        <table class="table table-hover align-middle mb-0">
+                            <thead class="bg-light">
+                                <tr>
+                                    <th class="ps-4">Ícone</th>
+                                    <th>Nome</th>
+                                    <th>Disciplina</th>
+                                    <th class="text-center">Afinidade Mín.</th>
+                                    <th>Efeito</th>
+                                    <th class="text-end pe-4">Ações</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <% if (powers.length===0) { %>
+                                    <tr>
+                                        <td colspan="6" class="text-center py-5 text-muted">
+                                            <i class="bi bi-inbox fs-1 d-block mb-2"></i>
+                                            Nenhum poder cadastrado ainda.
+                                        </td>
+                                    </tr>
+                                    <% } else { %>
+                                        <% powers.forEach(power=> { %>
+                                            <tr>
+                                                <td class="ps-4">
+                                                    <span class="fs-4">
+                                                        <%= power.icon %>
+                                                    </span>
+                                                </td>
+                                                <td class="fw-bold text-primary">
+                                                    <%= power.name %>
+                                                </td>
+                                                <td>
+                                                    <% if (power.discipline) { %>
+                                                        <span class="badge"
+                                                            style="background-color: <%= power.discipline.color_theme %>">
+                                                            <%= power.discipline.name %>
+                                                        </span>
+                                                        <% } else { %>
+                                                            <span class="badge bg-secondary">Geral</span>
+                                                            <% } %>
+                                                </td>
+                                                <td class="text-center">
+                                                    <span class="badge bg-light text-dark border">
+                                                        <%= power.required_affinity %>%
+                                                    </span>
+                                                </td>
+                                                <td>
+                                                    <small class="text-muted">
+                                                        <%= power.effect %>
+                                                    </small>
+                                                </td>
+                                                <td class="text-end pe-4">
+                                                    <div class="btn-group">
+                                                        <a href="/admin/powers/<%= power.id %>/edit"
+                                                            class="btn btn-sm btn-outline-primary" title="Editar">
+                                                            <i class="bi bi-pencil"></i>
+                                                        </a>
+                                                        <form action="/admin/powers/<%= power.id %>/delete"
+                                                            method="POST" class="d-inline"
+                                                            onsubmit="return confirm('Tem certeza que deseja excluir este poder?');">
+                                                            <button type="submit" class="btn btn-sm btn-outline-danger"
+                                                                title="Excluir">
+                                                                <i class="bi bi-trash"></i>
+                                                            </button>
+                                                        </form>
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                            <% }); %>
+                                                <% } %>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <%- include('../../partials/footer') %>
+</body>
+
+</html>

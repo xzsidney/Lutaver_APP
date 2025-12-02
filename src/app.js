@@ -122,6 +122,38 @@ AdventureProgress.belongsTo(Character, { foreignKey: 'character_id', as: 'charac
 Adventure.hasMany(AdventureProgress, { foreignKey: 'adventure_id', as: 'progress' });
 AdventureProgress.belongsTo(Adventure, { foreignKey: 'adventure_id', as: 'adventure' });
 
+// Effects System
+const Effect = require('./models/Effect');
+const PowerEffect = require('./models/PowerEffect');
+const ActiveEffect = require('./models/ActiveEffect');
+
+// Power <-> Effect (Many-to-Many)
+Power.belongsToMany(Effect, { through: PowerEffect, foreignKey: 'power_id', as: 'effects' });
+Effect.belongsToMany(Power, { through: PowerEffect, foreignKey: 'effect_id', as: 'powers' });
+Power.hasMany(PowerEffect, { foreignKey: 'power_id' }); // Direct access for managing junction data
+Effect.hasMany(PowerEffect, { foreignKey: 'effect_id' });
+
+// Active Effects
+Character.hasMany(ActiveEffect, { foreignKey: 'character_id', as: 'activeEffects' });
+ActiveEffect.belongsTo(Character, { foreignKey: 'character_id' });
+ActiveEffect.belongsTo(Effect, { foreignKey: 'effect_id', as: 'effect' });
+
+// Items and Shop System
+const Item = require('./models/Item');
+const CharacterItem = require('./models/CharacterItem');
+
+// Item <-> Effect (optional)
+Item.belongsTo(Effect, { foreignKey: 'effect_id', as: 'effect' });
+
+// Character <-> Item (Many-to-Many through CharacterItem for inventory)
+Character.belongsToMany(Item, { through: CharacterItem, foreignKey: 'character_id', as: 'items' });
+Item.belongsToMany(Character, { through: CharacterItem, foreignKey: 'item_id', as: 'owners' });
+Character.hasMany(CharacterItem, { foreignKey: 'character_id', as: 'inventory' });
+CharacterItem.belongsTo(Character, { foreignKey: 'character_id', as: 'character' });
+CharacterItem.belongsTo(Item, { foreignKey: 'item_id', as: 'item' });
+Item.hasMany(CharacterItem, { foreignKey: 'item_id' });
+
+
 // Routes
 app.use('/', routes);
 

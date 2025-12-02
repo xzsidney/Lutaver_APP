@@ -52,6 +52,27 @@
                 </a>
             </li>
             <li class="nav-item">
+                <a class="nav-link <%= typeof page !== 'undefined' && page === 'powers' ? 'active' : '' %>"
+                    href="/admin/powers">
+                    <i class="bi bi-lightning-charge"></i>
+                    Poderes
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link <%= typeof page !== 'undefined' && page === 'effects' ? 'active' : '' %>"
+                    href="/admin/effects">
+                    <i class="bi bi-stars"></i>
+                    Efeitos
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link <%= typeof page !== 'undefined' && page === 'items' ? 'active' : '' %>"
+                    href="/admin/items">
+                    <i class="bi bi-box-seam"></i>
+                    Itens
+                </a>
+            </li>
+            <li class="nav-item">
                 <a class="nav-link <%= typeof page !== 'undefined' && page === 'characters' ? 'active' : '' %>"
                     href="/admin/characters">
                     <i class="bi bi-person-badge"></i>
