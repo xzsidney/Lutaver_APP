@@ -1,27 +1,25 @@
 const express = require('express');
 const router = express.Router();
+
+const { adminMiddleware } = require('../middlewares/authMiddleware');
 const ItemController = require('../controllers/ItemController');
-const { teacherOrAdminMiddleware } = require('../middlewares/auth');
 
-// Protect all routes
-router.use(teacherOrAdminMiddleware);
+// LISTA – /admin/items
+router.get('/', adminMiddleware, ItemController.index);
 
-// List items
-router.get('/', ItemController.index);
+// NOVO – /admin/items/new
+router.get('/new', adminMiddleware, ItemController.create);
 
-// New item form
-router.get('/new', ItemController.newForm);
+// SALVAR – POST /admin/items
+router.post('/', adminMiddleware, ItemController.store);
 
-// Create item
-router.post('/', ItemController.create);
+// EDITAR – /admin/items/:id/edit
+router.get('/:id/edit', adminMiddleware, ItemController.edit);
 
-// Edit item form
-router.get('/:id/edit', ItemController.editForm);
+// ATUALIZAR – POST /admin/items/:id
+router.post('/:id', adminMiddleware, ItemController.update);
 
-// Update item
-router.post('/:id', ItemController.update);
-
-// Delete item
-router.post('/:id/delete', ItemController.destroy);
+// EXCLUIR – /admin/items/:id/delete
+router.get('/:id/delete', adminMiddleware, ItemController.destroy);
 
 module.exports = router;

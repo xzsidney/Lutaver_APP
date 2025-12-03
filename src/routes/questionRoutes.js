@@ -1,29 +1,23 @@
 const express = require('express');
 const router = express.Router();
-const { authMiddleware, teacherOrAdminMiddleware } = require('../middlewares/auth');
+
+const { adminMiddleware } = require('../middlewares/authMiddleware');
 const QuestionController = require('../controllers/QuestionController');
 
-/**
- * Questions Management Routes (Teacher + Admin)
- * Base path: /admin/questions (defined in index.js)
- */
+// LISTAGEM
+router.get('/', adminMiddleware, QuestionController.index);
 
-// List all questions
-router.get('/', authMiddleware, teacherOrAdminMiddleware, QuestionController.list);
+// FORM NOVA QUESTÃO
+router.get('/new', adminMiddleware, QuestionController.new);
 
-// Create question form
-router.get('/new', authMiddleware, teacherOrAdminMiddleware, QuestionController.createPage);
+// SALVAR QUESTÃO
+router.post('/', adminMiddleware, QuestionController.create);
 
-// Create question
-router.post('/', authMiddleware, teacherOrAdminMiddleware, QuestionController.create);
+// EDITAR QUESTÃO
+router.get('/:id/edit', adminMiddleware, QuestionController.edit);
+router.post('/:id/edit', adminMiddleware, QuestionController.update);
 
-// Edit question form
-router.get('/:id/edit', authMiddleware, teacherOrAdminMiddleware, QuestionController.editPage);
-
-// Update question
-router.post('/:id', authMiddleware, teacherOrAdminMiddleware, QuestionController.update);
-
-// Delete question
-router.post('/:id/delete', authMiddleware, teacherOrAdminMiddleware, QuestionController.delete);
+// DELETAR QUESTÃO
+router.get('/:id/delete', adminMiddleware, QuestionController.delete);
 
 module.exports = router;

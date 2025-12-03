@@ -1,27 +1,25 @@
 const express = require('express');
 const router = express.Router();
+
+const { adminMiddleware } = require('../middlewares/authMiddleware');
 const PowerController = require('../controllers/PowerController');
-const { teacherOrAdminMiddleware } = require('../middlewares/auth');
 
-// Protect all routes with teacherOrAdminMiddleware
-router.use(teacherOrAdminMiddleware);
+// LISTA – GET /admin/powers
+router.get('/', adminMiddleware, PowerController.index);
 
-// List powers
-router.get('/', PowerController.index);
+// NOVO – GET /admin/powers/new
+router.get('/new', adminMiddleware, PowerController.create);
 
-// New power form
-router.get('/new', PowerController.newForm);
+// SALVAR – POST /admin/powers
+router.post('/', adminMiddleware, PowerController.store);
 
-// Create power
-router.post('/', PowerController.create);
+// EDITAR – GET /admin/powers/:id/edit
+router.get('/:id/edit', adminMiddleware, PowerController.edit);
 
-// Edit power form
-router.get('/:id/edit', PowerController.editForm);
+// ATUALIZAR – POST /admin/powers/:id
+router.post('/:id', adminMiddleware, PowerController.update);
 
-// Update power
-router.post('/:id', PowerController.update);
-
-// Delete power
-router.post('/:id/delete', PowerController.destroy);
+// EXCLUIR – GET /admin/powers/:id/delete
+router.get('/:id/delete', adminMiddleware, PowerController.destroy);
 
 module.exports = router;

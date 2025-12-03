@@ -704,3 +704,142 @@ section {
     border-top: 1px solid rgba(255, 255, 255, 0.2);
     opacity: 0.8;
 }
+
+
+/* ====================================================================
+   AUTH / LOGIN PAGE
+   ==================================================================== */
+
+.auth-page {
+    min-height: 100vh;
+    background: linear-gradient(135deg, var(--lutaver-blue) 0%, var(--lutaver-green) 100%);
+    padding-top: 80px;
+    /* por causa da navbar fixa */
+    display: flex;
+    align-items: center;
+}
+
+.auth-hero {
+    width: 100%;
+}
+
+.auth-container {
+    display: grid;
+    grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr);
+    gap: 40px;
+    align-items: center;
+    padding: 40px 20px 80px;
+}
+
+.auth-info {
+    color: var(--lutaver-white);
+}
+
+.auth-title {
+    font-size: 36px;
+    margin-bottom: 10px;
+}
+
+.auth-subtitle {
+    font-size: 18px;
+    max-width: 480px;
+    margin-bottom: 20px;
+    opacity: 0.95;
+}
+
+.auth-benefits {
+    list-style: none;
+    padding-left: 0;
+    font-size: 16px;
+}
+
+.auth-benefits li {
+    margin-bottom: 8px;
+}
+
+.auth-card {
+    background: var(--lutaver-white);
+    border-radius: 16px;
+    padding: 30px 25px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.18);
+}
+
+.auth-card h2 {
+    margin-bottom: 20px;
+    color: var(--lutaver-blue);
+    text-align: center;
+}
+
+.auth-form .form-group {
+    margin-bottom: 18px;
+}
+
+.auth-form label {
+    display: block;
+    margin-bottom: 6px;
+    font-weight: 500;
+    color: var(--lutaver-text);
+}
+
+.auth-form input {
+    width: 100%;
+    padding: 10px 12px;
+    border-radius: 8px;
+    border: 2px solid #E5E7EB;
+    font-size: 14px;
+    font-family: inherit;
+    transition: all 0.3s;
+}
+
+.auth-form input:focus {
+    outline: none;
+    border-color: var(--lutaver-yellow);
+    box-shadow: 0 0 0 3px rgba(247, 208, 70, 0.15);
+}
+
+.auth-error {
+    background: #FEE2E2;
+    color: #B91C1C;
+    border-radius: 8px;
+    padding: 10px 12px;
+    font-size: 14px;
+    margin-bottom: 12px;
+}
+
+.auth-btn {
+    width: 100%;
+    margin-top: 5px;
+}
+
+.auth-register-text {
+    margin-top: 15px;
+    text-align: center;
+    font-size: 14px;
+}
+
+.auth-register-text a {
+    color: var(--lutaver-blue);
+    font-weight: 600;
+    text-decoration: none;
+}
+
+.auth-register-text a:hover {
+    text-decoration: underline;
+}
+
+/* Responsivo */
+@media (max-width: 900px) {
+    .auth-container {
+        grid-template-columns: 1fr;
+        text-align: center;
+    }
+
+    .auth-info {
+        order: -1;
+    }
+
+    .auth-subtitle {
+        margin-left: auto;
+        margin-right: auto;
+    }
+}

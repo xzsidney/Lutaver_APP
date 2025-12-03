@@ -1,31 +1,25 @@
 const express = require('express');
 const router = express.Router();
-const { authMiddleware, teacherOrAdminMiddleware } = require('../middlewares/auth');
+
+const { adminMiddleware } = require('../middlewares/authMiddleware');
 const AdventureController = require('../controllers/AdventureController');
 
-/**
- * Adventures Management Routes (Teacher + Admin)
- */
+// LISTA – GET /admin/adventures
+router.get('/', adminMiddleware, AdventureController.index);
 
-// List all adventures
-router.get('/', authMiddleware, teacherOrAdminMiddleware, AdventureController.list);
+// FORM NOVA – GET /admin/adventures/new
+router.get('/new', adminMiddleware, AdventureController.create);
 
-// Create adventure form
-router.get('/new', authMiddleware, teacherOrAdminMiddleware, AdventureController.createPage);
+// SALVAR NOVA – POST /admin/adventures
+router.post('/', adminMiddleware, AdventureController.store);
 
-// Create adventure
-router.post('/', authMiddleware, teacherOrAdminMiddleware, AdventureController.create);
+// FORM EDITAR – GET /admin/adventures/:id/edit
+router.get('/:id/edit', adminMiddleware, AdventureController.edit);
 
-// Edit adventure form
-router.get('/:id/edit', authMiddleware, teacherOrAdminMiddleware, AdventureController.editPage);
+// ATUALIZAR – POST /admin/adventures/:id
+router.post('/:id', adminMiddleware, AdventureController.update);
 
-// Show adventure details
-router.get('/:id', authMiddleware, teacherOrAdminMiddleware, AdventureController.show);
-
-// Update adventure
-router.post('/:id', authMiddleware, teacherOrAdminMiddleware, AdventureController.update);
-
-// Delete adventure
-router.post('/:id/delete', authMiddleware, teacherOrAdminMiddleware, AdventureController.delete);
+// EXCLUIR – GET /admin/adventures/:id/delete
+router.get('/:id/delete', adminMiddleware, AdventureController.destroy);
 
 module.exports = router;

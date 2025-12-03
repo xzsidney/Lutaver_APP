@@ -1,364 +1,352 @@
-<%- include('../../partials/header') %>
-    <%- include('../../partials/navbar') %>
+<i class="bi bi-arrow-left"></i> Voltar
+</a>
+</div>
 
-        <div class="container mt-4">
-            <div class="d-flex justify-content-between align-items-center mb-4">
-                <h1 class="display-6 fw-bold text-primary">Ficha do Personagem</h1>
-                <a href="/my/characters" class="btn btn-outline-secondary">
-                    <i class="bi bi-arrow-left"></i> Voltar
-                </a>
-            </div>
-
-            <!-- Ações Rápidas: Inventário e Loja -->
-            <div class="mb-4">
-                <div class="d-flex gap-2 flex-wrap">
-                    <a href="/inventory/<%= character.id %>" class="btn btn-primary">
-                        <i class="bi bi-backpack"></i> Ir para Inventário
-                    </a>
-                    <a href="/shop/<%= character.id %>" class="btn btn-success">
-                        <i class="bi bi-shop"></i> Ir para Loja
-                    </a>
-                </div>
-            </div>
+<!-- Ações Rápidas: Inventário e Loja -->
+<div class="mb-4">
+    <div class="d-flex gap-2 flex-wrap">
+        <a href="/inventory/<%= character.id %>" class="btn btn-primary">
+            <i class="bi bi-backpack"></i> Ir para Inventário
+        </a>
+        <a href="/shop/<%= character.id %>" class="btn btn-success">
+            <i class="bi bi-shop"></i> Ir para Loja
+        </a>
+    </div>
+</div>
 
 
-            <div class="row">
-                <!-- Character Info (Left Column) -->
-                <div class="col-md-4 mb-4">
-                    <div class="card card-custom h-100">
-                        <div class="card-body text-center">
-                            <div class="mb-3">
-                                <div
-                                    style="width: 120px; height: 120px; background-color: #eee; border-radius: 50%; margin: 0 auto; display: flex; align-items: center; justify-content: center; font-size: 2.5rem;">
-                                    👤
-                                </div>
-                            </div>
-                            <h3 class="card-title fw-bold text-primary">
-                                <%= character.name %>
-                            </h3>
-                            <p class="text-muted">
-                                <%= character.school_year %>º Ano
-                            </p>
-
-                            <div class="d-flex justify-content-center gap-2 mb-3">
-                                <span class="badge bg-warning text-dark p-2 fs-6">Nível <%= character.level %></span>
-                                <span class="badge bg-info text-dark p-2 fs-6">
-                                    <%= character.experience %> XP
-                                </span>
-                            </div>
-
-                            <div class="alert alert-light border">
-                                <small class="text-muted d-block mb-1">Pontos de Evolução</small>
-                                <strong class="fs-4 text-success">
-                                    <%= character.evolution_points %>
-                                </strong>
-                            </div>
-
-                            <hr>
-
-                            <div class="text-start">
-                                <h6 class="fw-bold mb-3">Atributos</h6>
-                                <ul class="list-group list-group-flush" id="attributesList">
-                                    <% const attributes=[ { key: 'strength' , label: 'Força' , icon: '💪' }, {
-                                        key: 'dexterity' , label: 'Destreza' , icon: '🏃' }, { key: 'constitution' ,
-                                        label: 'Constituição' , icon: '🛡️' }, { key: 'intelligence' ,
-                                        label: 'Inteligência' , icon: '🧠' }, { key: 'reasoning' , label: 'Raciocínio' ,
-                                        icon: '💡' }, { key: 'luck' , label: 'Sorte' , icon: '🍀' } ]; %>
-
-                                        <% attributes.forEach(attr=> { %>
-                                            <li
-                                                class="list-group-item d-flex justify-content-between align-items-center px-0">
-                                                <span>
-                                                    <%= attr.icon %>
-                                                        <%= attr.label %>
-                                                </span>
-                                                <div class="d-flex align-items-center gap-2">
-                                                    <span class="badge bg-secondary rounded-pill fs-6"
-                                                        style="min-width: 30px;" id="attr-<%= attr.key %>">
-                                                        <%= character[attr.key] %>
-                                                    </span>
-
-                                                    <!-- Increase Button -->
-                                                    <button type="button"
-                                                        class="btn btn-sm btn-outline-success rounded-circle p-0 d-flex align-items-center justify-content-center increase-btn"
-                                                        style="width: 24px; height: 24px;" title="Evoluir Atributo"
-                                                        data-attribute="<%= attr.key %>"
-                                                        onclick="increaseAttribute('<%= attr.key %>')">
-                                                        <i class="bi bi-plus"></i>
-                                                    </button>
-                                                </div>
-                                            </li>
-                                            <% }); %>
-                                </ul>
-
-                                <!-- Save/Cancel Buttons (Hidden by default) -->
-                                <div id="saveControls" class="mt-3" style="display: none;">
-                                    <div class="alert alert-info border-0 mb-2">
-                                        <small><strong>Pontos gastos:</strong> <span id="pointsSpent">0</span></small>
-                                    </div>
-                                    <div class="d-grid gap-2">
-                                        <button type="button" class="btn btn-success" onclick="saveChanges()">
-                                            <i class="bi bi-check-circle me-2"></i>Salvar Alterações
-                                        </button>
-                                        <button type="button" class="btn btn-outline-secondary"
-                                            onclick="cancelChanges()">
-                                            <i class="bi bi-x-circle me-2"></i>Cancelar
-                                        </button>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
+<div class="row">
+    <!-- Character Info (Left Column) -->
+    <div class="col-md-4 mb-4">
+        <div class="card card-custom h-100">
+            <div class="card-body text-center">
+                <div class="mb-3">
+                    <div
+                        style="width: 120px; height: 120px; background-color: #eee; border-radius: 50%; margin: 0 auto; display: flex; align-items: center; justify-content: center; font-size: 2.5rem;">
+                        👤
                     </div>
                 </div>
+                <h3 class="card-title fw-bold text-primary">
+                    <%= character.name %>
+                </h3>
+                <p class="text-muted">
+                    <%= character.school_year %>º Ano
+                </p>
 
-                <!-- Affinities & Powers (Right Column) -->
-                <div class="col-md-8">
-                    <!-- Affinities -->
-                    <div class="card card-custom mb-4">
-                        <div class="card-header bg-white fw-bold">
-                            <i class="bi bi-book me-2 text-primary"></i> Afinidades com Disciplinas
-                        </div>
-                        <div class="card-body">
-                            <div class="row">
-                                <% if (character.affinities && character.affinities.length> 0) { %>
-                                    <% character.affinities.forEach(aff=> { %>
-                                        <div class="col-md-6 mb-3">
-                                            <div class="d-flex align-items-center mb-1">
-                                                <span class="me-2 fs-5">
-                                                    <%= aff.discipline.icon || '📚' %>
-                                                </span>
-                                                <span class="fw-bold flex-grow-1">
-                                                    <%= aff.discipline.name %>
-                                                </span>
-                                                <span class="badge bg-primary">
-                                                    <%= aff.affinity_level %>%
-                                                </span>
-                                            </div>
-                                            <div class="progress" style="height: 8px;">
-                                                <div class="progress-bar" role="progressbar"
-                                                    style="width: <%= aff.affinity_level %>%; background-color: <%= aff.discipline.color_theme %>;"
-                                                    aria-valuenow="<%= aff.affinity_level %>" aria-valuemin="0"
-                                                    aria-valuemax="100"></div>
-                                            </div>
-                                        </div>
-                                        <% }); %>
-                                            <% } else { %>
-                                                <p class="text-muted">Nenhuma afinidade registrada.</p>
-                                                <% } %>
-                            </div>
-                        </div>
-                    </div>
+                <div class="d-flex justify-content-center gap-2 mb-3">
+                    <span class="badge bg-warning text-dark p-2 fs-6">Nível <%= character.level %></span>
+                    <span class="badge bg-info text-dark p-2 fs-6">
+                        <%= character.experience %> XP
+                    </span>
+                </div>
 
-                    <!-- Learned Powers -->
-                    <div class="card card-custom mb-4">
-                        <div class="card-header bg-white fw-bold">
-                            <i class="bi bi-lightning-charge me-2 text-warning"></i> Poderes Adquiridos
-                        </div>
-                        <div class="card-body">
-                            <% if (character.powers && character.powers.length> 0) { %>
-                                <div class="row">
-                                    <% character.powers.forEach(power=> { %>
-                                        <div class="col-md-6 mb-3">
-                                            <div class="card h-100 border-0 shadow-sm"
-                                                style="background-color: #f8f9fa;">
-                                                <div class="card-body p-3">
-                                                    <div class="d-flex justify-content-between align-items-start mb-2">
-                                                        <h6 class="card-title fw-bold mb-0">
-                                                            <%= power.name %>
-                                                        </h6>
-                                                        <% if (power.discipline) { %>
-                                                            <span class="badge"
-                                                                style="background-color: <%= power.discipline.color_theme %>">
-                                                                <%= power.discipline.name %>
-                                                            </span>
-                                                            <% } %>
-                                                    </div>
-                                                    <p class="card-text small text-muted mb-0">
-                                                        <%= power.description %>
-                                                    </p>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <% }); %>
-                                </div>
-                                <% } else { %>
-                                    <p class="text-muted text-center py-3">Você ainda não aprendeu nenhum poder
-                                        especial.</p>
-                                    <% } %>
-                        </div>
-                    </div>
+                <div class="alert alert-light border">
+                    <small class="text-muted d-block mb-1">Pontos de Evolução</small>
+                    <strong class="fs-4 text-success">
+                        <%= character.evolution_points %>
+                    </strong>
+                </div>
 
-                    <!-- Available Powers -->
-                    <div class="card card-custom">
-                        <div class="card-header bg-white fw-bold">
-                            <i class="bi bi-unlock me-2 text-success"></i> Poderes Disponíveis para Aprender
+                <hr>
+
+                <div class="text-start">
+                    <h6 class="fw-bold mb-3">Atributos</h6>
+                    <ul class="list-group list-group-flush" id="attributesList">
+                        <% const attributes=[ { key: 'strength' , label: 'Força' , icon: '💪' }, { key: 'dexterity' ,
+                            label: 'Destreza' , icon: '🏃' }, { key: 'constitution' , label: 'Constituição' ,
+                            icon: '🛡️' }, { key: 'intelligence' , label: 'Inteligência' , icon: '🧠' }, {
+                            key: 'reasoning' , label: 'Raciocínio' , icon: '💡' }, { key: 'luck' , label: 'Sorte' ,
+                            icon: '🍀' } ]; %>
+
+                            <% attributes.forEach(attr=> { %>
+                                <li class="list-group-item d-flex justify-content-between align-items-center px-0">
+                                    <span>
+                                        <%= attr.icon %>
+                                            <%= attr.label %>
+                                    </span>
+                                    <div class="d-flex align-items-center gap-2">
+                                        <span class="badge bg-secondary rounded-pill fs-6" style="min-width: 30px;"
+                                            id="attr-<%= attr.key %>">
+                                            <%= character[attr.key] %>
+                                        </span>
+
+                                        <!-- Increase Button -->
+                                        <button type="button"
+                                            class="btn btn-sm btn-outline-success rounded-circle p-0 d-flex align-items-center justify-content-center increase-btn"
+                                            style="width: 24px; height: 24px;" title="Evoluir Atributo"
+                                            data-attribute="<%= attr.key %>"
+                                            onclick="increaseAttribute('<%= attr.key %>')">
+                                            <i class="bi bi-plus"></i>
+                                        </button>
+                                    </div>
+                                </li>
+                                <% }); %>
+                    </ul>
+
+                    <!-- Save/Cancel Buttons (Hidden by default) -->
+                    <div id="saveControls" class="mt-3" style="display: none;">
+                        <div class="alert alert-info border-0 mb-2">
+                            <small><strong>Pontos gastos:</strong> <span id="pointsSpent">0</span></small>
                         </div>
-                        <div class="card-body">
-                            <% if (availablePowers && availablePowers.length> 0) { %>
-                                <div class="row">
-                                    <% availablePowers.forEach(power=> { %>
-                                        <div class="col-md-6 mb-3">
-                                            <div class="card h-100 border-success shadow-sm">
-                                                <div class="card-body p-3">
-                                                    <div class="d-flex justify-content-between align-items-start mb-2">
-                                                        <h6 class="card-title fw-bold mb-0 text-success">
-                                                            <%= power.name %>
-                                                        </h6>
-                                                        <% if (power.discipline) { %>
-                                                            <span class="badge"
-                                                                style="background-color: <%= power.discipline.color_theme %>">
-                                                                <%= power.discipline.name %>
-                                                            </span>
-                                                            <% } %>
-                                                    </div>
-                                                    <p class="card-text small text-muted mb-3">
-                                                        <%= power.description %>
-                                                    </p>
-                                                    <form action="/my/characters/<%= character.id %>/learn-power"
-                                                        method="POST">
-                                                        <input type="hidden" name="power_id" value="<%= power.id %>">
-                                                        <button type="submit"
-                                                            class="btn btn-sm btn-outline-success w-100">
-                                                            Aprender (Req: <%= power.required_affinity %>%)
-                                                        </button>
-                                                    </form>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <% }); %>
-                                </div>
-                                <% } else { %>
-                                    <p class="text-muted text-center py-3">Não há novos poderes disponíveis para
-                                        aprender no momento. Aumente suas afinidades!</p>
-                                    <% } %>
+                        <div class="d-grid gap-2">
+                            <button type="button" class="btn btn-success" onclick="saveChanges()">
+                                <i class="bi bi-check-circle me-2"></i>Salvar Alterações
+                            </button>
+                            <button type="button" class="btn btn-outline-secondary" onclick="cancelChanges()">
+                                <i class="bi bi-x-circle me-2"></i>Cancelar
+                            </button>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
+    </div>
 
-        <script>
-            // Original values from database
-            const originalData = {
-                strength: <%= character.strength %>,
-                dexterity: <%= character.dexterity %>,
-                constitution: <%= character.constitution %>,
-                intelligence: <%= character.intelligence %>,
-                reasoning: <%= character.reasoning %>,
-                luck: <%= character.luck %>,
-                evolution_points: <%= character.evolution_points %>
+    <!-- Affinities & Powers (Right Column) -->
+    <div class="col-md-8">
+        <!-- Affinities -->
+        <div class="card card-custom mb-4">
+            <div class="card-header bg-white fw-bold">
+                <i class="bi bi-book me-2 text-primary"></i> Afinidades com Disciplinas
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <% if (character.affinities && character.affinities.length> 0) { %>
+                        <% character.affinities.forEach(aff=> { %>
+                            <div class="col-md-6 mb-3">
+                                <div class="d-flex align-items-center mb-1">
+                                    <span class="me-2 fs-5">
+                                        <%= aff.discipline.icon || '📚' %>
+                                    </span>
+                                    <span class="fw-bold flex-grow-1">
+                                        <%= aff.discipline.name %>
+                                    </span>
+                                    <span class="badge bg-primary">
+                                        <%= aff.affinity_level %>%
+                                    </span>
+                                </div>
+                                <div class="progress" style="height: 8px;">
+                                    <div class="progress-bar" role="progressbar"
+                                        style="width: <%= aff.affinity_level %>%; background-color: <%= aff.discipline.color_theme %>;"
+                                        aria-valuenow="<%= aff.affinity_level %>" aria-valuemin="0" aria-valuemax="100">
+                                    </div>
+                                </div>
+                            </div>
+                            <% }); %>
+                                <% } else { %>
+                                    <p class="text-muted">Nenhuma afinidade registrada.</p>
+                                    <% } %>
+                </div>
+            </div>
+        </div>
+
+        <!-- Learned Powers -->
+        <div class="card card-custom mb-4">
+            <div class="card-header bg-white fw-bold">
+                <i class="bi bi-lightning-charge me-2 text-warning"></i> Poderes Adquiridos
+            </div>
+            <div class="card-body">
+                <% if (character.powers && character.powers.length> 0) { %>
+                    <div class="row">
+                        <% character.powers.forEach(power=> { %>
+                            <div class="col-md-6 mb-3">
+                                <div class="card h-100 border-0 shadow-sm" style="background-color: #f8f9fa;">
+                                    <div class="card-body p-3">
+                                        <div class="d-flex justify-content-between align-items-start mb-2">
+                                            <h6 class="card-title fw-bold mb-0">
+                                                <%= power.name %>
+                                            </h6>
+                                            <% if (power.discipline) { %>
+                                                <span class="badge"
+                                                    style="background-color: <%= power.discipline.color_theme %>">
+                                                    <%= power.discipline.name %>
+                                                </span>
+                                                <% } %>
+                                        </div>
+                                        <p class="card-text small text-muted mb-0">
+                                            <%= power.description %>
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+                            <% }); %>
+                    </div>
+                    <% } else { %>
+                        <p class="text-muted text-center py-3">Você ainda não aprendeu nenhum poder
+                            especial.</p>
+                        <% } %>
+            </div>
+        </div>
+
+        <!-- Available Powers -->
+        <div class="card card-custom">
+            <div class="card-header bg-white fw-bold">
+                <i class="bi bi-unlock me-2 text-success"></i> Poderes Disponíveis para Aprender
+            </div>
+            <div class="card-body">
+                <% if (availablePowers && availablePowers.length> 0) { %>
+                    <div class="row">
+                        <% availablePowers.forEach(power=> { %>
+                            <div class="col-md-6 mb-3">
+                                <div class="card h-100 border-success shadow-sm">
+                                    <div class="card-body p-3">
+                                        <div class="d-flex justify-content-between align-items-start mb-2">
+                                            <h6 class="card-title fw-bold mb-0 text-success">
+                                                <%= power.name %>
+                                            </h6>
+                                            <% if (power.discipline) { %>
+                                                <span class="badge"
+                                                    style="background-color: <%= power.discipline.color_theme %>">
+                                                    <%= power.discipline.name %>
+                                                </span>
+                                                <% } %>
+                                        </div>
+                                        <p class="card-text small text-muted mb-3">
+                                            <%= power.description %>
+                                        </p>
+                                        <form action="/my/characters/<%= character.id %>/learn-power" method="POST">
+                                            <input type="hidden" name="power_id" value="<%= power.id %>">
+                                            <button type="submit" class="btn btn-sm btn-outline-success w-100">
+                                                Aprender (Req: <%= power.required_affinity %>%)
+                                            </button>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                            <% }); %>
+                    </div>
+                    <% } else { %>
+                        <p class="text-muted text-center py-3">Não há novos poderes disponíveis para
+                            aprender no momento. Aumente suas afinidades!</p>
+                        <% } %>
+            </div>
+        </div>
+    </div>
+</div>
+</div>
+
+<script>
+    // Original values from database
+    const originalData = {
+        strength: <%= character.strength %>,
+        dexterity: <%= character.dexterity %>,
+        constitution: <%= character.constitution %>,
+        intelligence: <%= character.intelligence %>,
+        reasoning: <%= character.reasoning %>,
+        luck: <%= character.luck %>,
+        evolution_points: <%= character.evolution_points %>
     };
 
-            // Current staged values
-            let currentData = { ...originalData };
-            let changes = {};
+    // Current staged values
+    let currentData = { ...originalData };
+    let changes = {};
 
-            function updateUI() {
-                // Update attribute displays
-                for (const attr in currentData) {
-                    if (attr !== 'evolution_points') {
-                        const element = document.getElementById(`attr-${attr}`);
-                        if (element) {
-                            element.textContent = currentData[attr];
-                        }
-                    }
+    function updateUI() {
+        // Update attribute displays
+        for (const attr in currentData) {
+            if (attr !== 'evolution_points') {
+                const element = document.getElementById(`attr-${attr}`);
+                if (element) {
+                    element.textContent = currentData[attr];
                 }
-
-                // Update evolution points display
-                const pointsElement = document.querySelector('.alert.alert-light.border strong');
-                if (pointsElement) {
-                    pointsElement.textContent = currentData.evolution_points;
-                }
-
-                // Calculate points spent
-                let pointsSpent = 0;
-                for (const attr in changes) {
-                    pointsSpent += changes[attr];
-                }
-
-                // Update points spent display
-                document.getElementById('pointsSpent').textContent = pointsSpent;
-
-                // Show/hide save controls
-                const saveControls = document.getElementById('saveControls');
-                if (pointsSpent > 0) {
-                    saveControls.style.display = 'block';
-                } else {
-                    saveControls.style.display = 'none';
-                }
-
-                // Enable/disable increase buttons
-                const increaseButtons = document.querySelectorAll('.increase-btn');
-                increaseButtons.forEach(btn => {
-                    if (currentData.evolution_points <= 0) {
-                        btn.disabled = true;
-                        btn.classList.remove('btn-outline-success');
-                        btn.classList.add('btn-outline-secondary');
-                        btn.style.opacity = '0.5';
-                    } else {
-                        btn.disabled = false;
-                        btn.classList.remove('btn-outline-secondary');
-                        btn.classList.add('btn-outline-success');
-                        btn.style.opacity = '1';
-                    }
-                });
             }
+        }
 
-            function increaseAttribute(attr) {
-                if (currentData.evolution_points <= 0) return;
+        // Update evolution points display
+        const pointsElement = document.querySelector('.alert.alert-light.border strong');
+        if (pointsElement) {
+            pointsElement.textContent = currentData.evolution_points;
+        }
 
-                // Increase attribute
-                currentData[attr]++;
-                currentData.evolution_points--;
+        // Calculate points spent
+        let pointsSpent = 0;
+        for (const attr in changes) {
+            pointsSpent += changes[attr];
+        }
 
-                // Track change
-                if (!changes[attr]) {
-                    changes[attr] = 0;
-                }
-                changes[attr]++;
+        // Update points spent display
+        document.getElementById('pointsSpent').textContent = pointsSpent;
 
-                updateUI();
+        // Show/hide save controls
+        const saveControls = document.getElementById('saveControls');
+        if (pointsSpent > 0) {
+            saveControls.style.display = 'block';
+        } else {
+            saveControls.style.display = 'none';
+        }
+
+        // Enable/disable increase buttons
+        const increaseButtons = document.querySelectorAll('.increase-btn');
+        increaseButtons.forEach(btn => {
+            if (currentData.evolution_points <= 0) {
+                btn.disabled = true;
+                btn.classList.remove('btn-outline-success');
+                btn.classList.add('btn-outline-secondary');
+                btn.style.opacity = '0.5';
+            } else {
+                btn.disabled = false;
+                btn.classList.remove('btn-outline-secondary');
+                btn.classList.add('btn-outline-success');
+                btn.style.opacity = '1';
             }
+        });
+    }
 
-            function cancelChanges() {
-                // Reset to original values
+    function increaseAttribute(attr) {
+        if (currentData.evolution_points <= 0) return;
+
+        // Increase attribute
+        currentData[attr]++;
+        currentData.evolution_points--;
+
+        // Track change
+        if (!changes[attr]) {
+            changes[attr] = 0;
+        }
+        changes[attr]++;
+
+        updateUI();
+    }
+
+    function cancelChanges() {
+        // Reset to original values
+        currentData = { ...originalData };
+        changes = {};
+        updateUI();
+    }
+
+    async function saveChanges() {
+        try {
+            const response = await fetch('/my/characters/<%= character.id %>/attributes/save', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ changes })
+            });
+
+            const result = await response.json();
+
+            if (result.success) {
+                // Update original data with saved values
+                Object.assign(originalData, result.character);
                 currentData = { ...originalData };
                 changes = {};
                 updateUI();
+
+                // Show success message
+                alert(result.message);
+            } else {
+                alert(result.error || 'Erro ao salvar atributos');
             }
+        } catch (error) {
+            console.error('Error:', error);
+            alert('Erro ao salvar atributos');
+        }
+    }
 
-            async function saveChanges() {
-                try {
-                    const response = await fetch('/my/characters/<%= character.id %>/attributes/save', {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json'
-                        },
-                        body: JSON.stringify({ changes })
-                    });
+    // Initialize UI on page load
+    updateUI();
+</script>
 
-                    const result = await response.json();
-
-                    if (result.success) {
-                        // Update original data with saved values
-                        Object.assign(originalData, result.character);
-                        currentData = { ...originalData };
-                        changes = {};
-                        updateUI();
-
-                        // Show success message
-                        alert(result.message);
-                    } else {
-                        alert(result.error || 'Erro ao salvar atributos');
-                    }
-                } catch (error) {
-                    console.error('Error:', error);
-                    alert('Erro ao salvar atributos');
-                }
-            }
-
-            // Initialize UI on page load
-            updateUI();
-        </script>
-
-        <%- include('../../partials/footer') %>
+<%- include('../../partials/footer') %>

@@ -1,93 +1,72 @@
-<%- include('../../partials/admin/header') %>
-    <%- include('../../partials/admin/navbar', { page: 'disciplines' }) %>
+<h1 class="admin-page-title">Disciplinas</h1>
 
-        <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4 main-content">
-            <div
-                class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
-                <h1 class="h2 text-primary fw-bold">Gerenciar Disciplinas</h1>
-                <div class="btn-toolbar mb-2 mb-md-0">
-                    <a href="/admin/disciplines/new" class="btn btn-sm btn-magic">
-                        <i class="bi bi-plus-circle"></i> Nova Disciplina
-                    </a>
-                </div>
-            </div>
+<p class="admin-page-subtitle">
+    Gerencie as disciplinas utilizadas nas aventuras, questões e afinidades dos personagens.
+</p>
 
-            <div class="card card-custom">
-                <div class="card-body">
-                    <div class="table-responsive">
-                        <table class="table table-hover table-custom align-middle">
-                            <thead>
-                                <tr>
-                                    <th>Nome</th>
-                                    <th>Código</th>
-                                    <th>Nível Escolar</th>
-                                    <th>Cor</th>
-                                    <th>Status</th>
-                                    <th>Ações</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <% if (disciplines.length===0) { %>
-                                    <tr>
-                                        <td colspan="6" class="text-center py-4 text-muted">
-                                            Nenhuma disciplina cadastrada.
-                                        </td>
-                                    </tr>
-                                    <% } else { %>
-                                        <% disciplines.forEach(d=> { %>
-                                            <tr>
-                                                <td class="fw-bold">
-                                                    <span class="me-2">
-                                                        <%= d.icon || '📚' %>
-                                                    </span>
-                                                    <%= d.name %>
-                                                </td>
-                                                <td><code><%= d.code %></code></td>
-                                                <td>
-                                                    <% if (d.school_level==='fundamental_1' ) { %>
-                                                        Fundamental I
-                                                        <% } else if (d.school_level==='fundamental_2' ) { %>
-                                                            Fundamental II
-                                                            <% } else { %>
-                                                                Ensino Médio
-                                                                <% } %>
-                                                </td>
-                                                <td>
-                                                    <div
-                                                        style="width: 25px; height: 25px; background-color: <%= d.color_theme %>; border-radius: 5px; border: 1px solid #ddd;">
-                                                    </div>
-                                                </td>
-                                                <td>
-                                                    <% if (d.is_active) { %>
-                                                        <span class="badge bg-success badge-role">Ativa</span>
-                                                        <% } else { %>
-                                                            <span class="badge bg-secondary badge-role">Inativa</span>
-                                                            <% } %>
-                                                </td>
-                                                <td>
-                                                    <div class="btn-group btn-group-sm">
-                                                        <a href="/admin/disciplines/<%= d.id %>/edit"
-                                                            class="btn btn-outline-primary" title="Editar">
-                                                            <i class="bi bi-pencil"></i>
-                                                        </a>
-                                                        <form action="/admin/disciplines/<%= d.id %>/delete"
-                                                            method="POST" class="d-inline"
-                                                            onsubmit="return confirm('Tem certeza que deseja excluir esta disciplina?');">
-                                                            <button type="submit" class="btn btn-outline-danger"
-                                                                title="Excluir">
-                                                                <i class="bi bi-trash"></i>
-                                                            </button>
-                                                        </form>
-                                                    </div>
-                                                </td>
-                                            </tr>
-                                            <% }); %>
+<section class="admin-table-card">
+    <div class="admin-table-header">
+        <h2>Lista de disciplinas</h2>
+        <a href="/admin/disciplines/new" class="admin-card-link">+ Nova disciplina</a>
+    </div>
+
+    <table class="admin-table">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Nome</th>
+                <th>Código / Sigla</th>
+                <th>Ativa?</th>
+                <th>Ações</th>
+            </tr>
+        </thead>
+        <tbody>
+            <% if (disciplines && disciplines.length> 0) { %>
+                <% disciplines.forEach(d=> { %>
+                    <tr>
+                        <td>
+                            <%= d.id %>
+                        </td>
+                        <td>
+                            <%= d.name %>
+                        </td>
+
+                        <!-- Campo opcional, caso exista ex: d.code ou d.short_name -->
+                        <td>
+                            <% if (typeof d.code !=='undefined' && d.code) { %>
+                                <%= d.code %>
+                                    <% } else if (typeof d.short_name !=='undefined' && d.short_name) { %>
+                                        <%= d.short_name %>
+                                            <% } else { %>
+                                                -
                                                 <% } %>
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-            </div>
-        </main>
+                        </td>
 
-        <%- include('../../partials/admin/footer') %>
+                        <!-- Campo opcional is_active -->
+                        <td>
+                            <% if (typeof d.is_active !=='undefined' ) { %>
+                                <%= d.is_active ? 'Sim' : 'Não' %>
+                                    <% } else { %>
+                                        -
+                                        <% } %>
+                        </td>
+
+                        <td>
+                            <a href="/admin/disciplines/<%= d.id %>/edit" class="admin-table-action">Editar</a>
+                            <a href="/admin/disciplines/<%= d.id %>/delete"
+                                class="admin-table-action admin-table-action-danger">
+                                Remover
+                            </a>
+                        </td>
+                    </tr>
+                    <% }) %>
+                        <% } else { %>
+                            <tr>
+                                <td colspan="5" class="admin-table-empty">
+                                    Nenhuma disciplina cadastrada.
+                                </td>
+                            </tr>
+                            <% } %>
+        </tbody>
+    </table>
+</section>

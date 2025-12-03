@@ -2,137 +2,62 @@ const Question = require('../models/Question');
 const Discipline = require('../models/Discipline');
 const Adventure = require('../models/Adventure');
 
-const QuestionController = {
-    /**
-     * List all questions with filters
-     */
-    list: async (req, res) => {
+module.exports = {
+
+    // GET /admin/questions
+    async index(req, res) {
         try {
-            const { discipline_id, adventure_id, school_year, difficulty } = req.query;
-
-            // Build filter object
-            const where = {};
-            if (discipline_id) where.discipline_id = discipline_id;
-            if (adventure_id) where.adventure_id = adventure_id;
-            if (school_year) where.school_year = school_year;
-            if (difficulty) where.difficulty = parseInt(difficulty);
-
             const questions = await Question.findAll({
-                where,
                 include: [
-                    {
-                        model: Discipline,
-                        as: 'discipline'
-                    },
-                    {
-                        model: Adventure,
-                        as: 'adventure',
-                        required: false
-                    }
+                    { model: Discipline, as: 'discipline' },
+                    { model: Adventure, as: 'adventure' }
                 ],
-                order: [['createdAt', 'DESC']]
+                order: [['id', 'ASC']]
             });
 
-            // Get all disciplines and adventures for filters
-            const disciplines = await Discipline.findAll({
-                where: { is_active: true },
-                order: [['name', 'ASC']]
-            });
-            const adventures = await Adventure.findAll({
-                where: { is_active: true },
-                order: [['title', 'ASC']]
+            return res.render('admin/questions/index', {
+                title: 'Questões - Painel Admin',
+                questions
             });
 
-            res.render('admin/questions/index', {
-                questions,
-                disciplines,
-                adventures,
-                filters: { discipline_id, adventure_id, school_year, difficulty },
-                user: req.session.user
-            });
-        } catch (error) {
-            console.error(error);
-            res.status(500).send('Erro ao listar questões');
+        } catch (err) {
+            console.error(err);
+            return res.status(500).send("Erro ao carregar questões");
         }
     },
 
-    /**
-     * Show create form
-     */
-    createPage: async (req, res) => {
-        try {
-            const disciplines = await Discipline.findAll({
-                where: { is_active: true },
-                order: [['name', 'ASC']]
-            });
-            const adventures = await Adventure.findAll({
-                where: { is_active: true },
-                order: [['title', 'ASC']]
-            });
 
-            res.render('admin/questions/form', {
-                disciplines,
-                adventures,
-                error: null,
-                user: req.session.user,
-                question: null
-            });
-        } catch (error) {
-            console.error(error);
-            res.status(500).send('Erro ao carregar formulário');
-        }
+    // GET /admin/questions/new
+    new(req, res) {
+        return res.render('admin/questions/new', {
+            title: 'Nova Questão'
+        });
     },
 
-    /**
-     * Create new question
-     */
-    create: async (req, res) => {
-        const {
-            discipline_id, adventure_id, school_year, difficulty, question_text,
-            option_a, option_b, option_c, option_d,
-            correct_option, explanation
-        } = req.body;
 
+    // POST /admin/questions
+    async create(req, res) {
         try {
+            const { question_text, correct_answer, discipline_id, adventure_id } = req.body;
+
             await Question.create({
-                discipline_id,
-                adventure_id: adventure_id || null,
-                school_year,
-                difficulty: parseInt(difficulty),
                 question_text,
-                option_a,
-                option_b,
-                option_c,
-                option_d,
-                correct_option,
-                explanation
+                correct_answer,
+                discipline_id,
+                adventure_id
             });
 
-            res.redirect('/admin/questions');
-        } catch (error) {
-            console.error(error);
-            const disciplines = await Discipline.findAll({
-                where: { is_active: true },
-                order: [['name', 'ASC']]
-            });
-            const adventures = await Adventure.findAll({
-                where: { is_active: true },
-                order: [['title', 'ASC']]
-            });
-            res.render('admin/questions/form', {
-                disciplines,
-                adventures,
-                error: 'Erro ao criar questão',
-                user: req.session.user,
-                question: null
-            });
+            return res.redirect('/admin/questions');
+
+        } catch (err) {
+            console.error(err);
+            return res.status(500).send("Erro ao criar questão");
         }
     },
 
-    /**
-     * Show edit form
-     */
-    editPage: async (req, res) => {
+
+    // GET /admin/questions/:id/edit
+    async edit(req, res) {
         try {
             const question = await Question.findByPk(req.params.id, {
                 include: [
@@ -141,83 +66,54 @@ const QuestionController = {
                 ]
             });
 
-            if (!question) {
-                return res.redirect('/admin/questions');
-            }
+            if (!question)
+                return res.status(404).send("Questão não encontrada");
 
-            const disciplines = await Discipline.findAll({
-                where: { is_active: true },
-                order: [['name', 'ASC']]
-            });
-            const adventures = await Adventure.findAll({
-                where: { is_active: true },
-                order: [['title', 'ASC']]
+            return res.render('admin/questions/edit', {
+                title: 'Editar Questão',
+                question
             });
 
-            res.render('admin/questions/form', {
-                question,
-                disciplines,
-                adventures,
-                error: null,
-                user: req.session.user
-            });
-        } catch (error) {
-            console.error(error);
-            res.redirect('/admin/questions');
+        } catch (err) {
+            console.error(err);
+            return res.status(500).send("Erro ao carregar questão");
         }
     },
 
-    /**
-     * Update question
-     */
-    update: async (req, res) => {
-        const { id } = req.params;
-        const {
-            discipline_id, adventure_id, school_year, difficulty, question_text,
-            option_a, option_b, option_c, option_d,
-            correct_option, explanation
-        } = req.body;
 
+    // POST /admin/questions/:id/edit
+    async update(req, res) {
         try {
-            const question = await Question.findByPk(id);
-            if (!question) {
-                return res.redirect('/admin/questions');
-            }
+            const { question_text, correct_answer, discipline_id, adventure_id } = req.body;
 
-            question.discipline_id = discipline_id;
-            question.adventure_id = adventure_id || null;
-            question.school_year = school_year;
-            question.difficulty = parseInt(difficulty);
-            question.question_text = question_text;
-            question.option_a = option_a;
-            question.option_b = option_b;
-            question.option_c = option_c;
-            question.option_d = option_d;
-            question.correct_option = correct_option;
-            question.explanation = explanation;
+            await Question.update(
+                {
+                    question_text,
+                    correct_answer,
+                    discipline_id,
+                    adventure_id
+                },
+                { where: { id: req.params.id } }
+            );
 
-            await question.save();
+            return res.redirect('/admin/questions');
 
-            res.redirect('/admin/questions');
-        } catch (error) {
-            console.error(error);
-            res.status(500).send('Erro ao atualizar questão');
+        } catch (err) {
+            console.error(err);
+            return res.status(500).send("Erro ao atualizar questão");
         }
     },
 
-    /**
-     * Delete question
-     */
-    delete: async (req, res) => {
-        const { id } = req.params;
+
+    // GET /admin/questions/:id/delete
+    async delete(req, res) {
         try {
-            await Question.destroy({ where: { id } });
-            res.redirect('/admin/questions');
-        } catch (error) {
-            console.error(error);
-            res.status(500).send('Erro ao excluir questão');
+            await Question.destroy({ where: { id: req.params.id } });
+            return res.redirect('/admin/questions');
+
+        } catch (err) {
+            console.error(err);
+            return res.status(500).send("Erro ao excluir questão");
         }
     }
 };
-
-module.exports = QuestionController;

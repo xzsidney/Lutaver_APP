@@ -1,31 +1,25 @@
 const express = require('express');
 const router = express.Router();
-const NpcController = require('../controllers/NpcController');
-const { authMiddleware, teacherOrAdminMiddleware } = require('../middlewares/auth');
 
-// Protect all routes
-router.use(authMiddleware);
-router.use(teacherOrAdminMiddleware);
+const { adminMiddleware } = require('../middlewares/authMiddleware');
+const AdminNpcController = require('../controllers/AdminNpcController');
 
-// List all NPCs
-router.get('/', NpcController.index);
+// LISTA – /admin/npcs
+router.get('/', adminMiddleware, AdminNpcController.index);
 
-// Create NPC form
-router.get('/new', NpcController.newForm);
+// NOVO – /admin/npcs/new
+router.get('/new', adminMiddleware, AdminNpcController.create);
 
-// Save new NPC
-router.post('/', NpcController.create);
+// SALVAR – POST /admin/npcs
+router.post('/', adminMiddleware, AdminNpcController.store);
 
-// Show NPC details
-router.get('/:id', NpcController.show);
+// EDITAR – /admin/npcs/:id/edit
+router.get('/:id/edit', adminMiddleware, AdminNpcController.edit);
 
-// Edit NPC form
-router.get('/:id/edit', NpcController.editForm);
+// ATUALIZAR – POST /admin/npcs/:id
+router.post('/:id', adminMiddleware, AdminNpcController.update);
 
-// Update NPC
-router.post('/:id', NpcController.update);
-
-// Delete NPC
-router.post('/:id/delete', NpcController.destroy);
+// EXCLUIR – /admin/npcs/:id/delete
+router.get('/:id/delete', adminMiddleware, AdminNpcController.destroy);
 
 module.exports = router;

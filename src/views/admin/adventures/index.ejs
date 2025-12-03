@@ -1,109 +1,68 @@
-<%- include('../../partials/admin/header') %>
-    <%- include('../../partials/admin/navbar', { page: 'adventures' }) %>
+<h1 class="admin-page-title">Aventuras</h1>
 
-        <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4 main-content">
-            <div
-                class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
-                <h1 class="h2 text-primary fw-bold">Gerenciar Aventuras</h1>
-                <div class="btn-toolbar mb-2 mb-md-0">
-                    <a href="/admin/adventures/new" class="btn btn-sm btn-magic">
-                        <i class="bi bi-plus-circle"></i> Nova Aventura
-                    </a>
-                </div>
-            </div>
+<p class="admin-page-subtitle">
+    Gerencie as aventuras que os alunos irão jogar na Torre do Saber.
+    Cada aventura pode estar ligada a uma disciplina e ter nível de dificuldade.
+</p>
 
-            <div class="card card-custom">
-                <div class="card-body">
-                    <div class="table-responsive">
-                        <table class="table table-hover table-custom align-middle">
-                            <thead>
-                                <tr>
-                                    <th>Título</th>
-                                    <th>Disciplina</th>
-                                    <th>Ano Escolar</th>
-                                    <th>Dificuldade</th>
-                                    <th>Recompensa</th>
-                                    <th>Status</th>
-                                    <th>Ações</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <% if (adventures.length===0) { %>
-                                    <tr>
-                                        <td colspan="7" class="text-center py-4 text-muted">
-                                            Nenhuma aventura cadastrada.
-                                        </td>
-                                    </tr>
+<section class="admin-table-card">
+    <div class="admin-table-header">
+        <h2>Lista de aventuras</h2>
+        <a href="/admin/adventures/new" class="admin-card-link">+ Nova aventura</a>
+    </div>
+
+    <table class="admin-table">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Nome</th>
+                <th>Disciplina</th>
+                <th>Dificuldade</th>
+                <th>Nível</th>
+                <th>Ações</th>
+            </tr>
+        </thead>
+        <tbody>
+            <% if (adventures && adventures.length> 0) { %>
+                <% adventures.forEach(a=> { %>
+                    <tr>
+                        <td>
+                            <%= a.id %>
+                        </td>
+                        <td>
+                            <%= a.name %>
+                        </td>
+                        <td>
+                            <%= a.discipline ? a.discipline.name : '-' %>
+                        </td>
+                        <td>
+                            <% if (typeof a.difficulty !=='undefined' && a.difficulty !==null) { %>
+                                <%= a.difficulty %>/10
                                     <% } else { %>
-                                        <% adventures.forEach(adv=> { %>
-                                            <tr>
-                                                <td class="fw-bold">
-                                                    <%= adv.title %>
-                                                </td>
-                                                <td>
-                                                    <% if (adv.discipline) { %>
-                                                        <span class="badge"
-                                                            style="background-color: <%= adv.discipline.color_theme %>; color: white;">
-                                                            <%= adv.discipline.name %>
-                                                        </span>
-                                                        <% } else { %>
-                                                            <span class="text-muted">-</span>
-                                                            <% } %>
-                                                </td>
-                                                <td>
-                                                    <%= adv.school_year %>º Ano
-                                                </td>
-                                                <td>
-                                                    <% let diffLabel='' ; let diffColor='' ; if (adv.difficulty===1) {
-                                                        diffLabel='Muito Fácil' ; diffColor='bg-success' ; } else if
-                                                        (adv.difficulty===2) { diffLabel='Fácil' ; diffColor='bg-info' ;
-                                                        } else if (adv.difficulty===3) { diffLabel='Médio' ;
-                                                        diffColor='bg-warning text-dark' ; } else if
-                                                        (adv.difficulty===4) { diffLabel='Difícil' ;
-                                                        diffColor='bg-danger' ; } else { diffLabel='Muito Difícil' ;
-                                                        diffColor='bg-dark' ; } %>
-                                                        <span class="badge <%= diffColor %>">
-                                                            <%= diffLabel %>
-                                                        </span>
-                                                </td>
-                                                <td>
-                                                    <%= adv.reward_xp %> XP
-                                                </td>
-                                                <td>
-                                                    <% if (adv.is_active) { %>
-                                                        <span class="badge bg-success badge-role">Ativa</span>
-                                                        <% } else { %>
-                                                            <span class="badge bg-secondary badge-role">Inativa</span>
-                                                            <% } %>
-                                                </td>
-                                                <td>
-                                                    <div class="btn-group btn-group-sm">
-                                                        <a href="/admin/adventures/<%= adv.id %>"
-                                                            class="btn btn-outline-info" title="Ver Detalhes">
-                                                            <i class="bi bi-eye"></i>
-                                                        </a>
-                                                        <a href="/admin/adventures/<%= adv.id %>/edit"
-                                                            class="btn btn-outline-primary" title="Editar">
-                                                            <i class="bi bi-pencil"></i>
-                                                        </a>
-                                                        <form action="/admin/adventures/<%= adv.id %>/delete"
-                                                            method="POST" class="d-inline"
-                                                            onsubmit="return confirm('Tem certeza que deseja excluir esta aventura?');">
-                                                            <button type="submit" class="btn btn-outline-danger"
-                                                                title="Excluir">
-                                                                <i class="bi bi-trash"></i>
-                                                            </button>
-                                                        </form>
-                                                    </div>
-                                                </td>
-                                            </tr>
-                                            <% }); %>
-                                                <% } %>
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-            </div>
-        </main>
-
-        <%- include('../../partials/admin/footer') %>
+                                        -
+                                        <% } %>
+                        </td>
+                        <td>
+                            <% if (typeof a.level !=='undefined' && a.level !==null) { %>
+                                <%= a.level %>
+                                    <% } else { %>
+                                        -
+                                        <% } %>
+                        </td>
+                        <td>
+                            <a href="/admin/adventures/<%= a.id %>/edit" class="admin-table-action">Editar</a>
+                            <a href="/admin/adventures/<%= a.id %>/delete"
+                                class="admin-table-action admin-table-action-danger">Remover</a>
+                        </td>
+                    </tr>
+                    <% }) %>
+                        <% } else { %>
+                            <tr>
+                                <td colspan="6" class="admin-table-empty">
+                                    Nenhuma aventura cadastrada.
+                                </td>
+                            </tr>
+                            <% } %>
+        </tbody>
+    </table>
+</section>

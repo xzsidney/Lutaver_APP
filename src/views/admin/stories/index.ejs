@@ -1,0 +1,84 @@
+<h1 class="admin-page-title">Histórias</h1>
+
+<p class="admin-page-subtitle">
+    Gerencie as histórias de narrativa solo usadas no modo Storyteller do Lutaver.
+</p>
+
+<section class="admin-table-card">
+    <div class="admin-table-header">
+        <h2>Lista de histórias</h2>
+        <a href="/admin/stories/new" class="admin-card-link">+ Nova história</a>
+    </div>
+
+    <table class="admin-table">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Título</th>
+                <th>Série / Ano</th>
+                <th>Ativa?</th>
+                <th>Recompensa (XP / Moedas)</th>
+                <th>Item de recompensa</th>
+                <th>Ações</th>
+            </tr>
+        </thead>
+        <tbody>
+            <% if (stories && stories.length> 0) { %>
+                <% stories.forEach(st=> { %>
+                    <tr>
+                        <td>
+                            <%= st.id %>
+                        </td>
+
+                        <td>
+                            <%= st.title || st.name || ('História #' + st.id) %>
+                        </td>
+
+                        <td>
+                            <% if (typeof st.school_year !=='undefined' && st.school_year !==null) { %>
+                                <%= st.school_year %>º ano
+                                    <% } else { %>
+                                        -
+                                        <% } %>
+                        </td>
+
+                        <td>
+                            <% if (typeof st.is_active !=='undefined' ) { %>
+                                <%= st.is_active ? 'Sim' : 'Não' %>
+                                    <% } else { %>
+                                        -
+                                        <% } %>
+                        </td>
+
+                        <td>
+                            <% const xp=st.reward_xp || 0; const coins=st.reward_coins || 0; %>
+                                <%= xp %> XP / <%= coins %> moedas
+                        </td>
+
+                        <td>
+                            <% if (st.rewardItem) { %>
+                                <%= st.rewardItem.name %>
+                                    <% } else { %>
+                                        -
+                                        <% } %>
+                        </td>
+
+                        <td>
+                            <a href="/admin/stories/<%= st.id %>/edit" class="admin-table-action">Editar</a>
+                            <a href="/admin/stories/<%= st.id %>/delete"
+                                class="admin-table-action admin-table-action-danger">
+                                Remover
+                            </a>
+                        </td>
+                    </tr>
+                    <% }) %>
+                        <% } else { %>
+                            <tr>
+                                <td colspan="7" class="admin-table-empty">
+                                    Nenhuma história cadastrada.
+                                </td>
+                            </tr>
+                            <% } %>
+        </tbody>
+    </table>
+</section>

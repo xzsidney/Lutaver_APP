@@ -1,27 +1,25 @@
 const express = require('express');
 const router = express.Router();
+
+const { adminMiddleware } = require('../middlewares/authMiddleware');
 const EffectController = require('../controllers/EffectController');
-const { teacherOrAdminMiddleware } = require('../middlewares/auth');
 
-// Protect all routes with teacherOrAdminMiddleware
-router.use(teacherOrAdminMiddleware);
+// LISTA – /admin/effects
+router.get('/', adminMiddleware, EffectController.index);
 
-// List effects
-router.get('/', EffectController.index);
+// NOVO – /admin/effects/new
+router.get('/new', adminMiddleware, EffectController.create);
 
-// New effect form
-router.get('/new', EffectController.newForm);
+// SALVAR – POST /admin/effects
+router.post('/', adminMiddleware, EffectController.store);
 
-// Create effect
-router.post('/', EffectController.create);
+// EDITAR – /admin/effects/:id/edit
+router.get('/:id/edit', adminMiddleware, EffectController.edit);
 
-// Edit effect form
-router.get('/:id/edit', EffectController.editForm);
+// ATUALIZAR – POST /admin/effects/:id
+router.post('/:id', adminMiddleware, EffectController.update);
 
-// Update effect
-router.post('/:id', EffectController.update);
-
-// Delete effect
-router.post('/:id/delete', EffectController.destroy);
+// EXCLUIR – /admin/effects/:id/delete
+router.get('/:id/delete', adminMiddleware, EffectController.destroy);
 
 module.exports = router;

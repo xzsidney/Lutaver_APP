@@ -1,152 +1,91 @@
-<%- include('../../partials/admin/header') %>
-    <%- include('../../partials/admin/navbar', { page: 'questions' }) %>
+<h1 class="admin-page-title">Questões</h1>
 
-        <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4 main-content">
-            <div
-                class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
-                <h1 class="h2 text-primary fw-bold">Gerenciar Questões</h1>
-                <div class="btn-toolbar mb-2 mb-md-0">
-                    <a href="/admin/questions/new" class="btn btn-sm btn-magic">
-                        <i class="bi bi-plus-circle"></i> Nova Questão
-                    </a>
-                </div>
-            </div>
+<p class="admin-page-subtitle">
+    Gerencie o banco de questões usadas nos quizzes e aventuras da Torre do Saber.
+</p>
 
-            <!-- Filters -->
-            <div class="card card-custom mb-4">
-                <div class="card-body py-3">
-                    <form action="/admin/questions" method="GET" class="row g-3 align-items-end">
-                        <div class="col-md-3">
-                            <label for="discipline_id" class="form-label fw-bold small">Disciplina</label>
-                            <select class="form-select form-select-sm" id="discipline_id" name="discipline_id">
-                                <option value="">Todas</option>
-                                <% disciplines.forEach(d=> { %>
-                                    <option value="<%= d.id %>" <%=(filters.discipline_id==d.id) ? 'selected' : '' %>>
-                                        <%= d.name %>
-                                    </option>
-                                    <% }); %>
-                            </select>
-                        </div>
-                        <div class="col-md-3">
-                            <label for="adventure_id" class="form-label fw-bold small">Aventura</label>
-                            <select class="form-select form-select-sm" id="adventure_id" name="adventure_id">
-                                <option value="">Todas</option>
-                                <% adventures.forEach(adv=> { %>
-                                    <option value="<%= adv.id %>" <%=(filters.adventure_id==adv.id) ? 'selected' : '' %>
-                                        ><%= adv.title %>
-                                    </option>
-                                    <% }); %>
-                            </select>
-                        </div>
-                        <div class="col-md-2">
-                            <label for="school_year" class="form-label fw-bold small">Ano</label>
-                            <select class="form-select form-select-sm" id="school_year" name="school_year">
-                                <option value="">Todos</option>
-                                <% for(let i=1; i<=9; i++) { %>
-                                    <option value="<%= i %>" <%=(filters.school_year==i) ? 'selected' : '' %>><%= i %>º
-                                            Ano</option>
-                                    <% } %>
-                            </select>
-                        </div>
-                        <div class="col-md-2">
-                            <label for="difficulty" class="form-label fw-bold small">Dificuldade</label>
-                            <select class="form-select form-select-sm" id="difficulty" name="difficulty">
-                                <option value="">Todas</option>
-                                <option value="1" <%=(filters.difficulty==1) ? 'selected' : '' %>>Muito Fácil</option>
-                                <option value="2" <%=(filters.difficulty==2) ? 'selected' : '' %>>Fácil</option>
-                                <option value="3" <%=(filters.difficulty==3) ? 'selected' : '' %>>Médio</option>
-                                <option value="4" <%=(filters.difficulty==4) ? 'selected' : '' %>>Difícil</option>
-                                <option value="5" <%=(filters.difficulty==5) ? 'selected' : '' %>>Muito Difícil</option>
-                            </select>
-                        </div>
-                        <div class="col-md-2">
-                            <button type="submit" class="btn btn-sm btn-primary w-100">Filtrar</button>
-                        </div>
-                    </form>
-                </div>
-            </div>
+<section class="admin-table-card">
+    <div class="admin-table-header">
+        <h2>Lista de questões</h2>
+        <a href="/admin/questions/new" class="admin-card-link">+ Nova questão</a>
+    </div>
 
-            <div class="card card-custom">
-                <div class="card-body">
-                    <div class="table-responsive">
-                        <table class="table table-hover table-custom align-middle">
-                            <thead>
-                                <tr>
-                                    <th style="width: 40%">Enunciado</th>
-                                    <th>Disciplina</th>
-                                    <th>Ano</th>
-                                    <th>Dificuldade</th>
-                                    <th>Ações</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <% if (questions.length===0) { %>
-                                    <tr>
-                                        <td colspan="5" class="text-center py-4 text-muted">
-                                            Nenhuma questão encontrada.
-                                        </td>
-                                    </tr>
-                                    <% } else { %>
-                                        <% questions.forEach(q=> { %>
-                                            <tr>
-                                                <td>
-                                                    <div class="text-truncate" style="max-width: 300px;"
-                                                        title="<%= q.question_text %>">
-                                                        <%= q.question_text %>
-                                                    </div>
-                                                    <% if (q.adventure) { %>
-                                                        <small class="text-muted"><i class="bi bi-map"></i>
-                                                            <%= q.adventure.title %>
-                                                        </small>
-                                                        <% } %>
-                                                </td>
-                                                <td>
-                                                    <% if (q.discipline) { %>
-                                                        <span class="badge"
-                                                            style="background-color: <%= q.discipline.color_theme %>; color: white;">
-                                                            <%= q.discipline.name %>
-                                                        </span>
-                                                        <% } else { %>
-                                                            -
-                                                            <% } %>
-                                                </td>
-                                                <td>
-                                                    <%= q.school_year %>º
-                                                </td>
-                                                <td>
-                                                    <% let diffColor='bg-secondary' ; if (q.difficulty===1)
-                                                        diffColor='bg-success' ; else if (q.difficulty===2)
-                                                        diffColor='bg-info' ; else if (q.difficulty===3)
-                                                        diffColor='bg-warning text-dark' ; else if (q.difficulty===4)
-                                                        diffColor='bg-danger' ; else diffColor='bg-dark' ; %>
-                                                        <span class="badge <%= diffColor %>">
-                                                            <%= q.difficulty %>
-                                                        </span>
-                                                </td>
-                                                <td>
-                                                    <div class="btn-group btn-group-sm">
-                                                        <a href="/admin/questions/<%= q.id %>/edit"
-                                                            class="btn btn-outline-primary" title="Editar">
-                                                            <i class="bi bi-pencil"></i>
-                                                        </a>
-                                                        <form action="/admin/questions/<%= q.id %>/delete" method="POST"
-                                                            class="d-inline"
-                                                            onsubmit="return confirm('Tem certeza que deseja excluir esta questão?');">
-                                                            <button type="submit" class="btn btn-outline-danger"
-                                                                title="Excluir">
-                                                                <i class="bi bi-trash"></i>
-                                                            </button>
-                                                        </form>
-                                                    </div>
-                                                </td>
-                                            </tr>
-                                            <% }); %>
+    <table class="admin-table">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Enunciado</th>
+                <th>Disciplina</th>
+                <th>Aventura</th>
+                <th>Dificuldade</th>
+                <th>Resposta correta</th>
+                <th>Ações</th>
+            </tr>
+        </thead>
+        <tbody>
+            <% if (questions && questions.length> 0) { %>
+                <% questions.forEach(q=> { %>
+                    <tr>
+                        <td>
+                            <%= q.id %>
+                        </td>
+
+                        <!-- Enunciado (corta para não ficar gigante) -->
+                        <td>
+                            <% const text=q.question_text || q.text || q.enunciation || '' ; const short=text.length> 80
+                                ? text.substring(0, 80) + '...' : text;
+                                %>
+                                <%= short %>
+                        </td>
+
+                        <!-- Disciplina -->
+                        <td>
+                            <%= q.discipline ? q.discipline.name : '-' %>
+                        </td>
+
+                        <!-- Aventura -->
+                        <td>
+                            <%= q.adventure ? q.adventure.name : '-' %>
+                        </td>
+
+                        <!-- Dificuldade (opcional: 1–10 ou nível) -->
+                        <td>
+                            <% if (typeof q.difficulty !=='undefined' && q.difficulty !==null) { %>
+                                <%= q.difficulty %>
+                                    <% } else if (typeof q.level !=='undefined' && q.level !==null) { %>
+                                        Nível <%= q.level %>
+                                            <% } else { %>
+                                                -
                                                 <% } %>
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-            </div>
-        </main>
+                        </td>
 
-        <%- include('../../partials/admin/footer') %>
+                        <!-- Resposta correta (campo flexível) -->
+                        <td>
+                            <% if (typeof q.correct_answer !=='undefined' && q.correct_answer) { %>
+                                <%= q.correct_answer %>
+                                    <% } else if (typeof q.correct_option !=='undefined' && q.correct_option) { %>
+                                        <%= q.correct_option %>
+                                            <% } else { %>
+                                                -
+                                                <% } %>
+                        </td>
+
+                        <td>
+                            <a href="/admin/questions/<%= q.id %>/edit" class="admin-table-action">Editar</a>
+                            <a href="/admin/questions/<%= q.id %>/delete"
+                                class="admin-table-action admin-table-action-danger">
+                                Remover
+                            </a>
+                        </td>
+                    </tr>
+                    <% }) %>
+                        <% } else { %>
+                            <tr>
+                                <td colspan="7" class="admin-table-empty">
+                                    Nenhuma questão cadastrada.
+                                </td>
+                            </tr>
+                            <% } %>
+        </tbody>
+    </table>
+</section>

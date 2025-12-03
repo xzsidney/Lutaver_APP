@@ -1,28 +1,25 @@
 const express = require('express');
 const router = express.Router();
-const { authMiddleware, adminMiddleware } = require('../middlewares/auth');
+
+const { adminMiddleware } = require('../middlewares/authMiddleware');
 const DisciplineController = require('../controllers/DisciplineController');
 
-/**
- * Disciplines Management Routes (Admin Only)
- */
+// LISTA – GET /admin/disciplines
+router.get('/', adminMiddleware, DisciplineController.index);
 
-// List all disciplines (admin only)
-router.get('/', authMiddleware, adminMiddleware, DisciplineController.list);
+// FORM NOVO – GET /admin/disciplines/new
+router.get('/new', adminMiddleware, DisciplineController.create);
 
-// Create discipline form (admin only)
-router.get('/new', authMiddleware, adminMiddleware, DisciplineController.createPage);
+// SALVAR – POST /admin/disciplines
+router.post('/', adminMiddleware, DisciplineController.store);
 
-// Create discipline (admin only)
-router.post('/', authMiddleware, adminMiddleware, DisciplineController.create);
+// FORM EDIT – GET /admin/disciplines/:id/edit
+router.get('/:id/edit', adminMiddleware, DisciplineController.edit);
 
-// Edit discipline form (admin only)
-router.get('/:id/edit', authMiddleware, adminMiddleware, DisciplineController.editPage);
+// ATUALIZAR – POST /admin/disciplines/:id
+router.post('/:id', adminMiddleware, DisciplineController.update);
 
-// Update discipline (admin only)
-router.post('/:id', authMiddleware, adminMiddleware, DisciplineController.update);
-
-// Delete discipline (admin only)
-router.post('/:id/delete', authMiddleware, adminMiddleware, DisciplineController.delete);
+// EXCLUIR – GET /admin/disciplines/:id/delete
+router.get('/:id/delete', adminMiddleware, DisciplineController.destroy);
 
 module.exports = router;

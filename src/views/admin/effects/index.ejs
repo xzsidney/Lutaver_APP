@@ -1,105 +1,87 @@
-<%- include('../../partials/admin/header') %>
-    <%- include('../../partials/admin/navbar', { page: 'effects' }) %>
+<h1 class="admin-page-title">Efeitos</h1>
 
-        <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4 main-content">
-            <div
-                class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
-                <h1 class="h2 text-primary fw-bold">
-                    <i class="bi bi-stars"></i> Gerenciar Efeitos
-                </h1>
-                <div class="btn-toolbar mb-2 mb-md-0">
-                    <a href="/admin/effects/new" class="btn btn-sm btn-primary">
-                        <i class="bi bi-plus-lg"></i> Novo Efeito
-                    </a>
-                </div>
-            </div>
+<p class="admin-page-subtitle">
+    Gerencie os efeitos que podem ser aplicados por poderes, itens ou eventos nas aventuras.
+</p>
 
-            <div class="card card-custom border-0 shadow-sm">
-                <div class="card-body p-0">
-                    <div class="table-responsive">
-                        <table class="table table-hover align-middle mb-0">
-                            <thead class="bg-light">
-                                <tr>
-                                    <th scope="col" class="ps-4">Ícone</th>
-                                    <th scope="col">Nome</th>
-                                    <th scope="col">Tipo</th>
-                                    <th scope="col">Alvo</th>
-                                    <th scope="col">Duração</th>
-                                    <th scope="col" class="text-end pe-4">Ações</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <% if (effects.length===0) { %>
-                                    <tr>
-                                        <td colspan="6" class="text-center py-5 text-muted">
-                                            <i class="bi bi-stars display-4 d-block mb-3 opacity-50"></i>
-                                            Nenhum efeito cadastrado ainda.
-                                        </td>
-                                    </tr>
+<section class="admin-table-card">
+    <div class="admin-table-header">
+        <h2>Lista de efeitos</h2>
+        <a href="/admin/effects/new" class="admin-card-link">+ Novo efeito</a>
+    </div>
+
+    <table class="admin-table">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Nome</th>
+                <th>Tipo</th>
+                <th>Valor</th>
+                <th>Duração</th>
+                <th>Ativo?</th>
+                <th>Ações</th>
+            </tr>
+        </thead>
+        <tbody>
+            <% if (effects && effects.length> 0) { %>
+                <% effects.forEach(e=> { %>
+                    <tr>
+                        <td>
+                            <%= e.id %>
+                        </td>
+
+                        <td>
+                            <%= e.name %>
+                        </td>
+
+                        <td>
+                            <% if (typeof e.effect_type !=='undefined' && e.effect_type) { %>
+                                <%= e.effect_type %>
                                     <% } else { %>
-                                        <% effects.forEach(effect=> { %>
-                                            <tr>
-                                                <td class="ps-4">
-                                                    <span class="fs-4">
-                                                        <%= effect.icon %>
-                                                    </span>
-                                                </td>
-                                                <td class="fw-bold text-dark">
-                                                    <%= effect.name %>
-                                                        <% if (effect.attribute_target) { %>
-                                                            <span class="badge bg-light text-secondary border ms-1">
-                                                                <%= effect.attribute_target %>
-                                                            </span>
-                                                            <% } %>
-                                                </td>
-                                                <td>
-                                                    <% let badgeClass='bg-secondary' ; if (effect.effect_type==='dano' )
-                                                        badgeClass='bg-danger' ; if (effect.effect_type==='cura' )
-                                                        badgeClass='bg-success' ; if (effect.effect_type==='buff' )
-                                                        badgeClass='bg-info text-dark' ; if
-                                                        (effect.effect_type==='debuff' )
-                                                        badgeClass='bg-warning text-dark' ; %>
-                                                        <span class="badge <%= badgeClass %> rounded-pill">
-                                                            <%= effect.effect_type %>
-                                                        </span>
-                                                </td>
-                                                <td>
-                                                    <small class="text-muted">
-                                                        <%= effect.target_type %>
-                                                    </small>
-                                                </td>
-                                                <td>
-                                                    <% if (effect.duration_type==='instant' ) { %>
-                                                        <span class="badge bg-light text-dark border">Instantâneo</span>
-                                                        <% } else { %>
-                                                            <span class="badge bg-light text-dark border">
-                                                                <%= effect.duration_value %>
-                                                                    <%= effect.duration_type %>
-                                                            </span>
-                                                            <% } %>
-                                                </td>
-                                                <td class="text-end pe-4">
-                                                    <a href="/admin/effects/<%= effect.id %>/edit"
-                                                        class="btn btn-sm btn-outline-primary me-1" title="Editar">
-                                                        <i class="bi bi-pencil"></i>
-                                                    </a>
-                                                    <form action="/admin/effects/<%= effect.id %>/delete" method="POST"
-                                                        class="d-inline"
-                                                        onsubmit="return confirm('Tem certeza que deseja excluir este efeito?');">
-                                                        <button type="submit" class="btn btn-sm btn-outline-danger"
-                                                            title="Excluir">
-                                                            <i class="bi bi-trash"></i>
-                                                        </button>
-                                                    </form>
-                                                </td>
-                                            </tr>
-                                            <% }); %>
-                                                <% } %>
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-            </div>
-        </main>
+                                        -
+                                        <% } %>
+                        </td>
 
-        <%- include('../../partials/admin/footer') %>
+                        <td>
+                            <% if (typeof e.value !=='undefined' && e.value !==null) { %>
+                                <%= e.value %>
+                                    <% } else { %>
+                                        -
+                                        <% } %>
+                        </td>
+
+                        <td>
+                            <% if (typeof e.duration !=='undefined' && e.duration !==null) { %>
+                                <%= e.duration %>
+                                    <% } else { %>
+                                        -
+                                        <% } %>
+                        </td>
+
+                        <td>
+                            <% if (typeof e.is_active !=='undefined' ) { %>
+                                <%= e.is_active ? 'Sim' : 'Não' %>
+                                    <% } else { %>
+                                        -
+                                        <% } %>
+                        </td>
+
+                        <td>
+                            <a href="/admin/effects/<%= e.id %>/edit" class="admin-table-action">Editar</a>
+                            <a href="/admin/effects/<%= e.id %>/delete"
+                                class="admin-table-action admin-table-action-danger">
+                                Remover
+                            </a>
+                        </td>
+                    </tr>
+                    <% }) %>
+                        <% } else { %>
+                            <tr>
+                                <td colspan="7" class="admin-table-empty">
+                                    Nenhum efeito cadastrado.
+                                </td>
+                            </tr>
+                            <% } %>
+        </tbody>
+    </table>
+</section>

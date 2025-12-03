@@ -1,79 +1,118 @@
-<%- include('../../partials/admin/header') %>
-    <%- include('../../partials/admin/navbar', { page: 'characters' }) %>
+<h1 class="admin-page-title">Personagens</h1>
 
-        <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4 main-content">
-            <div
-                class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
-                <h1 class="h2 text-primary fw-bold">Gerenciar Personagens</h1>
-            </div>
+<p class="admin-page-subtitle">
+    Lista de todos os personagens criados pelos jogadores no Lutaver.
+</p>
 
-            <div class="card card-custom">
-                <div class="card-body">
-                    <div class="table-responsive">
-                        <table class="table table-hover table-custom align-middle">
-                            <thead>
-                                <tr>
-                                    <th>Nome</th>
-                                    <th>Jogador (Dono)</th>
-                                    <th>Nível</th>
-                                    <th>Ano Escolar</th>
-                                    <th>XP</th>
-                                    <th>Ações</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <% if (characters.length===0) { %>
-                                    <tr>
-                                        <td colspan="6" class="text-center py-4 text-muted">
-                                            Nenhum personagem encontrado.
-                                        </td>
-                                    </tr>
+<section class="admin-table-card">
+    <div class="admin-table-header">
+        <h2>Lista de personagens</h2>
+        <!-- Se quiser permitir criação manual pelo admin, deixa o botão abaixo -->
+        <!-- <a href="/admin/characters/new" class="admin-card-link">+ Novo personagem</a> -->
+    </div>
+
+    <table class="admin-table">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Nome</th>
+                <th>Jogador</th>
+                <th>Série/Ano</th>
+                <th>Nível</th>
+                <th>XP Total</th>
+                <th>Moedas</th>
+                <th>Afinidades</th>
+                <th>Ações</th>
+            </tr>
+        </thead>
+        <tbody>
+            <% if (characters && characters.length> 0) { %>
+                <% characters.forEach(c=> { %>
+                    <tr>
+                        <td>
+                            <%= c.id %>
+                        </td>
+
+                        <td>
+                            <%= c.name %>
+                        </td>
+
+                        <!-- Jogador dono do personagem -->
+                        <td>
+                            <% if (c.user) { %>
+                                <%= c.user.name %> (<%= c.user.email %>)
+                                        <% } else { %>
+                                            -
+                                            <% } %>
+                        </td>
+
+                        <!-- Série / Ano escolar -->
+                        <td>
+                            <% if (typeof c.school_year !=='undefined' && c.school_year !==null) { %>
+                                <%= c.school_year %>º ano
                                     <% } else { %>
-                                        <% characters.forEach(char=> { %>
-                                            <tr>
-                                                <td class="fw-bold">
-                                                    <%= char.name %>
-                                                </td>
-                                                <td>
-                                                    <% if (char.user) { %>
-                                                        <%= char.user.name %> <small class="text-muted">(<%=
-                                                                    char.user.email %>)</small>
-                                                            <% } else { %>
-                                                                <span class="text-muted">Sem dono</span>
-                                                                <% } %>
-                                                </td>
-                                                <td><span class="badge bg-info text-dark">Lvl <%= char.level %></span>
-                                                </td>
-                                                <td>
-                                                    <%= char.school_year %>º Ano
-                                                </td>
-                                                <td>
-                                                    <%= char.experience %> XP
-                                                </td>
-                                                <td>
-                                                    <div class="btn-group btn-group-sm">
-                                                        <a href="/admin/characters/<%= char.id %>"
-                                                            class="btn btn-outline-info" title="Ver Ficha Completa">
-                                                            <i class="bi bi-eye"></i>
-                                                        </a>
-                                                        <form action="/admin/characters/<%= char.id %>/delete"
-                                                            method="POST" class="d-inline"
-                                                            onsubmit="return confirm('Tem certeza que deseja excluir este personagem? Esta ação não pode ser desfeita.');">
-                                                            <button type="submit" class="btn btn-outline-danger"
-                                                                title="Excluir">
-                                                                <i class="bi bi-trash"></i>
-                                                            </button>
-                                                        </form>
-                                                    </div>
-                                                </td>
-                                            </tr>
-                                            <% }); %>
-                                                <% } %>
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-            </div>
-        </main>
+                                        -
+                                        <% } %>
+                        </td>
 
-        <%- include('../../partials/admin/footer') %>
+                        <!-- Nível -->
+                        <td>
+                            <% if (typeof c.level !=='undefined' && c.level !==null) { %>
+                                <%= c.level %>
+                                    <% } else { %>
+                                        1
+                                        <% } %>
+                        </td>
+
+                        <!-- XP Total -->
+                        <td>
+                            <% if (typeof c.total_xp !=='undefined' && c.total_xp !==null) { %>
+                                <%= c.total_xp %>
+                                    <% } else { %>
+                                        0
+                                        <% } %>
+                        </td>
+
+                        <!-- Moedas -->
+                        <td>
+                            <% if (typeof c.coins !=='undefined' && c.coins !==null) { %>
+                                <%= c.coins %>
+                                    <% } else { %>
+                                        0
+                                        <% } %>
+                        </td>
+
+                        <!-- Afinidades principais -->
+                        <td>
+                            <% if (c.affinities && c.affinities.length> 0) { %>
+                                <% c.affinities.slice(0, 2).forEach((a, idx)=> { %>
+                                    <%= a.discipline ? a.discipline.name : 'Disciplina #' + a.discipline_id %>
+                                        <% if (idx < c.affinities.slice(0, 2).length - 1) { %>, <% } %>
+                                                <% }) %>
+                                                    <% if (c.affinities.length> 2) { %>
+                                                        (+<%= c.affinities.length - 2 %> outras)
+                                                            <% } %>
+                                                                <% } else { %>
+                                                                    -
+                                                                    <% } %>
+                        </td>
+
+                        <td>
+                            <a href="/admin/characters/<%= c.id %>/edit" class="admin-table-action">Editar</a>
+                            <a href="/admin/characters/<%= c.id %>/delete"
+                                class="admin-table-action admin-table-action-danger">
+                                Remover
+                            </a>
+                        </td>
+                    </tr>
+                    <% }) %>
+                        <% } else { %>
+                            <tr>
+                                <td colspan="9" class="admin-table-empty">
+                                    Nenhum personagem cadastrado.
+                                </td>
+                            </tr>
+                            <% } %>
+        </tbody>
+    </table>
+</section>

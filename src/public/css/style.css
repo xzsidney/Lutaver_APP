@@ -1,0 +1,165 @@
+html,
+body {
+    height: 100%;
+}
+
+.layout-body {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+/* Navbar com tema Brasil */
+.nav-lutaver {
+    background: linear-gradient(90deg, #009c3b, #ffdf00, #002776);
+}
+
+/* Deixa o ícone hamburguer visível */
+.navbar-dark .navbar-toggler-icon {
+    filter: brightness(1.1);
+}
+
+/* Conteúdo principal */
+.home-container {
+    flex: 1;
+}
+
+/* HERO */
+.home-hero {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    padding: 4rem 2rem;
+    background: linear-gradient(135deg, #009c3b, #ffdf00);
+    color: #fff;
+}
+
+.home-hero-content {
+    max-width: 600px;
+}
+
+.home-title {
+    font-size: 3rem;
+    font-weight: 800;
+    text-shadow: 0 3px 6px rgba(0, 0, 0, 0.3);
+}
+
+.home-subtitle {
+    font-size: 1.2rem;
+    margin-top: 1rem;
+    line-height: 1.6;
+}
+
+.home-hero-buttons {
+    margin-top: 2rem;
+    display: flex;
+    gap: 1rem;
+    flex-wrap: wrap;
+}
+
+.home-hero-small {
+    margin-top: 1rem;
+    font-size: 0.9rem;
+    opacity: 0.95;
+}
+
+.home-hero-illustration {
+    flex: 1;
+    display: flex;
+    justify-content: center;
+    margin-top: 2rem;
+}
+
+.home-hero-card {
+    background: rgba(0, 0, 0, 0.3);
+    border-radius: 16px;
+    padding: 1.5rem;
+    max-width: 360px;
+    backdrop-filter: blur(6px);
+}
+
+/* Seções */
+.home-section {
+    padding: 3rem 2rem;
+    text-align: center;
+}
+
+.home-section-colored {
+    background: #f5f9ff;
+}
+
+/* Vantagens */
+.home-benefits {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    gap: 1.5rem;
+}
+
+.home-benefit-card {
+    background: #ffffff;
+    border-radius: 16px;
+    padding: 1.5rem;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+}
+
+/* Passos */
+.home-steps {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    gap: 1.5rem;
+}
+
+.home-step {
+    background: #ffffff;
+    border-radius: 16px;
+    padding: 1.5rem;
+    position: relative;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+}
+
+.home-step-number {
+    position: absolute;
+    top: -15px;
+    left: 20px;
+    background: #009c3b;
+    color: #fff;
+    border-radius: 50%;
+    width: 32px;
+    height: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+}
+
+/* CTA final */
+.home-cta {
+    background: #012b5c;
+    color: #fff;
+}
+
+.home-cta-buttons {
+    margin-top: 1.5rem;
+    display: flex;
+    gap: 1rem;
+    justify-content: center;
+    flex-wrap: wrap;
+}
+
+/* Footer fixo no fim */
+.footer-lutaver {
+    background: #002776;
+    color: #fff;
+}
+
+/* Responsivo */
+@media (max-width: 768px) {
+    .home-hero {
+        padding: 3rem 1.5rem;
+    }
+
+    .home-title {
+        font-size: 2.4rem;
+    }
+}

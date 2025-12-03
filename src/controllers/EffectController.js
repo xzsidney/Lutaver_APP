@@ -1,148 +1,133 @@
 const Effect = require('../models/Effect');
+const Power = require('../models/Power');
 
-const EffectController = {
-    // List all effects
-    index: async (req, res) => {
+module.exports = {
+    // LISTA – GET /admin/effects
+    async index(req, res) {
         try {
             const effects = await Effect.findAll({
+                order: [['id', 'ASC']]
+            });
+
+            return res.render('admin/effects/index', {
+                title: 'Efeitos - Painel Admin',
+                effects
+            });
+        } catch (error) {
+            console.error('Erro ao carregar efeitos:', error);
+            return res.status(500).send('Erro ao carregar efeitos.');
+        }
+    },
+
+    // FORM NOVO – GET /admin/effects/new
+    async create(req, res) {
+        try {
+            // Se quiser relacionar direto com poderes depois, pode carregar aqui:
+            const powers = await Power.findAll({
                 order: [['name', 'ASC']]
             });
 
-            res.render('admin/effects/index', {
-                effects,
-                user: req.session.user,
-                title: 'Gerenciar Efeitos'
-            });
-        } catch (error) {
-            console.error('Error fetching effects:', error);
-            res.status(500).send('Erro ao buscar efeitos');
-        }
-    },
-
-    // Show form for new effect
-    newForm: async (req, res) => {
-        try {
-            res.render('admin/effects/form', {
-                effect: {},
-                user: req.session.user,
+            return res.render('admin/effects/new', {
                 title: 'Novo Efeito',
-                action: '/admin/effects'
+                powers
             });
         } catch (error) {
-            console.error('Error loading new effect form:', error);
-            res.status(500).send('Erro ao carregar formulário');
+            console.error('Erro ao carregar formulário de efeito:', error);
+            return res.status(500).send('Erro ao carregar formulário.');
         }
     },
 
-    // Create new effect
-    create: async (req, res) => {
+    // SALVAR – POST /admin/effects
+    async store(req, res) {
         try {
             const {
-                name, effect_type, target_type, attribute_target,
-                base_value, intensity_label, duration_type,
-                duration_value, can_stack, description, icon
+                name,
+                description,
+                effect_type,
+                value,
+                duration,
+                is_active
             } = req.body;
-
-            // Basic validation
-            if (!name || !effect_type || !target_type) {
-                return res.redirect('/admin/effects/new');
-            }
 
             await Effect.create({
                 name,
-                effect_type,
-                target_type,
-                attribute_target: attribute_target || null,
-                base_value: base_value ? parseInt(base_value) : null,
-                intensity_label: intensity_label || null,
-                duration_type,
-                duration_value: duration_value ? parseInt(duration_value) : null,
-                can_stack: can_stack === 'on',
                 description,
-                icon: icon || '✨'
+                effect_type: effect_type || null,
+                value: value || 0,
+                duration: duration || 0,
+                is_active: is_active === 'on'
             });
 
-            res.redirect('/admin/effects');
+            return res.redirect('/admin/effects');
         } catch (error) {
-            console.error('Error creating effect:', error);
-            res.status(500).send('Erro ao criar efeito');
+            console.error('Erro ao criar efeito:', error);
+            return res.status(500).send('Erro ao criar efeito.');
         }
     },
 
-    // Show form for editing effect
-    editForm: async (req, res) => {
+    // FORM EDIT – GET /admin/effects/:id/edit
+    async edit(req, res) {
         try {
-            const { id } = req.params;
-            const effect = await Effect.findByPk(id);
+            const effect = await Effect.findByPk(req.params.id);
 
             if (!effect) {
-                return res.status(404).send('Efeito não encontrado');
+                return res.status(404).send('Efeito não encontrado.');
             }
 
-            res.render('admin/effects/form', {
-                effect,
-                user: req.session.user,
+            const powers = await Power.findAll({
+                order: [['name', 'ASC']]
+            });
+
+            return res.render('admin/effects/edit', {
                 title: 'Editar Efeito',
-                action: `/admin/effects/${id}`
+                effect,
+                powers
             });
         } catch (error) {
-            console.error('Error loading edit effect form:', error);
-            res.status(500).send('Erro ao carregar formulário');
+            console.error('Erro ao carregar efeito para edição:', error);
+            return res.status(500).send('Erro ao carregar efeito.');
         }
     },
 
-    // Update effect
-    update: async (req, res) => {
+    // ATUALIZAR – POST /admin/effects/:id
+    async update(req, res) {
         try {
-            const { id } = req.params;
             const {
-                name, effect_type, target_type, attribute_target,
-                base_value, intensity_label, duration_type,
-                duration_value, can_stack, description, icon
+                name,
+                description,
+                effect_type,
+                value,
+                duration,
+                is_active
             } = req.body;
 
-            const effect = await Effect.findByPk(id);
-            if (!effect) {
-                return res.status(404).send('Efeito não encontrado');
-            }
+            await Effect.update(
+                {
+                    name,
+                    description,
+                    effect_type: effect_type || null,
+                    value: value || 0,
+                    duration: duration || 0,
+                    is_active: is_active === 'on'
+                },
+                { where: { id: req.params.id } }
+            );
 
-            await effect.update({
-                name,
-                effect_type,
-                target_type,
-                attribute_target: attribute_target || null,
-                base_value: base_value ? parseInt(base_value) : null,
-                intensity_label: intensity_label || null,
-                duration_type,
-                duration_value: duration_value ? parseInt(duration_value) : null,
-                can_stack: can_stack === 'on',
-                description,
-                icon
-            });
-
-            res.redirect('/admin/effects');
+            return res.redirect('/admin/effects');
         } catch (error) {
-            console.error('Error updating effect:', error);
-            res.status(500).send('Erro ao atualizar efeito');
+            console.error('Erro ao atualizar efeito:', error);
+            return res.status(500).send('Erro ao atualizar efeito.');
         }
     },
 
-    // Delete effect
-    destroy: async (req, res) => {
+    // EXCLUIR – GET /admin/effects/:id/delete
+    async destroy(req, res) {
         try {
-            const { id } = req.params;
-            const effect = await Effect.findByPk(id);
-
-            if (effect) {
-                await effect.destroy();
-            }
-
-            res.redirect('/admin/effects');
+            await Effect.destroy({ where: { id: req.params.id } });
+            return res.redirect('/admin/effects');
         } catch (error) {
-            console.error('Error deleting effect:', error);
-            res.status(500).send('Erro ao excluir efeito');
+            console.error('Erro ao excluir efeito:', error);
+            return res.status(500).send('Erro ao excluir efeito.');
         }
     }
 };
-
-module.exports = EffectController;

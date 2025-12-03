@@ -1,0 +1,209 @@
+<div class="me-3 fs-1">
+    <%= adventure.discipline ? adventure.discipline.icon : '🗺️' %>
+</div>
+<div>
+    <h6 class="text-uppercase text-muted mb-1" style="font-size: 0.8rem; letter-spacing: 1px;">
+        <%= adventure.discipline ? adventure.discipline.name : 'Aventura' %>
+    </h6>
+    <h2 class="fw-bold mb-0 text-primary">
+        <%= adventure.title %>
+    </h2>
+</div>
+</div>
+<div class="text-end">
+    <div class="badge bg-warning text-dark mb-1">
+        <% for(let i=0; i < adventure.difficulty; i++) { %>⭐<% } %>
+    </div>
+    <div class="text-success fw-bold small">Recompensa: <%= adventure.reward_xp %> XP</div>
+</div>
+</div>
+</div>
+
+<div class="row">
+    <!-- Sidebar: Character Info -->
+    <div class="col-md-3 mb-4">
+        <div class="card shadow-sm border-0 h-100">
+            <div class="card-body text-center">
+                <div class="mb-3">
+                    <div
+                        style="width: 80px; height: 80px; background-color: #e9ecef; border-radius: 50%; margin: 0 auto; display: flex; align-items: center; justify-content: center; font-size: 2.5rem;">
+                        👤
+                    </div>
+                </div>
+                <h5 class="fw-bold mb-1">
+                    <%= character.name %>
+                </h5>
+                <p class="text-muted small mb-3">
+                    <%= character.title %>
+                </p>
+
+                <div class="d-flex justify-content-center gap-2 mb-3">
+                    <span class="badge bg-light text-dark border">Nível <%= character.level %></span>
+                    <span class="badge bg-light text-dark border">
+                        <%= character.experience %> XP
+                    </span>
+                </div>
+
+                <hr>
+
+                <div class="text-start">
+                    <small class="text-muted d-block mb-2">Progresso do Quiz</small>
+                    <div class="progress" style="height: 10px;">
+                        <div class="progress-bar bg-success" role="progressbar"
+                            style="width: <%= ((questionIndex - 1) / totalQuestions) * 100 %>%;"
+                            aria-valuenow="<%= questionIndex - 1 %>" aria-valuemin="0"
+                            aria-valuemax="<%= totalQuestions %>">
+                        </div>
+                    </div>
+                    <div class="d-flex justify-content-between mt-1 small text-muted">
+                        <span>Questão <%= questionIndex %></span>
+                        <span>de <%= totalQuestions %></span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Content: Question -->
+    <div class="col-md-9">
+        <div class="card shadow-lg border-0">
+            <div class="card-header bg-white py-3 border-bottom-0">
+                <span class="badge bg-primary rounded-pill px-3 py-2">PERGUNTA <%= questionIndex %></span>
+            </div>
+            <div class="card-body p-4 p-md-5">
+
+                <h3 class="mb-4 lh-base fw-bold text-dark">
+                    <%= question.question_text %>
+                </h3>
+
+                <% if (showFeedback) { %>
+                    <!-- Feedback View -->
+                    <div class="alert <%= isCorrect ? 'alert-success' : 'alert-danger' %> mb-4 border-0 shadow-sm">
+                        <h4 class="alert-heading fw-bold">
+                            <i class="bi <%= isCorrect ? 'bi-check-circle-fill' : 'bi-x-circle-fill' %> me-2"></i>
+                            <%= isCorrect ? 'Você acertou!' : 'Você errou!' %>
+                        </h4>
+                        <hr>
+                        <p class="mb-0">
+                            <%= explanation || 'Sem explicação disponível.' %>
+                        </p>
+                    </div>
+
+                    <div class="d-grid gap-2">
+                        <a href="/play/quiz/<%= adventure.id %>/<%= character.id %>/question"
+                            class="btn btn-primary btn-lg">
+                            Próxima Questão <i class="bi bi-arrow-right ms-2"></i>
+                        </a>
+                    </div>
+
+                    <% } else { %>
+                        <!-- Question Options Form -->
+                        <form action="/play/quiz/<%= adventure.id %>/<%= character.id %>/answer" method="POST">
+                            <div class="d-grid gap-3 mb-4">
+                                <% const options=[ { key: 'A' , text: question.option_a }, { key: 'B' , text:
+                                    question.option_b }, { key: 'C' , text: question.option_c }, { key: 'D' , text:
+                                    question.option_d } ]; %>
+
+                                    <% options.forEach(opt=> { %>
+                                        <input type="radio" class="btn-check" name="answer" id="option<%= opt.key %>"
+                                            value="<%= opt.key %>" required>
+                                        <label
+                                            class="btn btn-outline-light text-dark text-start p-3 border shadow-sm position-relative option-card"
+                                            for="option<%= opt.key %>">
+                                            <div class="d-flex align-items-center">
+                                                <div class="badge bg-secondary me-3 rounded-circle d-flex align-items-center justify-content-center"
+                                                    style="width: 30px; height: 30px;">
+                                                    <%= opt.key %>
+                                                </div>
+                                                <div class="fs-5">
+                                                    <%= opt.text %>
+                                                </div>
+                                            </div>
+                                        </label>
+                                        <% }); %>
+                            </div>
+
+                            <div class="d-grid">
+                                <button type="submit" class="btn btn-magic btn-lg text-white fw-bold py-3"
+                                    style="background: #1E90FF;">
+                                    Responder <i class="bi bi-send-fill ms-2"></i>
+                                </button>
+                            </div>
+                        </form>
+                        <% } %>
+
+            </div>
+        </div>
+    </div>
+</div>
+</div>
+
+<style>
+    .option-card:hover {
+        background-color: #f8f9fa !important;
+        border-color: #1E90FF !important;
+        transform: translateY(-2px);
+        transition: all 0.2s;
+    }
+
+    .btn-check:checked+.option-card {
+        <div class="me-3 fs-1"><%=adventure.discipline ? adventure.discipline.icon: '🗺️' %> </div> <div> <h6 class="text-uppercase text-muted mb-1" style="font-size: 0.8rem; letter-spacing: 1px;" > <%=adventure.discipline ? adventure.discipline.name: 'Aventura' %> </h6> <h2 class="fw-bold mb-0 text-primary" > <%=adventure.title %> </h2> </div> </div> <div class="text-end" > <div class="badge bg-warning text-dark mb-1" > <% for(let i=0; i < adventure.difficulty; i++) {
+            %>⭐<%
+        }
+
+        %></div><div class="text-success fw-bold small">Recompensa: <%=adventure.reward_xp %>XP</div></div></div></div><div class="row">< !-- Sidebar: Character Info --><div class="col-md-3 mb-4"><div class="card shadow-sm border-0 h-100"><div class="card-body text-center"><div class="mb-3"><div style="width: 80px; height: 80px; background-color: #e9ecef; border-radius: 50%; margin: 0 auto; display: flex; align-items: center; justify-content: center; font-size: 2.5rem;">👤 </div></div><h5 class="fw-bold mb-1"><%=character.name %></h5><p class="text-muted small mb-3"><%=character.title %></p><div class="d-flex justify-content-center gap-2 mb-3"><span class="badge bg-light text-dark border">Nível <%=character.level %></span><span class="badge bg-light text-dark border"><%=character.experience %>XP </span></div><hr><div class="text-start"><small class="text-muted d-block mb-2">Progresso do Quiz</small><div class="progress" style="height: 10px;"><div class="progress-bar bg-success" role="progressbar"
+        style="width: <%= ((questionIndex - 1) / totalQuestions) * 100 %>%;"
+        aria-valuenow="<%= questionIndex - 1 %>" aria-valuemin="0"
+
+        aria-valuemax="<%= totalQuestions %>"></div></div><div class="d-flex justify-content-between mt-1 small text-muted"><span>Questão <%=questionIndex %></span><span>de <%=totalQuestions %></span></div></div></div></div></div>< !-- Main Content: Question --><div class="col-md-9"><div class="card shadow-lg border-0"><div class="card-header bg-white py-3 border-bottom-0"><span class="badge bg-primary rounded-pill px-3 py-2">PERGUNTA <%=questionIndex %></span></div><div class="card-body p-4 p-md-5"><h3 class="mb-4 lh-base fw-bold text-dark"><%=question.question_text %></h3><% if (showFeedback) {
+            %>< !-- Feedback View --><div class="alert <%= isCorrect ? 'alert-success' : 'alert-danger' %> mb-4 border-0 shadow-sm"><h4 class="alert-heading fw-bold"><i class="bi <%= isCorrect ? 'bi-check-circle-fill' : 'bi-x-circle-fill' %> me-2"></i><%=isCorrect ? 'Você acertou!': 'Você errou!' %> </h4> <hr> <p class="mb-0" > <%=explanation || 'Sem explicação disponível.' %> </p> </div> <div class="d-grid gap-2" > <a href="/play/quiz/<%= adventure.id %>/<%= character.id %>/question"
+                class="btn btn-primary btn-lg" > Próxima Questão <i class="bi bi-arrow-right ms-2" ></i> </a> </div> <%
+        }
+
+        else {
+            %>< !-- Question Options Form --><form action="/play/quiz/<%= adventure.id %>/<%= character.id %>/answer" method="POST"><div class="d-grid gap-3 mb-4"><% const options=[ {
+                key: 'A', text: question.option_a
+            }
+
+            ,
+            {
+            key: 'B', text: question.option_b
+        }
+
+        ,
+        {
+        key: 'C', text: question.option_c
+    }
+
+    ,
+    {
+    key: 'D', text: question.option_d
+    }
+
+    ];
+
+    %><% options.forEach(opt=> {
+            %> <input type="radio" class="btn-check" name="answer" id="option<%= opt.key %>"
+            value="<%= opt.key %>" required> <label class="btn btn-outline-light text-dark text-start p-3 border shadow-sm position-relative option-card"
+            for="option<%= opt.key %>" > <div class="d-flex align-items-center" > <div class="badge bg-secondary me-3 rounded-circle d-flex align-items-center justify-content-center"
+            style="width: 30px; height: 30px;" > <%=opt.key %> </div> <div class="fs-5" > <%=opt.text %> </div> </div> </label> <%
+        });
+    %></div><div class="d-grid"><button type="submit" class="btn btn-magic btn-lg text-white fw-bold py-3"
+    style="background: #1E90FF;">Responder <i class="bi bi-send-fill ms-2"></i></button></div></form><%
+    }
+
+    %></div></div></div></div></div><style>.option-card:hover {
+        background-color: #f8f9fa !important;
+        border-color: #1E90FF !important;
+        transform: translateY(-2px);
+        transition: all 0.2s;
+    }
+
+    .btn-check:checked+.option-card {
+        background-color: #e7f1ff !important;
+        border-color: #1E90FF !important;
+        box-shadow: 0 0 0 2px rgba(30, 144, 255, 0.25) !important;
+    }
+</style>
+
+<%- include('../../../partials/footer') %>

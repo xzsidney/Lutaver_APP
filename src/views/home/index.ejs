@@ -1,0 +1,179 @@
+<%- include('../partials/header') %>
+    <%- include('../partials/navbar') %>
+
+        <!-- HERO SECTION -->
+        <section id="home" class="hero">
+            <div class="container">
+                <div class="hero-content">
+                    <div class="hero-text">
+                        <h1 class="hero-title">Bem-vindo à Torre do Saber!</h1>
+                        <p class="hero-subtitle">
+                            Explore aventuras educacionais, responda quizzes e desenvolva suas habilidades
+                            enquanto sobe os andares da Torre do Conhecimento!
+                        </p>
+                        <div class="hero-buttons">
+                            <a href="/login" class="btn btn-primary btn-large">Começar Agora</a>
+                            <a href="#sobre" class="btn btn-secondary btn-large">Saiba Mais</a>
+                        </div>
+                    </div>
+                    <div class="hero-image">
+                        <div class="tower-illustration">
+                            <div class="tower-level">🏰</div>
+                            <div class="tower-level">📚</div>
+                            <div class="tower-level">⭐</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="hero-wave"></div>
+        </section>
+
+        <!-- SOBRE O JOGO -->
+        <section id="sobre" class="about">
+            <div class="container">
+                <h2 class="section-title">O que é o Lutaver?</h2>
+                <p class="section-subtitle">Um jogo educacional que transforma aprendizado em aventura</p>
+
+                <div class="about-grid">
+                    <div class="about-card">
+                        <div class="card-icon">🎯</div>
+                        <h3>Objetivo</h3>
+                        <p>Subir a Torre do Saber respondendo quizzes educacionais e desenvolvendo atributos como
+                            Lógica,
+                            Criatividade e Memória.</p>
+                    </div>
+
+                    <div class="about-card">
+                        <div class="card-icon">🏰</div>
+                        <h3>Torre do Saber</h3>
+                        <p>Cada andar representa um nível de conhecimento. Quanto mais você aprende, mais alto você
+                            sobe!</p>
+                    </div>
+
+                    <div class="about-card">
+                        <div class="card-icon">⚡</div>
+                        <h3>Atributos</h3>
+                        <p>Desenvolva Lógica, Criatividade, Memória e Raciocínio através de diferentes disciplinas.</p>
+                    </div>
+
+                    <div class="about-card">
+                        <div class="card-icon">🎨</div>
+                        <h3>Afinidades</h3>
+                        <p>Descubra suas matérias favoritas e especialize-se em áreas do conhecimento.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- AVENTURAS -->
+        <section id="aventuras" class="adventures">
+            <div class="container">
+                <h2 class="section-title">Aventuras Disponíveis</h2>
+                <p class="section-subtitle">Escolha sua próxima jornada educacional</p>
+
+                <div class="adventures-grid">
+                    <div class="adventure-card" style="border-color: #1E90FF;">
+                        <div class="adventure-icon" style="background: #1E90FF;">📐</div>
+                        <h3>Matemática Mágica</h3>
+                        <div class="adventure-info">
+                            <span class="badge">Matemática</span>
+                            <span class="difficulty">⭐⭐⭐</span>
+                        </div>
+                        <p>Resolva enigmas matemáticos e desbloqueie poderes lógicos!</p>
+                        <span class="recommended">Recomendado: 6º ao 9º ano</span>
+                        <a href="#" class="btn btn-outline">Ver Aventura</a>
+                    </div>
+
+                    <div class="adventure-card" style="border-color: #34D399;">
+                        <div class="adventure-icon" style="background: #34D399;">🧪</div>
+                        <h3>Laboratório Secreto</h3>
+                        <div class="adventure-info">
+                            <span class="badge">Ciências</span>
+                            <span class="difficulty">⭐⭐</span>
+                        </div>
+                        <p>Experimentos incríveis esperam por você neste laboratório!</p>
+                        <span class="recommended">Recomendado: 6º ao 9º ano</span>
+                        <a href="#" class="btn btn-outline">Ver Aventura</a>
+                    </div>
+
+                    <div class="adventure-card" style="border-color: #F7D046;">
+                        <div class="adventure-icon" style="background: #F7D046;">📚</div>
+                        <h3>Biblioteca Encantada</h3>
+                        <div class="adventure-info">
+                            <span class="badge">Português</span>
+                            <span class="difficulty">⭐⭐</span>
+                        </div>
+                        <p>Desvende mistérios da língua portuguesa nesta biblioteca mágica!</p>
+                        <span class="recommended">Recomendado: 6º ao 9º ano</span>
+                        <a href="#" class="btn btn-outline">Ver Aventura</a>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- QUIZ -->
+        <section id="quiz" class="quiz-section">
+            <div class="container">
+                <div class="quiz-content">
+                    <div class="quiz-text">
+                        <h2>Sistema de Quiz Interativo</h2>
+                        <p>Responda perguntas, ganhe XP e suba de nível! Cada resposta correta fortalece seus atributos
+                            e te
+                            aproxima do topo da Torre do Saber.</p>
+                        <ul class="quiz-features">
+                            <li>✅ Perguntas de múltiplas disciplinas</li>
+                            <li>✅ Sistema de XP e níveis</li>
+                            <li>✅ Desenvolvimento de atributos</li>
+                            <li>✅ Ranking entre jogadores</li>
+                        </ul>
+                        <a href="/play" class="btn btn-success btn-large">Começar Quiz Agora</a>
+                    </div>
+                    <div class="quiz-visual">
+                        <div class="quiz-card-demo">
+                            <div class="demo-question">❓</div>
+                            <div class="demo-options">
+                                <div class="demo-option">A</div>
+                                <div class="demo-option">B</div>
+                                <div class="demo-option">C</div>
+                                <div class="demo-option">D</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- CONTATO -->
+        <section id="contato" class="contact">
+            <div class="container">
+                <h2 class="section-title">Entre em Contato</h2>
+                <p class="section-subtitle">Tem dúvidas ou sugestões? Fale conosco!</p>
+
+                <form class="contact-form">
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="name">Nome</label>
+                            <input type="text" id="name" name="name" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="email">E-mail</label>
+                            <input type="email" id="email" name="email" required>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="subject">Assunto</label>
+                        <input type="text" id="subject" name="subject" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="message">Mensagem</label>
+                        <textarea id="message" name="message" rows="5" required></textarea>
+                    </div>
+
+                    <button type="submit" class="btn btn-success btn-large">Enviar Mensagem</button>
+                </form>
+            </div>
+        </section>
+
+        <%- include('../partials/footer') %>

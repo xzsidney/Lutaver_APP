@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>
+        <%= title || 'Painel Administrativo - Lutaver' %>
+    </title>
+
+    <!-- CSS do painel admin -->
+    <link rel="stylesheet" href="/css/admin.css?v=1.0.0">
+</head>
+
+<body class="admin-layout">
+
+    <!-- Topbar -->
+    <%- include('../partials/admin/topbar') %>
+
+        <div class="admin-container">
+            <!-- Sidebar -->
+            <%- include('../partials/admin/sidebar') %>
+
+                <!-- Conteúdo principal -->
+                <main class="admin-main">
+                    <%- body %>
+                </main>
+        </div>
+
+</body>
+
+</html>

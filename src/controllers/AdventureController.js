@@ -1,221 +1,116 @@
 const Adventure = require('../models/Adventure');
 const Discipline = require('../models/Discipline');
 
-const AdventureController = {
-    /**
-     * List all adventures
-     */
-    list: async (req, res) => {
+module.exports = {
+
+    // LISTA – GET /admin/adventures
+    async index(req, res) {
         try {
             const adventures = await Adventure.findAll({
-                include: [{
-                    model: Discipline,
-                    as: 'discipline'
-                }],
-                order: [['createdAt', 'DESC']]
+                include: [
+                    { model: Discipline, as: 'discipline' }
+                ],
+                order: [['id', 'ASC']]
             });
-            res.render('admin/adventures/index', {
-                adventures,
-                user: req.session.user
+
+            return res.render('admin/adventures/index', {
+                title: 'Aventuras - Painel Admin',
+                adventures
             });
         } catch (error) {
             console.error(error);
-            res.status(500).send('Erro ao listar aventuras');
+            return res.status(500).send('Erro ao carregar aventuras');
         }
     },
 
-    /**
-     * Show adventure details
-     */
-    show: async (req, res) => {
-        try {
-            const adventure = await Adventure.findByPk(req.params.id, {
-                include: [{
-                    model: Discipline,
-                    as: 'discipline'
-                }]
-            });
-
-            if (!adventure) {
-                return res.redirect('/admin/adventures');
-            }
-
-            // We can also fetch scenes here if we want to show them
-            const Scene = require('../models/Scene');
-            const scenes = await Scene.findAll({
-                where: { adventure_id: adventure.id },
-                order: [['order_index', 'ASC']]
-            });
-
-            // Note: We might want to keep a separate public view for players later, 
-            // but for admin we use the admin structure or a specific admin show view.
-            // For now, let's assume we might want a specific admin show view or reuse the form in read-only mode?
-            // The user requested a show view for characters, but for adventures the request implies CRUD.
-            // Let's redirect to edit for now or render a simple show if needed.
-            // Actually, the user asked for "views/admin/adventures/" CRUD.
-            // I'll stick to the plan: index and form. The 'show' might be less critical for admin if 'edit' shows everything.
-            // However, the previous code had a 'show' method. I'll update it to use an admin template if I create one, 
-            // or just redirect to edit for simplicity in this overhaul unless I create 'admin/adventures/show.ejs'.
-            // Given the user request "página de LISTAGEM (index) e página de FORM (new/edit)", I will focus on those.
-            // I will leave 'show' pointing to the player view OR redirect to edit. 
-            // Better yet, let's make 'show' render the form in "read-only" mode or just redirect to edit for admin.
-            // But wait, the previous 'show' was for the player? No, it was 'adventures/show'.
-            // Let's keep 'show' for the player (public) and 'edit' for admin.
-            // BUT, the controller is shared? 
-            // If this controller is used by admins, I should update the paths.
-            // If it's used by players, I should be careful.
-            // The user said "Os CONTROLADORES e MODELOS já existem." and "A área admin é protegida".
-            // Usually we separate AdminController from PublicController.
-            // Here it seems we are using the same controller.
-            // I will assume this controller is primarily for the admin CRUD based on the methods (create, update, delete).
-            // Player viewing is handled by PlayController? Yes, PlayController exists.
-            // So AdventureController is likely for Admin/Teacher.
-
-            // I'll redirect show to edit for admin convenience or render the form disabled.
-            // Or I can create a simple show view. 
-            // For now, I'll redirect to edit to save time/space unless requested otherwise.
-            res.redirect(`/admin/adventures/${adventure.id}/edit`);
-
-        } catch (error) {
-            console.error(error);
-            res.status(500).send('Erro ao exibir aventura');
-        }
-    },
-
-    /**
-     * Show create form
-     */
-    createPage: async (req, res) => {
+    // FORM NOVA – GET /admin/adventures/new
+    async create(req, res) {
         try {
             const disciplines = await Discipline.findAll({
-                where: { is_active: true },
                 order: [['name', 'ASC']]
             });
-            res.render('admin/adventures/form', {
-                disciplines,
-                error: null,
-                user: req.session.user,
-                adventure: null
+
+            return res.render('admin/adventures/new', {
+                title: 'Nova aventura',
+                disciplines
             });
         } catch (error) {
             console.error(error);
-            res.status(500).send('Erro ao carregar formulário');
+            return res.status(500).send('Erro ao carregar formulário de aventura');
         }
     },
 
-    /**
-     * Create new adventure
-     */
-    create: async (req, res) => {
-        const { title, discipline_id, school_year, difficulty, description, objectives, reward_xp, reward_item, is_active } = req.body;
-
+    // SALVAR – POST /admin/adventures
+    async store(req, res) {
         try {
+            const { name, description, difficulty, level, discipline_id } = req.body;
+
             await Adventure.create({
-                title,
-                discipline_id,
-                school_year,
-                difficulty: parseInt(difficulty),
+                name,
                 description,
-                objectives,
-                reward_xp: parseInt(reward_xp) || 100,
-                reward_item,
-                is_active: is_active === 'on'
+                difficulty,
+                level,
+                discipline_id
             });
 
-            res.redirect('/admin/adventures');
+            return res.redirect('/admin/adventures');
         } catch (error) {
             console.error(error);
-            const disciplines = await Discipline.findAll({
-                where: { is_active: true },
-                order: [['name', 'ASC']]
-            });
-            res.render('admin/adventures/form', {
-                disciplines,
-                error: 'Erro ao criar aventura',
-                user: req.session.user,
-                adventure: null
-            });
+            return res.status(500).send('Erro ao criar aventura');
         }
     },
 
-    /**
-     * Show edit form
-     */
-    editPage: async (req, res) => {
+    // FORM EDITAR – GET /admin/adventures/:id/edit
+    async edit(req, res) {
         try {
             const adventure = await Adventure.findByPk(req.params.id, {
-                include: [{
-                    model: Discipline,
-                    as: 'discipline'
-                }]
+                include: [{ model: Discipline, as: 'discipline' }]
             });
 
             if (!adventure) {
-                return res.redirect('/admin/adventures');
+                return res.status(404).send('Aventura não encontrada');
             }
 
             const disciplines = await Discipline.findAll({
-                where: { is_active: true },
                 order: [['name', 'ASC']]
             });
 
-            res.render('admin/adventures/form', {
+            return res.render('admin/adventures/edit', {
+                title: 'Editar aventura',
                 adventure,
-                disciplines,
-                error: null,
-                user: req.session.user
+                disciplines
             });
         } catch (error) {
             console.error(error);
-            res.redirect('/admin/adventures');
+            return res.status(500).send('Erro ao carregar aventura');
         }
     },
 
-    /**
-     * Update adventure
-     */
-    update: async (req, res) => {
-        const { id } = req.params;
-        const { title, discipline_id, school_year, difficulty, description, objectives, reward_xp, reward_item, is_active } = req.body;
-
+    // ATUALIZAR – POST /admin/adventures/:id
+    async update(req, res) {
         try {
-            const adventure = await Adventure.findByPk(id);
-            if (!adventure) {
-                return res.redirect('/admin/adventures');
-            }
+            const { name, description, difficulty, level, discipline_id } = req.body;
 
-            adventure.title = title;
-            adventure.discipline_id = discipline_id;
-            adventure.school_year = school_year;
-            adventure.difficulty = parseInt(difficulty);
-            adventure.description = description;
-            adventure.objectives = objectives;
-            adventure.reward_xp = parseInt(reward_xp) || 100;
-            adventure.reward_item = reward_item;
-            adventure.is_active = is_active === 'on';
+            await Adventure.update(
+                { name, description, difficulty, level, discipline_id },
+                { where: { id: req.params.id } }
+            );
 
-            await adventure.save();
-
-            res.redirect('/admin/adventures');
+            return res.redirect('/admin/adventures');
         } catch (error) {
             console.error(error);
-            res.status(500).send('Erro ao atualizar aventura');
+            return res.status(500).send('Erro ao atualizar aventura');
         }
     },
 
-    /**
-     * Delete adventure
-     */
-    delete: async (req, res) => {
-        const { id } = req.params;
+    // EXCLUIR – GET /admin/adventures/:id/delete
+    async destroy(req, res) {
         try {
-            await Adventure.destroy({ where: { id } });
-            res.redirect('/admin/adventures');
+            await Adventure.destroy({ where: { id: req.params.id } });
+            return res.redirect('/admin/adventures');
         } catch (error) {
             console.error(error);
-            res.status(500).send('Erro ao excluir aventura');
+            return res.status(500).send('Erro ao excluir aventura');
         }
     }
 };
-
-module.exports = AdventureController;

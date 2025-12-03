@@ -1,88 +1,59 @@
-<%- include('../../partials/admin/header') %>
-    <%- include('../../partials/admin/navbar', { page: 'users' }) %>
+<h1 class="admin-page-title">Usuários</h1>
 
-        <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4 main-content">
-            <div
-                class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
-                <h1 class="h2 text-primary fw-bold">Gerenciar Usuários</h1>
-                <div class="btn-toolbar mb-2 mb-md-0">
-                    <a href="/admin/users/new" class="btn btn-sm btn-magic">
-                        <i class="bi bi-person-plus"></i> Novo Usuário
-                    </a>
-                </div>
-            </div>
+<p class="admin-page-subtitle">
+    Gerencie as contas de alunos, professores e administradores do sistema Lutaver.
+</p>
 
-            <div class="card card-custom">
-                <div class="card-body">
-                    <div class="table-responsive">
-                        <table class="table table-hover table-custom align-middle">
-                            <thead>
-                                <tr>
-                                    <th>Nome</th>
-                                    <th>E-mail</th>
-                                    <th>Papel</th>
-                                    <th>Status</th>
-                                    <th>Ações</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <% if (users.length===0) { %>
-                                    <tr>
-                                        <td colspan="5" class="text-center py-4 text-muted">
-                                            Nenhum usuário encontrado.
-                                        </td>
-                                    </tr>
-                                    <% } else { %>
-                                        <% users.forEach(u=> { %>
-                                            <tr>
-                                                <td class="fw-bold">
-                                                    <%= u.name %>
-                                                </td>
-                                                <td>
-                                                    <%= u.email %>
-                                                </td>
-                                                <td>
-                                                    <% if (u.role==='admin' ) { %>
-                                                        <span class="badge bg-danger badge-role">Admin</span>
-                                                        <% } else if (u.role==='teacher' ) { %>
-                                                            <span
-                                                                class="badge bg-warning text-dark badge-role">Professor</span>
-                                                            <% } else { %>
-                                                                <span
-                                                                    class="badge bg-info text-dark badge-role">Jogador</span>
-                                                                <% } %>
-                                                </td>
-                                                <td>
-                                                    <% if (u.is_active) { %>
-                                                        <span class="badge bg-success badge-role">Ativo</span>
-                                                        <% } else { %>
-                                                            <span class="badge bg-secondary badge-role">Inativo</span>
-                                                            <% } %>
-                                                </td>
-                                                <td>
-                                                    <div class="btn-group btn-group-sm">
-                                                        <a href="/admin/users/<%= u.id %>/edit"
-                                                            class="btn btn-outline-primary" title="Editar">
-                                                            <i class="bi bi-pencil"></i>
-                                                        </a>
-                                                        <form action="/admin/users/<%= u.id %>/delete" method="POST"
-                                                            class="d-inline"
-                                                            onsubmit="return confirm('Tem certeza que deseja excluir este usuário?');">
-                                                            <button type="submit" class="btn btn-outline-danger"
-                                                                title="Excluir">
-                                                                <i class="bi bi-trash"></i>
-                                                            </button>
-                                                        </form>
-                                                    </div>
-                                                </td>
-                                            </tr>
-                                            <% }); %>
-                                                <% } %>
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-            </div>
-        </main>
+<section class="admin-table-card">
+    <div class="admin-table-header">
+        <h2>Lista de usuários</h2>
+        <a href="/admin/users/new" class="admin-card-link">+ Novo usuário</a>
+    </div>
 
-        <%- include('../../partials/admin/footer') %>
+    <table class="admin-table">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Nome</th>
+                <th>E-mail</th>
+                <th>Papel</th>
+                <th>Ativo?</th>
+                <th>Ações</th>
+            </tr>
+        </thead>
+        <tbody>
+            <% if (users && users.length> 0) { %>
+                <% users.forEach(u=> { %>
+                    <tr>
+                        <td>
+                            <%= u.id %>
+                        </td>
+                        <td>
+                            <%= u.name %>
+                        </td>
+                        <td>
+                            <%= u.email %>
+                        </td>
+                        <td>
+                            <%= u.role %>
+                        </td>
+                        <td>
+                            <%= u.is_active ? 'Sim' : 'Não' %>
+                        </td>
+                        <td>
+                            <a href="/admin/users/<%= u.id %>/edit" class="admin-table-action">Editar</a>
+                            <a href="/admin/users/<%= u.id %>/delete"
+                                class="admin-table-action admin-table-action-danger">Remover</a>
+                        </td>
+                    </tr>
+                    <% }) %>
+                        <% } else { %>
+                            <tr>
+                                <td colspan="6" class="admin-table-empty">
+                                    Nenhum usuário cadastrado.
+                                </td>
+                            </tr>
+                            <% } %>
+        </tbody>
+    </table>
+</section>

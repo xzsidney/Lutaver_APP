@@ -1,0 +1,113 @@
+<h2 class="mb-0">
+    <i class="bi bi-lock-fill me-2"></i>
+    Aventura Concluída
+</h2>
+</div>
+<div class="card-body text-center p-5">
+    <div class="mb-4">
+        <div class="display-1 text-warning mb-3">
+            <i class="bi bi-check-circle-fill"></i>
+        </div>
+        <h3 class="fw-bold text-primary mb-3">
+            <%= adventure.title %>
+        </h3>
+        <p class="lead text-muted">
+            Você já concluiu esta aventura com sucesso!
+        </p>
+    </div>
+
+    <div class="alert alert-info border-0 mb-4">
+        <h5 class="fw-bold mb-3">Seu Resultado Anterior</h5>
+        <div class="row text-center">
+            <div class="col-md-4 mb-2">
+                <div class="fs-4 fw-bold text-success">
+                    <%= progress.correct_answers %>/<%= progress.total_questions %>
+                </div>
+                <small class="text-muted">Acertos</small>
+            </div>
+            <div class="col-md-4 mb-2">
+                <div class="fs-4 fw-bold text-primary">
+                    <%= Math.round(progress.percentage) %>%
+                </div>
+                <small class="text-muted">Aproveitamento</small>
+            </div>
+            <div class="col-md-4 mb-2">
+                <div class="fs-4 fw-bold text-warning">+<%= progress.xp_earned %>
+                </div>
+                <small class="text-muted">XP Ganho</small>
+            </div>
+        </div>
+    </div>
+
+    <p class="text-muted mb-4">
+        <i class="bi bi-info-circle me-2"></i>
+        Aventuras concluídas não podem ser jogadas novamente.
+        Explore outras aventuras para continuar sua jornada!
+    </p>
+
+    <div class="d-grid gap-2">
+        <a href="/play" class="btn btn-primary btn-lg">
+            <i class="bi bi-arrow-left me-2"></i>
+            Voltar para Aventuras
+        </a>
+    </div>
+    <h2 class="mb-0">
+        <i class="bi bi-lock-fill me-2"></i>
+        Aventura Concluída
+    </h2>
+</div>
+<div class="card-body text-center p-5">
+    <div class="mb-4">
+        <div class="display-1 text-warning mb-3">
+            <i class="bi bi-check-circle-fill"></i>
+        </div>
+        <h3 class="fw-bold text-primary mb-3">
+            <%= adventure.title %>
+        </h3>
+        <p class="lead text-muted">
+            Você já concluiu esta aventura com sucesso!
+        </p>
+    </div>
+
+    <div class="alert alert-info border-0 mb-4">
+        <h5 class="fw-bold mb-3">Seu Resultado Anterior</h5>
+        <div class="row text-center">
+            <div class="col-md-4 mb-2">
+                <div class="fs-4 fw-bold text-success">
+                    <%= progress.correct_answers %>/<%= progress.total_questions %>
+                </div>
+                <small class="text-muted">Acertos</small>
+            </div>
+            <div class="col-md-4 mb-2">
+                <div class="fs-4 fw-bold text-primary">
+                    <%= Math.round(progress.percentage) %>%
+                </div>
+                <small class="text-muted">Aproveitamento</small>
+            </div>
+            <div class="col-md-4 mb-2">
+                <div class="fs-4 fw-bold text-warning">+<%= progress.xp_earned %>
+                </div>
+                <small class="text-muted">XP Ganho</small>
+            </div>
+        </div>
+    </div>
+
+    <p class="text-muted mb-4">
+        <i class="bi bi-info-circle me-2"></i>
+        Aventuras concluídas não podem ser jogadas novamente.
+        Explore outras aventuras para continuar sua jornada!
+    </p>
+
+    <div class="d-grid gap-2">
+        <a href="/play" class="btn btn-primary btn-lg">
+            <i class="bi bi-arrow-left me-2"></i>
+            Voltar para Aventuras
+        </a>
+    </div>
+</div>
+</div>
+</div>
+</div>
+</div>
+
+<%- include('../../../partials/footer') %>

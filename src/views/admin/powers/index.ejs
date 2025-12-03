@@ -1,95 +1,92 @@
-<%- include('../../partials/admin/header') %>
-    <%- include('../../partials/admin/navbar', { page: 'powers' }) %>
+<h1 class="admin-page-title">Poderes</h1>
 
-        <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4 main-content">
-            <div
-                class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
-                <h1 class="h2 text-primary fw-bold">Gerenciar Poderes</h1>
-                <div class="btn-toolbar mb-2 mb-md-0">
-                    <a href="/admin/powers/new" class="btn btn-sm btn-magic">
-                        <i class="bi bi-plus-circle"></i> Novo Poder
-                    </a>
-                </div>
-            </div>
+<p class="admin-page-subtitle">
+    Gerencie os poderes que os personagens podem aprender nas disciplinas da Torre do Saber.
+</p>
 
-            <div class="card card-custom">
-                <div class="card-body">
-                    <div class="table-responsive">
-                        <table class="table table-hover table-custom align-middle">
-                            <thead>
-                                <tr>
-                                    <th style="width: 5%">Ícone</th>
-                                    <th style="width: 25%">Nome</th>
-                                    <th style="width: 15%">Disciplina</th>
-                                    <th style="width: 15%">Afinidade Mín.</th>
-                                    <th style="width: 30%">Efeito</th>
-                                    <th style="width: 10%">Ações</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <% if (powers.length===0) { %>
-                                    <tr>
-                                        <td colspan="6" class="text-center py-4 text-muted">
-                                            Nenhum poder cadastrado ainda.
-                                        </td>
-                                    </tr>
+<section class="admin-table-card">
+    <div class="admin-table-header">
+        <h2>Lista de poderes</h2>
+        <a href="/admin/powers/new" class="admin-card-link">+ Novo poder</a>
+    </div>
+
+    <table class="admin-table">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Nome</th>
+                <th>Disciplina</th>
+                <th>Tipo</th>
+                <th>Custo (Mana)</th>
+                <th>Cooldown</th>
+                <th>Ativo?</th>
+                <th>Ações</th>
+            </tr>
+        </thead>
+        <tbody>
+            <% if (powers && powers.length> 0) { %>
+                <% powers.forEach(p=> { %>
+                    <tr>
+                        <td>
+                            <%= p.id %>
+                        </td>
+
+                        <td>
+                            <%= p.name %>
+                        </td>
+
+                        <td>
+                            <%= p.discipline ? p.discipline.name : '-' %>
+                        </td>
+
+                        <td>
+                            <% if (typeof p.power_type !=='undefined' && p.power_type) { %>
+                                <%= p.power_type %>
                                     <% } else { %>
-                                        <% powers.forEach(power=> { %>
-                                            <tr>
-                                                <td>
-                                                    <span class="fs-4">
-                                                        <%= power.icon %>
-                                                    </span>
-                                                </td>
-                                                <td>
-                                                    <div class="fw-bold text-primary">
-                                                        <%= power.name %>
-                                                    </div>
-                                                </td>
-                                                <td>
-                                                    <% if (power.discipline) { %>
-                                                        <span class="badge"
-                                                            style="background-color: <%= power.discipline.color_theme %>; color: white;">
-                                                            <%= power.discipline.name %>
-                                                        </span>
-                                                        <% } else { %>
-                                                            <span class="badge bg-secondary">Geral</span>
-                                                            <% } %>
-                                                </td>
-                                                <td>
-                                                    <span class="badge bg-light text-dark border">
-                                                        <%= power.required_affinity %>%
-                                                    </span>
-                                                </td>
-                                                <td>
-                                                    <small class="text-muted">
-                                                        <%= power.effect %>
-                                                    </small>
-                                                </td>
-                                                <td>
-                                                    <div class="btn-group btn-group-sm">
-                                                        <a href="/admin/powers/<%= power.id %>/edit"
-                                                            class="btn btn-outline-primary" title="Editar">
-                                                            <i class="bi bi-pencil"></i>
-                                                        </a>
-                                                        <form action="/admin/powers/<%= power.id %>/delete" method="POST"
-                                                            class="d-inline"
-                                                            onsubmit="return confirm('Tem certeza que deseja excluir este poder?');">
-                                                            <button type="submit" class="btn btn-outline-danger"
-                                                                title="Excluir">
-                                                                <i class="bi bi-trash"></i>
-                                                            </button>
-                                                        </form>
-                                                    </div>
-                                                </td>
-                                            </tr>
-                                            <% }); %>
-                                                <% } %>
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-            </div>
-        </main>
+                                        -
+                                        <% } %>
+                        </td>
 
-        <%- include('../../partials/admin/footer') %>
+                        <td>
+                            <% if (typeof p.mana_cost !=='undefined' && p.mana_cost !==null) { %>
+                                <%= p.mana_cost %>
+                                    <% } else { %>
+                                        -
+                                        <% } %>
+                        </td>
+
+                        <td>
+                            <% if (typeof p.cooldown !=='undefined' && p.cooldown !==null) { %>
+                                <%= p.cooldown %>
+                                    <% } else { %>
+                                        -
+                                        <% } %>
+                        </td>
+
+                        <td>
+                            <% if (typeof p.is_active !=='undefined' ) { %>
+                                <%= p.is_active ? 'Sim' : 'Não' %>
+                                    <% } else { %>
+                                        -
+                                        <% } %>
+                        </td>
+
+                        <td>
+                            <a href="/admin/powers/<%= p.id %>/edit" class="admin-table-action">Editar</a>
+                            <a href="/admin/powers/<%= p.id %>/delete"
+                                class="admin-table-action admin-table-action-danger">
+                                Remover
+                            </a>
+                        </td>
+                    </tr>
+                    <% }) %>
+                        <% } else { %>
+                            <tr>
+                                <td colspan="8" class="admin-table-empty">
+                                    Nenhum poder cadastrado.
+                                </td>
+                            </tr>
+                            <% } %>
+        </tbody>
+    </table>
+</section>

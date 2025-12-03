@@ -1,19 +1,17 @@
 const express = require('express');
 const router = express.Router();
-const { authMiddleware, roleMiddleware } = require('../middlewares/auth');
+
+const { adminMiddleware } = require('../middlewares/authMiddleware');
 const AdminCharacterController = require('../controllers/AdminCharacterController');
 
-// All routes protected by login AND admin role
-router.use(authMiddleware);
-router.use(roleMiddleware(['admin']));
+// LISTA – /admin/characters
+router.get('/', adminMiddleware, AdminCharacterController.index);
 
-// List all characters
-router.get('/', AdminCharacterController.list);
-
-// Show character details
-router.get('/:id', AdminCharacterController.show);
-
-// Delete character
-router.post('/:id/delete', AdminCharacterController.delete);
+// OPCIONAIS (se quiser CRUD completo)
+router.get('/new', adminMiddleware, AdminCharacterController.create);
+router.post('/', adminMiddleware, AdminCharacterController.store);
+router.get('/:id/edit', adminMiddleware, AdminCharacterController.edit);
+router.post('/:id', adminMiddleware, AdminCharacterController.update);
+router.get('/:id/delete', adminMiddleware, AdminCharacterController.destroy);
 
 module.exports = router;

@@ -1,0 +1,114 @@
+﻿<%- include('../../partials/header') %>
+    <%- include('../../partials/navbar') %>
+
+        <div class="container mt-4">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <h1 class="display-6 fw-bold text-primary">
+                    <i class="bi bi-shop"></i> Loja Lutaver
+                </h1>
+                <div class="d-flex align-items-center gap-2">
+                    <% if (character) { %>
+                        <div class="badge bg-warning text-dark fs-5 px-3 py-2">
+                            <i class="bi bi-coin"></i>
+                            <%= character.coins %> Moedas
+                        </div>
+                        <a href="/inventory/<%= character.id %>" class="btn btn-primary btn-sm">
+                            <i class="bi bi-backpack"></i> Inventario
+                        </a>
+                        <a href="/my/characters/<%= character.id %>" class="btn btn-outline-secondary btn-sm">
+                            <i class="bi bi-arrow-left"></i> Voltar para Ficha
+                        </a>
+                        <% } else { %>
+                            <a href="/my/characters" class="btn btn-primary">Criar Personagem</a>
+                            <% } %>
+                </div>
+            </div>
+
+            <!-- Filters -->
+            <div class="card mb-4">
+                <div class="card-body">
+                    <div class="d-flex gap-2 flex-wrap">
+                        <span class="fw-bold me-2">Filtrar:</span>
+                        <a href="/shop/<%= character.id %>"
+                            class="btn btn-sm <%= !filters.type ? 'btn-primary' : 'btn-outline-secondary' %>">Todos</a>
+                        <a href="/shop/<%= character.id %>?type=consumable"
+                            class="btn btn-sm <%= filters.type === 'consumable' ? 'btn-primary' : 'btn-outline-secondary' %>">Consumiveis</a>
+                        <a href="/shop/<%= character.id %>?type=equipment"
+                            class="btn btn-sm <%= filters.type === 'equipment' ? 'btn-primary' : 'btn-outline-secondary' %>">Equipamentos</a>
+                        <a href="/shop/<%= character.id %>?type=cosmetic"
+                            class="btn btn-sm <%= filters.type === 'cosmetic' ? 'btn-primary' : 'btn-outline-secondary' %>">Cosmeticos</a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Items Grid -->
+            <% if (items.length===0) { %>
+                <div class="text-center py-5">
+                    <i class="bi bi-box-seam display-1 text-muted opacity-25"></i>
+                    <p class="text-muted mt-3">Nenhum item disponivel. Crie itens no painel admin!</p>
+                    <a href="/admin/items" class="btn btn-primary">Ir para Admin - Itens</a>
+                </div>
+                <% } else { %>
+                    <div class="row g-4">
+                        <% items.forEach(item=> { %>
+                            <div class="col-lg-3 col-md-4 col-sm-6">
+                                <div class="card h-100">
+                                    <div class="card-body d-flex flex-column">
+                                        <div class="text-center mb-3">
+                                            <span style="font-size: 4rem;">
+                                                <%= item.icon %>
+                                            </span>
+                                        </div>
+
+                                        <h5 class="card-title fw-bold text-center mb-2">
+                                            <%= item.name %>
+                                        </h5>
+
+                                        <div class="text-center mb-3">
+                                            <span class="badge bg-primary me-1">
+                                                <%= item.rarity %>
+                                            </span>
+                                            <% if (item.slot) { %>
+                                                <span class="badge bg-light text-dark border">
+                                                    <%= item.slot %>
+                                                </span>
+                                                <% } %>
+                                        </div>
+
+                                        <p class="card-text small text-muted flex-grow-1">
+                                            <%= item.description || 'Sem descricao' %>
+                                        </p>
+
+                                        <div class="mt-auto">
+                                            <div class="d-flex justify-content-between align-items-center mb-2">
+                                                <span class="fw-bold fs-5 text-warning">
+                                                    <i class="bi bi-coin"></i>
+                                                    <%= item.price %>
+                                                </span>
+                                            </div>
+
+                                            <% if (!character) { %>
+                                                <button class="btn btn-secondary w-100" disabled>Criar
+                                                    Personagem</button>
+                                                <% } else if (character.coins < item.price) { %>
+                                                    <button class="btn btn-outline-secondary w-100" disabled>
+                                                        <i class="bi bi-lock"></i> Moedas Insuficientes
+                                                    </button>
+                                                    <% } else { %>
+                                                        <form action="/shop/<%= character.id %>/buy/<%= item.id %>"
+                                                            method="POST">
+                                                            <button type="submit" class="btn btn-primary w-100">
+                                                                <i class="bi bi-cart-plus"></i> Comprar
+                                                            </button>
+                                                        </form>
+                                                        <% } %>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <% }); %>
+                    </div>
+                    <% } %>
+        </div>
+
+        <%- include('../../partials/footer') %>

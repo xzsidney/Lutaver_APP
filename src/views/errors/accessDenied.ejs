@@ -113,33 +113,7 @@
         }
     </style>
 </head>
-
-<body>
-    <div class="error-container">
-        <div class="error-icon">🚫</div>
-        <h1 class="error-title">Acesso Negado</h1>
-        <p class="error-message">
-            Você não tem permissão para acessar esta área do sistema.
-        </p>
-
-        <div class="error-details">
-            <strong>Seu perfil:</strong>
-            <%= user.role==='admin' ? 'Administrador' : user.role==='teacher' ? 'Professor' : 'Jogador' %>
-                <br>
-                <strong>Perfis necessários:</strong>
-                <%= requiredRoles.map(r=> r === 'admin' ? 'Administrador' : r === 'teacher' ? 'Professor' :
-                    'Jogador').join(', ') %>
-        </div>
-
-        <p class="error-message">
-            Entre em contato com um administrador se você acredita que deveria ter acesso a esta página.
-        </p>
-
-        <div>
-            <a href="/dashboard" class="btn-home">Voltar para o Início</a>
-            <a href="/logout" class="btn-logout">Sair</a>
-        </div>
-    </div>
+</div>
 </body>
 
 </html>

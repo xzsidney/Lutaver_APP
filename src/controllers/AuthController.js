@@ -24,15 +24,22 @@ const AuthController = {
             if (!isMatch) {
                 return res.render('auth/login', { error: 'E-mail ou senha inválidos' });
             }
-
-            // Create session
+            // Depois de validar o usuário e senha
             req.session.user = {
                 id: user.id,
                 name: user.name,
-                role: user.role
+                role: user.role // 'admin' | 'teacher' | 'player'
             };
 
-            return res.redirect('/dashboard'); // Redirect to role-based dashboard
+            switch (user.role) {
+                case 'admin':
+                    return res.redirect('/admin');
+                case 'teacher':
+                    return res.redirect('/teacher');
+                case 'player':
+                default:
+                    return res.redirect('/player');
+            }
         } catch (error) {
             console.error(error);
             return res.render('auth/login', { error: 'Erro interno do servidor' });

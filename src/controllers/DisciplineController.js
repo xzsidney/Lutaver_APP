@@ -1,148 +1,96 @@
 const Discipline = require('../models/Discipline');
 
-const DisciplineController = {
-    /**
-     * List all disciplines
-     */
-    list: async (req, res) => {
+module.exports = {
+    // LISTAGEM – usado em GET /admin/disciplines
+    async index(req, res) {
         try {
             const disciplines = await Discipline.findAll({
-                order: [['name', 'ASC']]
+                order: [['id', 'ASC']]
             });
-            res.render('admin/disciplines/index', {
-                disciplines,
-                user: req.session.user
+
+            return res.render('admin/disciplines/index', {
+                title: 'Disciplinas - Painel Admin',
+                disciplines
             });
         } catch (error) {
             console.error(error);
-            res.status(500).send('Erro ao listar disciplinas');
+            return res.status(500).send('Erro ao carregar disciplinas');
         }
     },
 
-    /**
-     * Show create form
-     */
-    createPage: (req, res) => {
-        res.render('admin/disciplines/form', {
-            error: null,
-            user: req.session.user,
-            discipline: null
+    // FORM NOVO – GET /admin/disciplines/new
+    create(req, res) {
+        return res.render('admin/disciplines/new', {
+            title: 'Nova disciplina'
         });
     },
 
-    /**
-     * Create new discipline
-     */
-    create: async (req, res) => {
-        const { name, code, description, school_level, color_theme, icon, is_active } = req.body;
-
+    // SALVAR – POST /admin/disciplines
+    async store(req, res) {
         try {
-            // Check if code already exists
-            const existingDiscipline = await Discipline.findOne({ where: { code } });
-            if (existingDiscipline) {
-                return res.render('admin/disciplines/form', {
-                    error: 'Código já cadastrado',
-                    user: req.session.user,
-                    discipline: null
-                });
-            }
+            const { name, code, is_active } = req.body;
 
             await Discipline.create({
                 name,
-                code: code.toUpperCase(),
-                description,
-                school_level,
-                color_theme: color_theme || '#1E90FF',
-                icon: icon || '📚',
-                is_active: is_active === 'on'
+                code,
+                is_active: is_active === 'on' ? true : false
             });
 
-            res.redirect('/admin/disciplines');
+            return res.redirect('/admin/disciplines');
         } catch (error) {
             console.error(error);
-            res.render('admin/disciplines/form', {
-                error: 'Erro ao criar disciplina',
-                user: req.session.user,
-                discipline: null
-            });
+            return res.status(500).send('Erro ao criar disciplina');
         }
     },
 
-    /**
-     * Show edit form
-     */
-    editPage: async (req, res) => {
+    // EDITAR – GET /admin/disciplines/:id/edit
+    async edit(req, res) {
         try {
             const discipline = await Discipline.findByPk(req.params.id);
+
             if (!discipline) {
-                return res.redirect('/admin/disciplines');
+                return res.status(404).send('Disciplina não encontrada');
             }
-            res.render('admin/disciplines/form', {
-                discipline,
-                error: null,
-                user: req.session.user
+
+            return res.render('admin/disciplines/edit', {
+                title: 'Editar disciplina',
+                discipline
             });
         } catch (error) {
             console.error(error);
-            res.redirect('/admin/disciplines');
+            return res.status(500).send('Erro ao carregar disciplina');
         }
     },
 
-    /**
-     * Update discipline
-     */
-    update: async (req, res) => {
-        const { id } = req.params;
-        const { name, code, description, school_level, color_theme, icon, is_active } = req.body;
-
+    // ATUALIZAR – POST /admin/disciplines/:id
+    async update(req, res) {
         try {
-            const discipline = await Discipline.findByPk(id);
-            if (!discipline) {
-                return res.redirect('/admin/disciplines');
-            }
+            const { name, code, is_active } = req.body;
 
-            // Check if code is being changed and if it already exists
-            if (code.toUpperCase() !== discipline.code) {
-                const existingDiscipline = await Discipline.findOne({ where: { code: code.toUpperCase() } });
-                if (existingDiscipline) {
-                    return res.render('admin/disciplines/form', {
-                        discipline,
-                        error: 'Código já cadastrado',
-                        user: req.session.user
-                    });
-                }
-            }
+            await Discipline.update(
+                {
+                    name,
+                    code,
+                    is_active: is_active === 'on' ? true : false
+                },
+                { where: { id: req.params.id } }
+            );
 
-            discipline.name = name;
-            discipline.code = code.toUpperCase();
-            discipline.description = description;
-            discipline.school_level = school_level;
-            discipline.color_theme = color_theme || '#1E90FF';
-            discipline.icon = icon || '📚';
-            discipline.is_active = is_active === 'on';
-
-            await discipline.save();
-
-            res.redirect('/admin/disciplines');
+            return res.redirect('/admin/disciplines');
         } catch (error) {
             console.error(error);
-            res.status(500).send('Erro ao atualizar disciplina');
+            return res.status(500).send('Erro ao atualizar disciplina');
         }
     },
 
-    /**
-     * Delete discipline
-     */
-    delete: async (req, res) => {
-        const { id } = req.params;
+    // DELETAR – GET /admin/disciplines/:id/delete
+    async destroy(req, res) {
         try {
-            await Discipline.destroy({ where: { id } });
-            res.redirect('/admin/disciplines');
+            await Discipline.destroy({ where: { id: req.params.id } });
+            return res.redirect('/admin/disciplines');
         } catch (error) {
             console.error(error);
-            res.status(500).send('Erro ao excluir disciplina');
+            return res.status(500).send('Erro ao excluir disciplina');
         }
     }
 };
-
-module.exports = DisciplineController;

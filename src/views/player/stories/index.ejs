@@ -1,87 +1,71 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Histórias Narrativas - Lutaver</title>
-    <link rel="stylesheet" href="/css/lutaver.css">
-</head>
+<% if (character) { %>
+    <div
+        style="background: #E0F2FE; color: #0369A1; padding: 15px; border-radius: 8px; margin-bottom: 20px; border-left: 4px solid #0EA5E9;">
+        Jogando como: <strong>
+            <%= character.name %>
+        </strong> (Nível <%= character.level %>)
+    </div>
+    <% } %>
 
-<body>
-    <%- include('../../partials/navbar', { user }) %>
+        <% if (stories && stories.length> 0) { %>
+            <div class="cards-grid">
+                <% stories.forEach(story=> { %>
+                    <div class="card" style="border-top: 4px solid #1E90FF;">
+                        <div
+                            style="display: flex; justify-content: space-between; align-items: start; margin-bottom: 15px;">
+                            <div>
+                                <h3 style="color: #1E90FF; margin-bottom: 8px; font-size: 18px;">
+                                    <%= story.title %>
+                                </h3>
+                                <div style="display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 8px;">
+                                    <span class="badge" style="background: #F7D046; color: #333;">
+                                        XP: <%= story.reward_xp %>
+                                    </span>
+                                    <span class="badge" style="background: #F7D046; color: #333;">
+                                        Moedas: <%= story.reward_coins %>
+                                    </span>
+                                    <% if (story.RewardItem) { %>
+                                        <span class="badge" style="background: #34D399;">
+                                            Item: <%= story.RewardItem.name %>
+                                        </span>
+                                        <% } %>
+                                </div>
+                            </div>
+                        </div>
 
-        <div class="dashboard-container">
-            <div class="header">
-                <h1>📖 Histórias Narrativas</h1>
-                <p>Escolha uma aventura e mergulhe na história!</p>
+                        <div
+                            style="background: #F0F9FF; padding: 15px; border-radius: 8px; margin-bottom: 15px; border-left: 3px solid #1E90FF;">
+                            <p style="font-weight: 500; line-height: 1.6; margin: 0;">
+                                <%= story.description %>
+                            </p>
+                        </div>
+
+                        <% if (character) { %>
+                            <a href="/stories/<%= story.id %>/start/<%= character.id %>"
+                                class="btn btn-primary btn-large" style="width: 100%; text-align: center;">
+                                📖 Iniciar História
+                            </a>
+                            <% } else { %>
+                                <div
+                                    style="background: #FFFBEB; color: #B45309; padding: 10px; border-radius: 5px; text-align: center; font-size: 14px;">
+                                    Selecione um personagem para jogar.
+                                </div>
+                                <% } %>
+                    </div>
+                    <% }) %>
             </div>
-
-            <% if (character) { %>
+            <% } else { %>
                 <div
-                    style="background: #E0F2FE; color: #0369A1; padding: 15px; border-radius: 8px; margin-bottom: 20px; border-left: 4px solid #0EA5E9;">
-                    Jogando como: <strong>
-                        <%= character.name %>
-                    </strong> (Nível <%= character.level %>)
+                    style="background: white; padding: 60px; border-radius: 10px; text-align: center; box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);">
+                    <div style="font-size: 80px; margin-bottom: 20px;">📭</div>
+                    <h3 style="color: #666; margin-bottom: 10px;">Nenhuma história disponível</h3>
+                    <p style="color: #999;">Volte mais tarde para novas aventuras!</p>
                 </div>
                 <% } %>
-
-                    <% if (stories && stories.length> 0) { %>
-                        <div class="cards-grid">
-                            <% stories.forEach(story=> { %>
-                                <div class="card" style="border-top: 4px solid #1E90FF;">
-                                    <div
-                                        style="display: flex; justify-content: space-between; align-items: start; margin-bottom: 15px;">
-                                        <div>
-                                            <h3 style="color: #1E90FF; margin-bottom: 8px; font-size: 18px;">
-                                                <%= story.title %>
-                                            </h3>
-                                            <div style="display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 8px;">
-                                                <span class="badge" style="background: #F7D046; color: #333;">
-                                                    XP: <%= story.reward_xp %>
-                                                </span>
-                                                <span class="badge" style="background: #F7D046; color: #333;">
-                                                    Moedas: <%= story.reward_coins %>
-                                                </span>
-                                                <% if (story.RewardItem) { %>
-                                                    <span class="badge" style="background: #34D399;">
-                                                        Item: <%= story.RewardItem.name %>
-                                                    </span>
-                                                    <% } %>
-                                            </div>
-                                        </div>
-                                    </div>
-
-                                    <div
-                                        style="background: #F0F9FF; padding: 15px; border-radius: 8px; margin-bottom: 15px; border-left: 3px solid #1E90FF;">
-                                        <p style="font-weight: 500; line-height: 1.6; margin: 0;">
-                                            <%= story.description %>
-                                        </p>
-                                    </div>
-
-                                    <% if (character) { %>
-                                        <a href="/stories/<%= story.id %>/start/<%= character.id %>"
-                                            class="btn btn-primary btn-large" style="width: 100%; text-align: center;">
-                                            📖 Iniciar História
-                                        </a>
-                                        <% } else { %>
-                                            <div
-                                                style="background: #FFFBEB; color: #B45309; padding: 10px; border-radius: 5px; text-align: center; font-size: 14px;">
-                                                Selecione um personagem para jogar.
-                                            </div>
-                                            <% } %>
-                                </div>
-                                <% }) %>
-                        </div>
-                        <% } else { %>
-                            <div
-                                style="background: white; padding: 60px; border-radius: 10px; text-align: center; box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);">
-                                <div style="font-size: 80px; margin-bottom: 20px;">📭</div>
-                                <h3 style="color: #666; margin-bottom: 10px;">Nenhuma história disponível</h3>
-                                <p style="color: #999;">Volte mais tarde para novas aventuras!</p>
-                            </div>
-                            <% } %>
-        </div>
-</body>
+                    </div>
+                    </body>
 
 </html>

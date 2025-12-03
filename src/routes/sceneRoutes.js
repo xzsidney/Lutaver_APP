@@ -1,32 +1,25 @@
 const express = require('express');
 const router = express.Router();
-const { authMiddleware, teacherOrAdminMiddleware } = require('../middlewares/auth');
+
+const { adminMiddleware } = require('../middlewares/authMiddleware');
 const SceneController = require('../controllers/SceneController');
 
-/**
- * Scenes Management Routes (Teacher + Admin)
- * Base path: /admin (defined in index.js)
- */
+// LISTA – GET /admin/scenes
+router.get('/', adminMiddleware, SceneController.index);
 
-// List all scenes (Global)
-router.get('/scenes', authMiddleware, teacherOrAdminMiddleware, SceneController.listAll);
+// FORM NOVA – GET /admin/scenes/new
+router.get('/new', adminMiddleware, SceneController.create);
 
-// List all scenes for an adventure
-router.get('/adventures/:adventureId/scenes', authMiddleware, teacherOrAdminMiddleware, SceneController.list);
+// SALVAR NOVA – POST /admin/scenes
+router.post('/', adminMiddleware, SceneController.store);
 
-// Create scene form
-router.get('/adventures/:adventureId/scenes/new', authMiddleware, teacherOrAdminMiddleware, SceneController.createPage);
+// FORM EDITAR – GET /admin/scenes/:id/edit
+router.get('/:id/edit', adminMiddleware, SceneController.edit);
 
-// Create scene
-router.post('/adventures/:adventureId/scenes', authMiddleware, teacherOrAdminMiddleware, SceneController.create);
+// ATUALIZAR – POST /admin/scenes/:id
+router.post('/:id', adminMiddleware, SceneController.update);
 
-// Edit scene form
-router.get('/scenes/:id/edit', authMiddleware, teacherOrAdminMiddleware, SceneController.editPage);
-
-// Update scene
-router.post('/scenes/:id', authMiddleware, teacherOrAdminMiddleware, SceneController.update);
-
-// Delete scene
-router.post('/scenes/:id/delete', authMiddleware, teacherOrAdminMiddleware, SceneController.delete);
+// EXCLUIR – GET /admin/scenes/:id/delete
+router.get('/:id/delete', adminMiddleware, SceneController.destroy);
 
 module.exports = router;
