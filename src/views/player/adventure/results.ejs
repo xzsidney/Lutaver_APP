@@ -1,0 +1,383 @@
+<div class="player-home-container">
+    <div class="results-header">
+        <h1 class="results-title">🎯 Resultados da Aventura</h1>
+        <h2 class="adventure-name">
+            <%= adventure.title %>
+        </h2>
+    </div>
+
+    <div class="results-container">
+        <!-- Score Card -->
+        <div class="score-card <%= isPassed ? 'passed' : 'failed' %>">
+            <div class="score-icon">
+                <%= isPassed ? '🎉' : '😔' %>
+            </div>
+
+            <h2 class="score-status">
+                <%= isPassed ? 'Parabéns! Você Passou!' : 'Não Foi Desta Vez' %>
+            </h2>
+
+            <div class="score-display">
+                <div class="score-big">
+                    <%= percentage.toFixed(1) %>%
+                </div>
+                <div class="score-detail">
+                    <%= score %> de <%= total %> questões corretas
+                </div>
+            </div>
+
+            <div class="score-bar">
+                <div class="score-fill <%= isPassed ? 'passed' : 'failed' %>" style="width: <%= percentage %>%">
+                </div>
+                <div class="pass-line" style="left: <%= passThreshold %>%">
+                    <span class="pass-label">
+                        <%= passThreshold %>%
+                    </span>
+                </div>
+            </div>
+
+            <% if (isPassed) { %>
+                <div class="rewards-section">
+                    <h3>🎁 Recompensas Recebidas</h3>
+                    <div class="rewards-grid">
+                        <div class="reward-item">
+                            <span class="reward-icon">🎯</span>
+                            <span class="reward-value">+<%= xpEarned %> XP</span>
+                        </div>
+                        <div class="reward-item">
+                            <span class="reward-icon">💰</span>
+                            <span class="reward-value">+<%= coinsEarned %> Moedas</span>
+                        </div>
+                    </div>
+                </div>
+                <% } else { %>
+                    <div class="try-again-message">
+                        <p>Você precisa de pelo menos <%= passThreshold %>% para passar.</p>
+                        <p>Continue estudando e tente novamente!</p>
+                    </div>
+                    <% } %>
+        </div>
+
+        <!-- Character Stats Card -->
+        <div class="character-stats-card">
+            <h3 class="card-title">👤 <%= character.name %>
+            </h3>
+
+            <div class="stats-list">
+                <div class="stat-row">
+                    <span class="stat-label">Nível:</span>
+                    <span class="stat-value">
+                        <%= character.level %>
+                    </span>
+                </div>
+                <div class="stat-row">
+                    <span class="stat-label">XP Total:</span>
+                    <span class="stat-value <%= isPassed ? 'highlight' : '' %>">
+                        <%= character.total_xp %>
+                            <% if (isPassed && xpEarned> 0) { %>
+                                <small class="stat-change">+<%= xpEarned %></small>
+                                <% } %>
+                    </span>
+                </div>
+                <div class="stat-row">
+                    <span class="stat-label">Moedas:</span>
+                    <span class="stat-value <%= isPassed ? 'highlight' : '' %>">
+                        💰 <%= character.coins %>
+                            <% if (isPassed && coinsEarned> 0) { %>
+                                <small class="stat-change">+<%= coinsEarned %></small>
+                                <% } %>
+                    </span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="results-actions">
+        <a href="/player/adventures" class="btn btn-primary">📚 Ver Outras Aventuras</a>
+        <a href="/player/adventures/<%= adventure.id %>/start" class="btn btn-secondary">🔄 Tentar Novamente</a>
+        <a href="/player/characters/<%= character.id %>" class="btn btn-tertiary">👤 Ver Personagem</a>
+    </div>
+</div>
+
+<style>
+    .results-header {
+        text-align: center;
+        margin-bottom: 30px;
+    }
+
+    .results-title {
+        font-size: 2.2rem;
+        font-weight: 900;
+        color: #123055;
+        margin-bottom: 10px;
+    }
+
+    .adventure-name {
+        font-size: 1.3rem;
+        color: #4b6688;
+        font-weight: 600;
+    }
+
+    .results-container {
+        display: grid;
+        grid-template-columns: 2fr 1fr;
+        gap: 25px;
+        margin-bottom: 30px;
+    }
+
+    .score-card {
+        background: #ffffff;
+        border-radius: 18px;
+        padding: 40px;
+        box-shadow: 0 4px 10px rgba(15, 49, 96, 0.06);
+        text-align: center;
+    }
+
+    .score-card.passed {
+        border: 3px solid #00C853;
+        background: linear-gradient(to bottom, #ffffff, #f0fff4);
+    }
+
+    .score-card.failed {
+        border: 3px solid #dc3545;
+        background: linear-gradient(to bottom, #ffffff, #fff5f5);
+    }
+
+    .score-icon {
+        font-size: 5rem;
+        margin-bottom: 20px;
+    }
+
+    .score-status {
+        font-size: 1.8rem;
+        font-weight: 700;
+        margin-bottom: 25px;
+    }
+
+    .score-card.passed .score-status {
+        color: #00C853;
+    }
+
+    .score-card.failed .score-status {
+        color: #dc3545;
+    }
+
+    .score-display {
+        margin-bottom: 25px;
+    }
+
+    .score-big {
+        font-size: 4rem;
+        font-weight: 900;
+        color: #123055;
+        line-height: 1;
+    }
+
+    .score-detail {
+        font-size: 1.1rem;
+        color: #4b6688;
+        margin-top: 10px;
+    }
+
+    .score-bar {
+        position: relative;
+        background: #e2ecff;
+        height: 30px;
+        border-radius: 999px;
+        overflow: visible;
+        margin-bottom: 30px;
+    }
+
+    .score-fill {
+        height: 100%;
+        border-radius: 999px;
+        transition: width 0.5s ease;
+    }
+
+    .score-fill.passed {
+        background: linear-gradient(90deg, #00C853, #02a343);
+    }
+
+    .score-fill.failed {
+        background: linear-gradient(90deg, #dc3545, #c92a2a);
+    }
+
+    .pass-line {
+        position: absolute;
+        top: -5px;
+        bottom: -5px;
+        width: 3px;
+        background: #F7D046;
+        transform: translateX(-50%);
+    }
+
+    .pass-label {
+        position: absolute;
+        top: -25px;
+        left: 50%;
+        transform: translateX(-50%);
+        background: #F7D046;
+        color: #123055;
+        padding: 2px 8px;
+        border-radius: 4px;
+        font-size: 0.75rem;
+        font-weight: 700;
+        white-space: nowrap;
+    }
+
+    .rewards-section {
+        margin-top: 30px;
+        padding: 20px;
+        background: linear-gradient(135deg, #e7f2ff, #f0f8ff);
+        border-radius: 12px;
+    }
+
+    .rewards-section h3 {
+        color: #123055;
+        margin-bottom: 15px;
+    }
+
+    .rewards-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 15px;
+    }
+
+    .reward-item {
+        background: #ffffff;
+        padding: 15px;
+        border-radius: 12px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 8px;
+    }
+
+    .reward-icon {
+        font-size: 2rem;
+    }
+
+    .reward-value {
+        font-size: 1.2rem;
+        font-weight: 700;
+        color: #00C853;
+    }
+
+    .try-again-message {
+        margin-top: 20px;
+        padding: 20px;
+        background: #fff3cd;
+        border-radius: 12px;
+    }
+
+    .try-again-message p {
+        color: #856404;
+        margin: 8px 0;
+    }
+
+    .character-stats-card {
+        background: #ffffff;
+        border-radius: 18px;
+        border: 2px solid #e2ecff;
+        padding: 25px;
+        box-shadow: 0 4px 10px rgba(15, 49, 96, 0.06);
+        height: fit-content;
+    }
+
+    .card-title {
+        font-size: 1.2rem;
+        font-weight: 700;
+        color: #123055;
+        margin-bottom: 20px;
+        padding-bottom: 12px;
+        border-bottom: 2px solid #f0f4f8;
+    }
+
+    .stats-list {
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+    }
+
+    .stat-row {
+        display: flex;
+        justify-content: space-between;
+        padding: 10px 0;
+    }
+
+    .stat-label {
+        font-weight: 600;
+        color: #123055;
+    }
+
+    .stat-value {
+        color: #4b6688;
+        font-weight: 500;
+    }
+
+    .stat-value.highlight {
+        color: #00C853;
+        font-weight: 700;
+    }
+
+    .stat-change {
+        color: #00C853;
+        font-weight: 700;
+        margin-left: 8px;
+    }
+
+    .results-actions {
+        display: flex;
+        gap: 12px;
+        justify-content: center;
+        flex-wrap: wrap;
+    }
+
+    .btn {
+        padding: 12px 24px;
+        border-radius: 999px;
+        text-decoration: none;
+        font-weight: 600;
+        transition: 0.2s ease-in-out;
+        border: none;
+        cursor: pointer;
+        font-size: 1rem;
+    }
+
+    .btn-primary {
+        background: #1E90FF;
+        color: #ffffff;
+    }
+
+    .btn-primary:hover {
+        background: #0f6fd1;
+    }
+
+    .btn-secondary {
+        background: #F7D046;
+        color: #123055;
+    }
+
+    .btn-secondary:hover {
+        background: #f5c518;
+    }
+
+    .btn-tertiary {
+        background: #6c757d;
+        color: #ffffff;
+    }
+
+    .btn-tertiary:hover {
+        background: #5a6268;
+    }
+
+    @media (max-width: 768px) {
+        .results-container {
+            grid-template-columns: 1fr;
+        }
+
+        .rewards-grid {
+            grid-template-columns: 1fr;
+        }
+    }
+</style>

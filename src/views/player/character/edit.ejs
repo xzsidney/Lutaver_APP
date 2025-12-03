@@ -1,0 +1,437 @@
+<div class="player-home-container">
+    <div class="section-header">
+        <h1 class="home-title">Editar Personagem</h1>
+        <p class="home-subtitle">Atualize as informações do seu personagem</p>
+    </div>
+
+    <% if (typeof error !=='undefined' && error) { %>
+        <div class="alert alert-danger">
+            <%= error %>
+        </div>
+        <% } %>
+
+            <div class="edit-container">
+                <!-- Left Column: Edit Form -->
+                <form action="/player/characters/<%= character.id %>" method="POST" enctype="multipart/form-data"
+                    class="form-card">
+                    <h2 class="form-title">📝 Dados Básicos</h2>
+
+                    <div class="form-group">
+                        <label for="name">Nome do Personagem</label>
+                        <input type="text" id="name" name="name" value="<%= character.name %>" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="avatar">Alterar Imagem</label>
+                        <input type="file" id="avatar" name="avatar" accept="image/*">
+                        <small style="color: #666; font-size: 0.85rem;">Deixe em branco para manter a atual</small>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="school_year">Ano Escolar</label>
+                        <select id="school_year" name="school_year" required>
+                            <option value="1" <%=character.school_year==1 ? 'selected' : '' %>>1º Ano</option>
+                            <option value="2" <%=character.school_year==2 ? 'selected' : '' %>>2º Ano</option>
+                            <option value="3" <%=character.school_year==3 ? 'selected' : '' %>>3º Ano</option>
+                            <option value="4" <%=character.school_year==4 ? 'selected' : '' %>>4º Ano</option>
+                            <option value="5" <%=character.school_year==5 ? 'selected' : '' %>>5º Ano</option>
+                            <option value="6" <%=character.school_year==6 ? 'selected' : '' %>>6º Ano</option>
+                            <option value="7" <%=character.school_year==7 ? 'selected' : '' %>>7º Ano</option>
+                            <option value="8" <%=character.school_year==8 ? 'selected' : '' %>>8º Ano</option>
+                            <option value="9" <%=character.school_year==9 ? 'selected' : '' %>>9º Ano</option>
+                            <option value="10" <%=character.school_year==10 ? 'selected' : '' %>>10º Ano</option>
+                        </select>
+                    </div>
+
+                    <div class="form-actions">
+                        <button type="submit" class="btn btn-primary">💾 Salvar Alterações</button>
+                        <a href="/player/dashboard" class="btn btn-secondary">Cancelar</a>
+                    </div>
+                </form>
+
+                <!-- Right Column: Attribute Allocation -->
+                <div class="form-card">
+                    <h2 class="form-title">⚔️ Distribuir Atributos</h2>
+
+                    <div class="evolution-points-display">
+                        <span class="points-label">Pontos Disponíveis:</span>
+                        <span class="points-value" id="evolutionPoints">⭐ <%= character.evolution_points %></span>
+                    </div>
+
+                    <% if (character.evolution_points> 0) { %>
+                        <div class="alert alert-info">
+                            💡 Clique nos botões <strong>+</strong> para distribuir seus pontos de evolução.
+                        </div>
+                        <% } else { %>
+                            <div class="alert alert-warning">
+                                ⚠️ Você não tem pontos de evolução disponíveis no momento.
+                            </div>
+                            <% } %>
+
+                                <div class="attributes-compact">
+                                    <!-- Força -->
+                                    <div class="attr-row">
+                                        <span class="attr-icon">💪</span>
+                                        <span class="attr-label">Força</span>
+                                        <span class="attr-current" id="value-strength">
+                                            <%= character.strength %>
+                                        </span>
+                                        <% if (character.evolution_points> 0) { %>
+                                            <button class="btn-allocate-small" onclick="allocatePoint('strength')"
+                                                id="btn-strength">+</button>
+                                            <% } %>
+                                    </div>
+
+                                    <!-- Destreza -->
+                                    <div class="attr-row">
+                                        <span class="attr-icon">🎯</span>
+                                        <span class="attr-label">Destreza</span>
+                                        <span class="attr-current" id="value-dexterity">
+                                            <%= character.dexterity %>
+                                        </span>
+                                        <% if (character.evolution_points> 0) { %>
+                                            <button class="btn-allocate-small" onclick="allocatePoint('dexterity')"
+                                                id="btn-dexterity">+</button>
+                                            <% } %>
+                                    </div>
+
+                                    <!-- Constituição -->
+                                    <div class="attr-row">
+                                        <span class="attr-icon">🛡️</span>
+                                        <span class="attr-label">Constituição</span>
+                                        <span class="attr-current" id="value-constitution">
+                                            <%= character.constitution %>
+                                        </span>
+                                        <% if (character.evolution_points> 0) { %>
+                                            <button class="btn-allocate-small" onclick="allocatePoint('constitution')"
+                                                id="btn-constitution">+</button>
+                                            <% } %>
+                                    </div>
+
+                                    <!-- Inteligência -->
+                                    <div class="attr-row">
+                                        <span class="attr-icon">🧠</span>
+                                        <span class="attr-label">Inteligência</span>
+                                        <span class="attr-current" id="value-intelligence">
+                                            <%= character.intelligence %>
+                                        </span>
+                                        <% if (character.evolution_points> 0) { %>
+                                            <button class="btn-allocate-small" onclick="allocatePoint('intelligence')"
+                                                id="btn-intelligence">+</button>
+                                            <% } %>
+                                    </div>
+
+                                    <!-- Raciocínio -->
+                                    <div class="attr-row">
+                                        <span class="attr-icon">🤔</span>
+                                        <span class="attr-label">Raciocínio</span>
+                                        <span class="attr-current" id="value-reasoning">
+                                            <%= character.reasoning %>
+                                        </span>
+                                        <% if (character.evolution_points> 0) { %>
+                                            <button class="btn-allocate-small" onclick="allocatePoint('reasoning')"
+                                                id="btn-reasoning">+</button>
+                                            <% } %>
+                                    </div>
+
+                                    <!-- Sorte -->
+                                    <div class="attr-row">
+                                        <span class="attr-icon">🍀</span>
+                                        <span class="attr-label">Sorte</span>
+                                        <span class="attr-current" id="value-luck">
+                                            <%= character.luck %>
+                                        </span>
+                                        <% if (character.evolution_points> 0) { %>
+                                            <button class="btn-allocate-small" onclick="allocatePoint('luck')"
+                                                id="btn-luck">+</button>
+                                            <% } %>
+                                    </div>
+                                </div>
+                </div>
+            </div>
+</div>
+
+<script>
+    const characterId = '<%= character.id %>';
+
+    async function allocatePoint(attribute) {
+        try {
+            const response = await fetch(`/player/characters/${characterId}/allocate`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ attribute })
+            });
+
+            const data = await response.json();
+
+            if (data.success) {
+                // Update evolution points
+                document.getElementById('evolutionPoints').textContent = `⭐ ${data.character.evolution_points}`;
+
+                // Update attribute value
+                document.getElementById(`value-${attribute}`).textContent = data.character[attribute];
+
+                // If no more points, remove all buttons and update alert
+                if (data.character.evolution_points === 0) {
+                    const buttons = document.querySelectorAll('.btn-allocate-small');
+                    buttons.forEach(btn => btn.remove());
+
+                    const alert = document.querySelector('.alert-info');
+                    if (alert) {
+                        alert.innerHTML = '<strong>✅ Todos os pontos foram distribuídos!</strong>';
+                        alert.classList.remove('alert-info');
+                        alert.classList.add('alert-success');
+                    }
+                } else {
+                    // Update alert message
+                    const alert = document.querySelector('.alert-info');
+                    if (alert) {
+                        alert.innerHTML = `💡 Você ainda tem <strong>${data.character.evolution_points}</strong> ponto(s) de evolução!`;
+                    }
+                }
+
+                // Show success feedback
+                const btn = document.getElementById(`btn-${attribute}`);
+                if (btn) {
+                    btn.textContent = '✓';
+                    btn.style.background = '#00C853';
+                    btn.style.borderColor = '#00C853';
+                    setTimeout(() => {
+                        if (data.character.evolution_points > 0) {
+                            btn.textContent = '+';
+                            btn.style.background = '';
+                            btn.style.borderColor = '';
+                        }
+                    }, 500);
+                }
+            } else {
+                alert(data.error || 'Erro ao alocar ponto');
+            }
+        } catch (error) {
+            console.error('Error:', error);
+            alert('Erro ao alocar ponto. Tente novamente.');
+        }
+    }
+</script>
+
+<style>
+    .edit-container {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 25px;
+        max-width: 1000px;
+        margin: 0 auto 30px;
+    }
+
+    .form-card {
+        background: #ffffff;
+        border-radius: 18px;
+        border: 2px solid #e2ecff;
+        padding: 25px;
+        box-shadow: 0 4px 10px rgba(15, 49, 96, 0.06);
+    }
+
+    .form-title {
+        font-size: 1.2rem;
+        font-weight: 700;
+        color: #123055;
+        margin-bottom: 20px;
+        padding-bottom: 12px;
+        border-bottom: 2px solid #f0f4f8;
+    }
+
+    .alert {
+        padding: 12px 16px;
+        border-radius: 10px;
+        margin-bottom: 20px;
+        font-size: 0.9rem;
+    }
+
+    .alert-danger {
+        background: #ffe6e6;
+        color: #c92a2a;
+        border: 1px solid #ffc9c9;
+    }
+
+    .alert-info {
+        background: #e7f2ff;
+        color: #0a2a4f;
+        border: 2px solid #1E90FF;
+    }
+
+    .alert-warning {
+        background: #fff3cd;
+        color: #856404;
+        border: 2px solid #ffeaa7;
+    }
+
+    .alert-success {
+        background: #d3f9d8;
+        color: #2b8a3e;
+        border: 2px solid #00C853;
+    }
+
+    .form-group {
+        margin-bottom: 20px;
+    }
+
+    .form-group label {
+        display: block;
+        font-weight: 600;
+        color: #123055;
+        margin-bottom: 8px;
+        font-size: 1rem;
+    }
+
+    .form-group input,
+    .form-group select {
+        width: 100%;
+        padding: 12px 16px;
+        border: 2px solid #e2ecff;
+        border-radius: 8px;
+        font-size: 1rem;
+        transition: 0.2s ease-in-out;
+    }
+
+    .form-group input:focus,
+    .form-group select:focus {
+        outline: none;
+        border-color: #1E90FF;
+        box-shadow: 0 0 0 3px rgba(30, 144, 255, 0.1);
+    }
+
+    .evolution-points-display {
+        background: linear-gradient(135deg, #fff9e6, #fffbf0);
+        border: 2px solid #F7D046;
+        border-radius: 12px;
+        padding: 15px;
+        margin-bottom: 20px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    .points-label {
+        font-weight: 600;
+        color: #123055;
+        font-size: 1rem;
+    }
+
+    .points-value {
+        font-size: 1.5rem;
+        font-weight: 700;
+        color: #123055;
+    }
+
+    .attributes-compact {
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+    }
+
+    .attr-row {
+        display: grid;
+        grid-template-columns: 35px 1fr 50px 40px;
+        align-items: center;
+        gap: 10px;
+        padding: 10px;
+        background: #f8f9fa;
+        border-radius: 10px;
+        transition: 0.2s ease-in-out;
+    }
+
+    .attr-row:hover {
+        background: #e7f2ff;
+    }
+
+    .attr-icon {
+        font-size: 1.3rem;
+        text-align: center;
+    }
+
+    .attr-label {
+        font-weight: 600;
+        color: #123055;
+    }
+
+    .attr-current {
+        font-weight: 700;
+        color: #1E90FF;
+        text-align: center;
+        font-size: 1.1rem;
+    }
+
+    .btn-allocate-small {
+        width: 32px;
+        height: 32px;
+        border-radius: 50%;
+        border: 2px solid #1E90FF;
+        background: #1E90FF;
+        color: #ffffff;
+        font-size: 1.2rem;
+        font-weight: 700;
+        cursor: pointer;
+        transition: 0.2s ease-in-out;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .btn-allocate-small:hover {
+        background: #0f6fd1;
+        border-color: #0f6fd1;
+        transform: scale(1.1);
+    }
+
+    .btn-allocate-small:active {
+        transform: scale(0.95);
+    }
+
+    .form-actions {
+        display: flex;
+        gap: 12px;
+        justify-content: center;
+        margin-top: 25px;
+    }
+
+    .btn {
+        padding: 12px 28px;
+        border-radius: 999px;
+        text-decoration: none;
+        font-weight: 600;
+        transition: 0.2s ease-in-out;
+        border: none;
+        cursor: pointer;
+        font-size: 1rem;
+    }
+
+    .btn-primary {
+        background: #1E90FF;
+        color: #ffffff;
+    }
+
+    .btn-primary:hover {
+        background: #0f6fd1;
+    }
+
+    .btn-secondary {
+        background: #6c757d;
+        color: #ffffff;
+    }
+
+    .btn-secondary:hover {
+        background: #5a6268;
+    }
+
+    @media (max-width: 768px) {
+        .edit-container {
+            grid-template-columns: 1fr;
+        }
+
+        .attr-row {
+            grid-template-columns: 30px 1fr 45px 35px;
+        }
+    }
+</style>

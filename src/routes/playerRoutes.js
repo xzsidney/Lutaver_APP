@@ -1,42 +1,34 @@
 const express = require('express');
 const router = express.Router();
+const { authMiddleware } = require('../middlewares/auth');
 
-const {
-    authMiddleware,
-    playerOnlyMiddleware
-} = require('../middlewares/authMiddleware');
+// Import sub-routes
+const accountRoutes = require('./accountRoutes');
+const characterRoutes = require('./characterRoutes');
+const playerAdventureRoutes = require('./playerAdventureRoutes');
+const playerShopRoutes = require('./playerShopRoutes');
+const DashboardPlayerController = require('../controllers/DashboardPlayerController');
 
-const playRoutes = require('./playRoutes');
-const myCharacterRoutes = require('./myCharacterRoutes');
-const shopRoutes = require('./shopRoutes');
-const inventoryRoutes = require('./inventoryRoutes');
+/**
+ * Player Routes
+ * Base path: /player
+ * All routes are protected by authMiddleware
+ */
 
-// ===================================================================
-// /player → home do jogador
-// ===================================================================
+// Dashboard (home page for player)
+router.get('/dashboard', authMiddleware, DashboardPlayerController.dashboard);
+router.get('/', authMiddleware, DashboardPlayerController.dashboard); // Alias
 
-router.get('/', authMiddleware, (req, res) => {
-    // você pode ter uma view dedicada do player, tipo: views/player/home.ejs
-    return res.render('player/home', {
-        title: 'Área do Aluno',
-        user: req.session.user
-    });
-});
+// Account management: /player/account/*
+router.use('/account', accountRoutes);
 
-// ===================================================================
-// Subrotas do jogador
-// ===================================================================
+// Character management: /player/characters/*
+router.use('/characters', characterRoutes);
 
-// Tela principal de jogo
-router.use('/play', playerOnlyMiddleware, playRoutes);           // /player/play/...
+// Adventures: /player/adventures/*
+router.use('/adventures', playerAdventureRoutes);
 
-// Personagens do jogador
-router.use('/characters', playerOnlyMiddleware, myCharacterRoutes); // /player/characters/...
-
-// Loja do jogador
-router.use('/shop', playerOnlyMiddleware, shopRoutes);           // /player/shop/...
-
-// Inventário do jogador
-router.use('/inventory', playerOnlyMiddleware, inventoryRoutes); // /player/inventory/...
+// Shop: /player/shop/*
+router.use('/shop', playerShopRoutes);
 
 module.exports = router;

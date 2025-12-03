@@ -38,7 +38,7 @@ const AuthController = {
                     return res.redirect('/teacher');
                 case 'player':
                 default:
-                    return res.redirect('/player');
+                    return res.redirect('/player/account/profile');
             }
         } catch (error) {
             console.error(error);

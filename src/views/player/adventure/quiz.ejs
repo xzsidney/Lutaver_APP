@@ -1,0 +1,304 @@
+<div class="player-home-container">
+    <div class="quiz-header">
+        <h1 class="quiz-title">
+            <%= adventure.title %>
+        </h1>
+        <div class="quiz-progress">
+            <span class="progress-text">Questão <%= questionIndex %> de <%= totalQuestions %></span>
+            <div class="progress-bar">
+                <div class="progress-fill" style="width: <%= (questionIndex / totalQuestions) * 100 %>%"></div>
+            </div>
+        </div>
+    </div>
+
+    <div class="quiz-container">
+        <div class="question-card">
+            <div class="question-number">Questão <%= questionIndex %>
+            </div>
+            <h2 class="question-text">
+                <%= question.question_text %>
+            </h2>
+
+            <form action="/player/adventures/<%= adventure.id %>/answer" method="POST" class="quiz-form">
+                <div class="options-list">
+                    <label class="option-item">
+                        <input type="radio" name="answer" value="A" required>
+                        <span class="option-label">A</span>
+                        <span class="option-text">
+                            <%= question.option_a %>
+                        </span>
+                    </label>
+
+                    <label class="option-item">
+                        <input type="radio" name="answer" value="B" required>
+                        <span class="option-label">B</span>
+                        <span class="option-text">
+                            <%= question.option_b %>
+                        </span>
+                    </label>
+
+                    <label class="option-item">
+                        <input type="radio" name="answer" value="C" required>
+                        <span class="option-label">C</span>
+                        <span class="option-text">
+                            <%= question.option_c %>
+                        </span>
+                    </label>
+
+                    <label class="option-item">
+                        <input type="radio" name="answer" value="D" required>
+                        <span class="option-label">D</span>
+                        <span class="option-text">
+                            <%= question.option_d %>
+                        </span>
+                    </label>
+                </div>
+
+                <div class="quiz-actions">
+                    <button type="submit" class="btn btn-submit">Confirmar Resposta ➡️</button>
+                </div>
+            </form>
+        </div>
+
+        <!-- Character Info Sidebar -->
+        <div class="character-sidebar">
+            <div class="sidebar-header">
+                <span class="char-icon">🧙</span>
+                <strong>
+                    <%= character.name %>
+                </strong>
+            </div>
+            <div class="sidebar-stats">
+                <div class="stat">
+                    <span class="stat-label">Nível:</span>
+                    <span class="stat-value">
+                        <%= character.level %>
+                    </span>
+                </div>
+                <div class="stat">
+                    <span class="stat-label">XP:</span>
+                    <span class="stat-value">
+                        <%= character.total_xp %>
+                    </span>
+                </div>
+                <div class="stat">
+                    <span class="stat-label">Moedas:</span>
+                    <span class="stat-value">💰 <%= character.coins %></span>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .quiz-header {
+        background: linear-gradient(135deg, #1E90FF, #00C853);
+        color: #ffffff;
+        padding: 25px;
+        border-radius: 18px;
+        margin-bottom: 30px;
+        box-shadow: 0 4px 10px rgba(30, 144, 255, 0.3);
+    }
+
+    .quiz-title {
+        font-size: 1.8rem;
+        font-weight: 700;
+        margin-bottom: 15px;
+    }
+
+    .quiz-progress {
+        max-width: 400px;
+    }
+
+    .progress-text {
+        display: block;
+        font-size: 0.9rem;
+        margin-bottom: 8px;
+        opacity: 0.95;
+    }
+
+    .progress-bar {
+        background: rgba(255, 255, 255, 0.3);
+        height: 10px;
+        border-radius: 999px;
+        overflow: hidden;
+    }
+
+    .progress-fill {
+        background: #ffffff;
+        height: 100%;
+        transition: width 0.3s ease;
+    }
+
+    .quiz-container {
+        display: grid;
+        grid-template-columns: 1fr 300px;
+        gap: 25px;
+    }
+
+    .question-card {
+        background: #ffffff;
+        border-radius: 18px;
+        border: 2px solid #e2ecff;
+        padding: 30px;
+        box-shadow: 0 4px 10px rgba(15, 49, 96, 0.06);
+    }
+
+    .question-number {
+        display: inline-block;
+        background: #1E90FF;
+        color: #ffffff;
+        padding: 6px 14px;
+        border-radius: 999px;
+        font-size: 0.85rem;
+        font-weight: 600;
+        margin-bottom: 15px;
+    }
+
+    .question-text {
+        font-size: 1.3rem;
+        font-weight: 600;
+        color: #123055;
+        margin-bottom: 25px;
+        line-height: 1.5;
+    }
+
+    .options-list {
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+        margin-bottom: 25px;
+    }
+
+    .option-item {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        padding: 15px;
+        border: 2px solid #e2ecff;
+        border-radius: 12px;
+        cursor: pointer;
+        transition: 0.2s ease-in-out;
+    }
+
+    .option-item:hover {
+        border-color: #1E90FF;
+        background: #f8fbff;
+    }
+
+    .option-item input[type="radio"] {
+        display: none;
+    }
+
+    .option-item input[type="radio"]:checked+.option-label {
+        background: #1E90FF;
+        color: #ffffff;
+    }
+
+    .option-item input[type="radio"]:checked~.option-text {
+        font-weight: 600;
+        color: #123055;
+    }
+
+    .option-label {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 35px;
+        height: 35px;
+        background: #e2ecff;
+        color: #123055;
+        border-radius: 50%;
+        font-weight: 700;
+        font-size: 1rem;
+        flex-shrink: 0;
+        transition: 0.2s ease-in-out;
+    }
+
+    .option-text {
+        flex: 1;
+        color: #4b6688;
+        font-size: 1rem;
+    }
+
+    .quiz-actions {
+        text-align: center;
+    }
+
+    .btn-submit {
+        background: #00C853;
+        color: #ffffff;
+        padding: 14px 32px;
+        border-radius: 999px;
+        border: none;
+        font-weight: 600;
+        font-size: 1.1rem;
+        cursor: pointer;
+        transition: 0.2s ease-in-out;
+    }
+
+    .btn-submit:hover {
+        background: #02a343;
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(0, 200, 83, 0.3);
+    }
+
+    .character-sidebar {
+        background: #ffffff;
+        border-radius: 18px;
+        border: 2px solid #e2ecff;
+        padding: 20px;
+        box-shadow: 0 4px 10px rgba(15, 49, 96, 0.06);
+        height: fit-content;
+    }
+
+    .sidebar-header {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        padding-bottom: 15px;
+        border-bottom: 2px solid #f0f4f8;
+        margin-bottom: 15px;
+    }
+
+    .sidebar-header .char-icon {
+        font-size: 2rem;
+    }
+
+    .sidebar-header strong {
+        font-size: 1.1rem;
+        color: #123055;
+    }
+
+    .sidebar-stats {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+    }
+
+    .stat {
+        display: flex;
+        justify-content: space-between;
+        padding: 8px 0;
+    }
+
+    .stat-label {
+        font-weight: 600;
+        color: #123055;
+    }
+
+    .stat-value {
+        color: #4b6688;
+        font-weight: 500;
+    }
+
+    @media (max-width: 768px) {
+        .quiz-container {
+            grid-template-columns: 1fr;
+        }
+
+        .character-sidebar {
+            order: -1;
+        }
+    }
+</style>

@@ -1,30 +1,66 @@
 const express = require('express');
 const router = express.Router();
-const { authMiddleware } = require('../middlewares/auth');
 const CharacterController = require('../controllers/CharacterController');
+const { authMiddleware } = require('../middlewares/auth');
+const multer = require('multer');
+const path = require('path');
 
-// All routes protected
-router.use(authMiddleware);
+// Configure Multer
+const storage = multer.diskStorage({
+    destination: function (req, file, cb) {
+        cb(null, 'src/public/img/player');
+    },
+    filename: function (req, file, cb) {
+        // Temporary name, will be renamed in controller
+        const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
+        cb(null, 'temp-' + uniqueSuffix + path.extname(file.originalname));
+    }
+});
 
-// List
-router.get('/', CharacterController.list);
+const upload = multer({
+    storage: storage,
+    limits: { fileSize: 5 * 1024 * 1024 }, // 5MB limit
+    fileFilter: (req, file, cb) => {
+        const filetypes = /jpeg|jpg|png|gif/;
+        const mimetype = filetypes.test(file.mimetype);
+        const extname = filetypes.test(path.extname(file.originalname).toLowerCase());
+        if (mimetype && extname) {
+            return cb(null, true);
+        }
+        cb(new Error('Apenas arquivos de imagem são permitidos!'));
+    }
+});
 
-// Create
-router.get('/new', CharacterController.createPage);
-router.post('/', CharacterController.create);
+/**
+ * Character Management Routes
+ * All routes are protected by authMiddleware
+ */
 
-// Show (Sheet)
-router.get('/:id', CharacterController.show);
+// List all characters
+router.get('/', authMiddleware, CharacterController.index);
 
-// Edit
-router.get('/:id/edit', CharacterController.editPage);
-router.post('/:id', CharacterController.update);
+// Create new character form
+router.get('/new', authMiddleware, CharacterController.create);
 
-// Delete
-router.post('/:id/delete', CharacterController.delete);
+// Store new character
+router.post('/', authMiddleware, upload.single('avatar'), CharacterController.store);
 
-// Actions
-router.post('/:id/attributes', CharacterController.upgradeAttribute);
-router.post('/:id/powers', CharacterController.learnPower);
+// Select active character
+router.post('/select', authMiddleware, CharacterController.selectActive);
+
+// Show character details
+router.get('/:id', authMiddleware, CharacterController.show);
+
+// Edit character form
+router.get('/:id/edit', authMiddleware, CharacterController.edit);
+
+// Update character
+router.post('/:id', authMiddleware, upload.single('avatar'), CharacterController.update);
+
+// Delete character
+router.post('/:id/delete', authMiddleware, CharacterController.destroy);
+
+// Allocate attribute point
+router.post('/:characterId/allocate', authMiddleware, CharacterController.allocateAttribute);
 
 module.exports = router;

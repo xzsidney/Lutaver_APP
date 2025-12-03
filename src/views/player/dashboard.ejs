@@ -1,0 +1,447 @@
+<div class="player-dashboard">
+    <!-- Character Carousel -->
+    <div class="character-carousel-section">
+        <div class="carousel-container">
+            <% if (characters.length===0) { %>
+                <div class="empty-characters">
+                    <p>Você ainda não criou nenhum personagem!</p>
+                    <a href="/player/characters/new" class="btn-create-character">➕ Criar Primeiro Personagem</a>
+                </div>
+                <% } else { %>
+                    <div class="characters-scroll">
+                        <% characters.forEach((character, index)=> { %>
+                            <div class="character-circle <%= activeCharacter && activeCharacter.id === character.id ? 'active' : '' %>"
+                                onclick="selectCharacter(<%= character.id %>)">
+                                <div class="character-avatar-circle">
+                                    <img src="/img/player/<%= character.id %>.jpg"
+                                        onerror="this.style.display='none'; this.nextElementSibling.style.display='block';"
+                                        class="character-img"
+                                        style="width: 100%; height: 100%; object-fit: cover; border-radius: 50%;">
+                                    <span class="character-emoji" style="display: none;">🧙</span>
+                                </div>
+                                <span class="character-name-label">
+                                    <%= character.name %>
+                                </span>
+                            </div>
+                            <% }); %>
+                                <a href="/player/characters/new" class="character-circle add-new">
+                                    <div class="character-avatar-circle">
+                                        <span class="character-emoji">➕</span>
+                                    </div>
+                                    <span class="character-name-label">Novo</span>
+                                </a>
+                    </div>
+                    <% } %>
+        </div>
+
+        <% if (activeCharacter) { %>
+            <div class="character-actions">
+                <a href="/player/characters/<%= activeCharacter.id %>" class="action-btn">👁️ Ver Detalhes</a>
+                <a href="/player/characters/<%= activeCharacter.id %>/edit" class="action-btn">✏️ Editar</a>
+                <a href="/player/shop/<%= activeCharacter.id %>" class="action-btn">🛒 Loja</a>
+            </div>
+            <% } %>
+    </div>
+
+    <!-- Destaques (Adventures) -->
+    <div class="highlights-section">
+        <h2 class="section-title">Destaques</h2>
+        <div class="adventures-grid">
+            <% if (adventures.length===0) { %>
+                <div class="empty-state">
+                    <p>Nenhuma aventura disponível no momento.</p>
+                </div>
+                <% } else { %>
+                    <% adventures.forEach((adventure, index)=> { %>
+                        <div class="adventure-card">
+                            <% if (index < 2) { %>
+                                <span class="new-badge">Novo</span>
+                                <% } %>
+                                    <div class="adventure-image">
+                                        <div class="adventure-placeholder"
+                                            style="background: <%= ['#FF6B9D', '#9B59B6', '#3498DB', '#1ABC9C', '#F39C12', '#E74C3C', '#2ECC71', '#34495E'][index % 8] %>">
+                                            <span class="adventure-icon">🎯</span>
+                                        </div>
+                                    </div>
+                                    <div class="adventure-info">
+                                        <h3 class="adventure-title">
+                                            <%= adventure.title %>
+                                        </h3>
+                                        <% if (adventure.discipline) { %>
+                                            <span class="adventure-discipline">
+                                                <%= adventure.discipline.name %>
+                                            </span>
+                                            <% } %>
+                                    </div>
+                                    <a href="/player/adventures/<%= adventure.id %>" class="play-button">
+                                        <span class="play-icon">▶️</span>
+                                    </a>
+                        </div>
+                        <% }); %>
+                            <% } %>
+        </div>
+    </div>
+
+    <!-- Histórias (Stories) -->
+    <% if (stories && stories.length> 0) { %>
+        <div class="stories-section">
+            <h2 class="section-title">Histórias</h2>
+            <div class="stories-grid">
+                <% stories.forEach((story, index)=> { %>
+                    <div class="story-card">
+                        <div class="story-image">
+                            <div class="story-placeholder"
+                                style="background: <%= ['#E91E63', '#9C27B0', '#673AB7', '#3F51B5', '#2196F3', '#00BCD4', '#009688', '#4CAF50'][index % 8] %>">
+                                <span class="story-icon">📖</span>
+                            </div>
+                        </div>
+                        <div class="story-info">
+                            <h3 class="story-title">
+                                <%= story.title %>
+                            </h3>
+                        </div>
+                        <a href="/stories/<%= story.id %>" class="play-button-small">
+                            <span class="play-icon">▶️</span>
+                        </a>
+                    </div>
+                    <% }); %>
+            </div>
+        </div>
+        <% } %>
+</div>
+
+<script>
+    function selectCharacter(characterId) {
+        // Send request to select character
+        fetch('/player/characters/select', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded',
+            },
+            body: `characterId=${characterId}`
+        }).then(() => {
+            window.location.reload();
+        });
+    }
+</script>
+
+<style>
+    /* Reset and Base */
+    * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+    }
+
+    .player-dashboard {
+        background: linear-gradient(180deg, #E3F2FD 0%, #FFFFFF 100%);
+        min-height: 100vh;
+        padding-bottom: 60px;
+    }
+
+    /* Character Carousel */
+    .character-carousel-section {
+        margin: 30px 40px;
+        background: #FFFFFF;
+        padding: 25px;
+        border-radius: 24px;
+        box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
+    }
+
+    .characters-scroll {
+        display: flex;
+        gap: 20px;
+        overflow-x: auto;
+        padding: 15px 0;
+        scrollbar-width: thin;
+    }
+
+    .character-circle {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 8px;
+        cursor: pointer;
+        transition: 0.2s ease-in-out;
+        min-width: 100px;
+    }
+
+    .character-circle:hover {
+        transform: translateY(-5px);
+    }
+
+    .character-circle.active .character-avatar-circle {
+        border: 4px solid #1976D2;
+        box-shadow: 0 0 0 4px rgba(25, 118, 210, 0.2);
+    }
+
+    .character-avatar-circle {
+        width: 90px;
+        height: 90px;
+        border-radius: 50%;
+        background: linear-gradient(135deg, #FF6B9D 0%, #FFA06B 100%);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        box-shadow: 0 6px 16px rgba(0, 0, 0, 0.15);
+        border: 3px solid #FFFFFF;
+    }
+
+    .character-emoji {
+        font-size: 3rem;
+    }
+
+    .character-name-label {
+        font-size: 0.9rem;
+        font-weight: 600;
+        color: #424242;
+        text-align: center;
+    }
+
+    .add-new .character-avatar-circle {
+        background: linear-gradient(135deg, #E0E0E0 0%, #BDBDBD 100%);
+    }
+
+    .character-actions {
+        display: flex;
+        gap: 15px;
+        justify-content: center;
+        margin-top: 20px;
+        padding-top: 20px;
+        border-top: 2px solid #F5F5F5;
+    }
+
+    .action-btn {
+        padding: 10px 20px;
+        background: #1976D2;
+        color: #FFFFFF;
+        border-radius: 50px;
+        text-decoration: none;
+        font-weight: 600;
+        font-size: 0.9rem;
+        transition: 0.2s;
+        box-shadow: 0 4px 8px rgba(25, 118, 210, 0.3);
+    }
+
+    .action-btn:hover {
+        background: #1565C0;
+        transform: translateY(-2px);
+        box-shadow: 0 6px 12px rgba(25, 118, 210, 0.4);
+    }
+
+    .empty-characters {
+        text-align: center;
+        padding: 40px;
+    }
+
+    .btn-create-character {
+        display: inline-block;
+        margin-top: 15px;
+        padding: 12px 24px;
+        background: #4CAF50;
+        color: #FFFFFF;
+        border-radius: 50px;
+        text-decoration: none;
+        font-weight: 600;
+        transition: 0.2s;
+    }
+
+    .btn-create-character:hover {
+        background: #45A049;
+        transform: translateY(-2px);
+    }
+
+    /* Highlights Section */
+    .highlights-section,
+    .stories-section {
+        margin: 30px 40px;
+    }
+
+    .section-title {
+        font-size: 1.8rem;
+        font-weight: 700;
+        color: #1976D2;
+        margin-bottom: 20px;
+    }
+
+    .adventures-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+        gap: 20px;
+    }
+
+    .adventure-card {
+        background: #FFFFFF;
+        border-radius: 20px;
+        overflow: hidden;
+        box-shadow: 0 6px 16px rgba(0, 0, 0, 0.1);
+        position: relative;
+        transition: 0.3s ease-in-out;
+        cursor: pointer;
+    }
+
+    .adventure-card:hover {
+        transform: translateY(-8px);
+        box-shadow: 0 12px 24px rgba(0, 0, 0, 0.15);
+    }
+
+    .new-badge {
+        position: absolute;
+        top: 15px;
+        left: 15px;
+        background: #FF4081;
+        color: #FFFFFF;
+        padding: 6px 14px;
+        border-radius: 20px;
+        font-size: 0.8rem;
+        font-weight: 700;
+        z-index: 2;
+        box-shadow: 0 2px 8px rgba(255, 64, 129, 0.4);
+    }
+
+    .adventure-image {
+        height: 180px;
+        position: relative;
+    }
+
+    .adventure-placeholder {
+        width: 100%;
+        height: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .adventure-icon {
+        font-size: 4rem;
+    }
+
+    .adventure-info {
+        padding: 15px;
+    }
+
+    .adventure-title {
+        font-size: 1.1rem;
+        font-weight: 700;
+        color: #424242;
+        margin-bottom: 8px;
+    }
+
+    .adventure-discipline {
+        display: inline-block;
+        background: #E3F2FD;
+        color: #1976D2;
+        padding: 4px 12px;
+        border-radius: 12px;
+        font-size: 0.8rem;
+        font-weight: 600;
+    }
+
+    .play-button {
+        position: absolute;
+        bottom: 15px;
+        right: 15px;
+        width: 50px;
+        height: 50px;
+        background: #FF9800;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        box-shadow: 0 4px 12px rgba(255, 152, 0, 0.4);
+        transition: 0.2s;
+        text-decoration: none;
+    }
+
+    .play-button:hover {
+        transform: scale(1.1);
+        box-shadow: 0 6px 16px rgba(255, 152, 0, 0.6);
+    }
+
+    .play-icon {
+        font-size: 1.5rem;
+    }
+
+    /* Stories Section */
+    .stories-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+        gap: 20px;
+    }
+
+    .story-card {
+        background: #FFFFFF;
+        border-radius: 16px;
+        overflow: hidden;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+        position: relative;
+        transition: 0.3s ease-in-out;
+        cursor: pointer;
+    }
+
+    .story-card:hover {
+        transform: translateY(-6px);
+        box-shadow: 0 8px 20px rgba(0, 0, 0, 0.12);
+    }
+
+    .story-image {
+        height: 140px;
+    }
+
+    .story-placeholder {
+        width: 100%;
+        height: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .story-icon {
+        font-size: 3rem;
+    }
+
+    .story-info {
+        padding: 12px;
+    }
+
+    .story-title {
+        font-size: 0.95rem;
+        font-weight: 600;
+        color: #424242;
+    }
+
+    .play-button-small {
+        position: absolute;
+        bottom: 12px;
+        right: 12px;
+        width: 40px;
+        height: 40px;
+        background: #FF9800;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        box-shadow: 0 3px 8px rgba(255, 152, 0, 0.4);
+        transition: 0.2s;
+        text-decoration: none;
+    }
+
+    .play-button-small:hover {
+        transform: scale(1.1);
+    }
+
+    .play-button-small .play-icon {
+        font-size: 1.2rem;
+    }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+        .adventures-grid {
+            grid-template-columns: 1fr;
+        }
+
+        .stories-grid {
+            grid-template-columns: repeat(2, 1fr);
+        }
+    }
+</style>

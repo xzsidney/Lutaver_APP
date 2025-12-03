@@ -1,0 +1,140 @@
+<div class="player-home-container">
+    <div class="section-header">
+        <h1 class="home-title">Meu Perfil</h1>
+        <p class="home-subtitle">Informações da sua conta</p>
+    </div>
+
+    <div class="profile-card">
+        <div class="profile-info">
+            <div class="info-row">
+                <span class="info-label">Nome:</span>
+                <span class="info-value">
+                    <%= user.name %>
+                </span>
+            </div>
+
+            <div class="info-row">
+                <span class="info-label">Email:</span>
+                <span class="info-value">
+                    <%= user.email %>
+                </span>
+            </div>
+
+            <div class="info-row">
+                <span class="info-label">Tipo de Conta:</span>
+                <span class="info-value">
+                    <% if (user.role==='player' ) { %>
+                        Jogador
+                        <% } else if (user.role==='teacher' ) { %>
+                            Professor
+                            <% } else if (user.role==='admin' ) { %>
+                                Administrador
+                                <% } %>
+                </span>
+            </div>
+
+            <div class="info-row">
+                <span class="info-label">Status:</span>
+                <span class="info-value">
+                    <% if (user.is_active) { %>
+                        <span class="badge badge-success">Ativo</span>
+                        <% } else { %>
+                            <span class="badge badge-danger">Inativo</span>
+                            <% } %>
+                </span>
+            </div>
+        </div>
+
+        <div class="profile-actions">
+            <a href="/player/account/edit" class="btn btn-primary">✏️ Editar Conta</a>
+            <a href="/player/characters" class="btn btn-secondary">👤 Meus Personagens</a>
+        </div>
+    </div>
+</div>
+
+<style>
+    .profile-card {
+        background: #ffffff;
+        border-radius: 18px;
+        border: 2px solid #e2ecff;
+        padding: 30px;
+        max-width: 600px;
+        margin: 0 auto;
+        box-shadow: 0 4px 10px rgba(15, 49, 96, 0.06);
+    }
+
+    .profile-info {
+        margin-bottom: 25px;
+    }
+
+    .info-row {
+        display: flex;
+        justify-content: space-between;
+        padding: 12px 0;
+        border-bottom: 1px solid #f0f4f8;
+    }
+
+    .info-row:last-child {
+        border-bottom: none;
+    }
+
+    .info-label {
+        font-weight: 600;
+        color: #123055;
+    }
+
+    .info-value {
+        color: #4b6688;
+    }
+
+    .badge {
+        padding: 4px 12px;
+        border-radius: 999px;
+        font-size: 0.85rem;
+        font-weight: 600;
+    }
+
+    .badge-success {
+        background: #00C853;
+        color: #ffffff;
+    }
+
+    .badge-danger {
+        background: #dc3545;
+        color: #ffffff;
+    }
+
+    .profile-actions {
+        display: flex;
+        gap: 12px;
+        justify-content: center;
+    }
+
+    .btn {
+        padding: 10px 20px;
+        border-radius: 999px;
+        text-decoration: none;
+        font-weight: 600;
+        transition: 0.2s ease-in-out;
+        border: none;
+        cursor: pointer;
+    }
+
+    .btn-primary {
+        background: #1E90FF;
+        color: #ffffff;
+    }
+
+    .btn-primary:hover {
+        background: #0f6fd1;
+    }
+
+    .btn-secondary {
+        background: #6c757d;
+        color: #ffffff;
+    }
+
+    .btn-secondary:hover {
+        background: #5a6268;
+    }
+</style>

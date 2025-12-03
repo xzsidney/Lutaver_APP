@@ -1,0 +1,330 @@
+/* ============================================================
+   PLAYER AREA STYLES - LUTAVER
+   Tema: Claro + UI de Game (Brasil)
+   ============================================================ */
+
+/* Corpo da área do jogador */
+.player-body {
+    background: linear-gradient(180deg, #f5f8ff, #fdfefe);
+    min-height: 100vh;
+    font-family: 'Poppins', sans-serif;
+    color: #123055;
+    margin: 0;
+}
+
+/* ======================= NAVBAR DO PLAYER ======================= */
+
+.player-navbar {
+    background: #ffffff;
+    border-bottom: 3px solid #1E90FF;
+    /* azul brasil */
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
+    padding: 10px 30px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+/* Logo / nome do jogo */
+.player-navbar .brand {
+    font-weight: 800;
+    font-size: 1.3rem;
+    color: #1E90FF;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+/* Menu */
+.player-navbar nav {
+    display: flex;
+    gap: 15px;
+    align-items: center;
+}
+
+.player-navbar nav a {
+    text-decoration: none;
+    padding: 8px 14px;
+    border-radius: 999px;
+    font-weight: 600;
+    font-size: 0.95rem;
+    color: #123055;
+    background: transparent;
+    border: 1px solid transparent;
+    transition: 0.2s ease-in-out;
+}
+
+.player-navbar nav a:hover {
+    border-color: #1E90FF;
+    background: #e7f2ff;
+    color: #0a2a4f;
+}
+
+/* Link de ação principal (ex: Entrar / Sair) */
+.player-navbar nav .btn-main {
+    background: #00C853;
+    border-color: #00C853;
+    color: #ffffff;
+}
+
+.player-navbar nav .btn-main:hover {
+    background: #02a343;
+    border-color: #02a343;
+}
+
+/* Remove possíveis listas padrão */
+.player-navbar ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+/* ======================== CONTAINER HOME ========================== */
+
+.player-home-container {
+    padding: 40px 40px 60px;
+    max-width: 1100px;
+    margin: 0 auto;
+    animation: fadeIn 0.3s ease;
+}
+
+/* Títulos */
+.home-title-box {
+    text-align: center;
+    margin-bottom: 40px;
+}
+
+.home-title {
+    font-size: 2.6rem;
+    font-weight: 900;
+    color: #0a2a4f;
+    text-shadow: 0 2px 0 rgba(255, 255, 255, 0.8);
+}
+
+.home-subtitle {
+    font-size: 1.05rem;
+    color: #3c587d;
+    margin-top: 10px;
+}
+
+/* ======================== CARDS ============================ */
+
+.home-cards {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 25px;
+}
+
+.home-card {
+    background: #ffffff;
+    border-radius: 18px;
+    border: 2px solid #e2ecff;
+    width: 300px;
+    padding: 22px 22px 20px;
+    display: flex;
+    align-items: flex-start;
+    gap: 16px;
+    color: #123055;
+    text-decoration: none;
+    transition: 0.18s ease-in-out;
+    box-shadow: 0 4px 10px rgba(15, 49, 96, 0.06);
+    position: relative;
+    overflow: hidden;
+}
+
+/* Bordinha colorida de “UI de game” em cima */
+.home-card::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 4px;
+    width: 100%;
+    background: linear-gradient(90deg, #1E90FF, #00C853, #F7D046);
+}
+
+/* Hover */
+.home-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 8px 18px rgba(15, 49, 96, 0.12);
+    border-color: #1E90FF;
+}
+
+/* Ícones */
+.card-icon i {
+    font-size: 2.4rem;
+    color: #1E90FF;
+}
+
+/* Textos dos cards */
+.card-text h2 {
+    font-size: 1.35rem;
+    margin-bottom: 6px;
+    color: #0a2a4f;
+    font-weight: 700;
+}
+
+.card-text p {
+    font-size: 0.95rem;
+    color: #4b6688;
+    margin: 0;
+}
+
+/* ======================= RESPONSIVO ======================= */
+
+@media (max-width: 768px) {
+    .player-home-container {
+        padding: 30px 16px 40px;
+    }
+
+    .home-title {
+        font-size: 2.1rem;
+    }
+
+    .home-cards {
+        gap: 18px;
+    }
+
+    .home-card {
+        width: 100%;
+        max-width: 360px;
+    }
+
+    .player-navbar {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 10px;
+    }
+
+    .player-navbar nav {
+        flex-wrap: wrap;
+        justify-content: flex-start;
+    }
+}
+
+/* ======================= ANIMAÇÕES ======================= */
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(8px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+
+/* ============================================================
+   LISTA DE PERSONAGENS - CARDS
+   ============================================================ */
+
+.section-header {
+    margin-bottom: 20px;
+}
+
+.characters-grid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+}
+
+.character-card {
+    background: #ffffff;
+    border-radius: 16px;
+    border: 2px solid #f2d08a;
+    /* amarelo clarinho padrão */
+    width: 260px;
+    padding: 18px 16px;
+    text-align: center;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.04);
+    transition: 0.18s ease-in-out;
+}
+
+.character-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 7px 16px rgba(0, 0, 0, 0.08);
+}
+
+.character-card.is-selected {
+    border-color: #00C853;
+    /* verde quando selecionado */
+    box-shadow: 0 7px 18px rgba(0, 200, 83, 0.25);
+}
+
+.character-avatar {
+    font-size: 3rem;
+    color: #808ea8;
+    margin-bottom: 8px;
+}
+
+.character-name {
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: #123055;
+    margin-bottom: 4px;
+}
+
+.character-year {
+    font-size: 0.9rem;
+    color: #7a8dab;
+    margin-bottom: 10px;
+}
+
+/* Tags Nv / XP */
+.character-tags {
+    display: flex;
+    justify-content: center;
+    gap: 8px;
+    margin-bottom: 12px;
+}
+
+.tag {
+    display: inline-block;
+    padding: 3px 10px;
+    border-radius: 999px;
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: #fff;
+}
+
+.tag-level {
+    background: #f7b500;
+    /* amarelo */
+}
+
+.tag-xp {
+    background: #1E90FF;
+    /* azul */
+}
+
+/* Botões Selecionar / Selecionado */
+.character-select-form {
+    margin-top: 4px;
+}
+
+.btn-select {
+    border: none;
+    border-radius: 999px;
+    padding: 6px 18px;
+    font-size: 0.9rem;
+    font-weight: 600;
+    cursor: pointer;
+    background: #1E90FF;
+    color: #ffffff;
+    transition: 0.18s ease-in-out;
+}
+
+.btn-select:hover {
+    background: #0f6fd1;
+}
+
+.btn-selected {
+    background: #00C853;
+}
+
+.btn-selected:hover {
+    background: #02a343;
+}

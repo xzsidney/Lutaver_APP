@@ -1,244 +1,309 @@
 const Character = require('../models/Character');
-const CharacterAffinity = require('../models/CharacterAffinity');
-const Power = require('../models/Power');
-const CharacterPower = require('../models/CharacterPower');
-const Discipline = require('../models/Discipline');
 const User = require('../models/User');
+const fs = require('fs');
+const path = require('path');
 
-const CharacterController = {
-    /**
-     * List all characters
-     */
-    list: async (req, res) => {
+module.exports = {
+    // Listar personagens do jogador
+    async index(req, res) {
         try {
+            const userId = req.session.user.id;
+
             const characters = await Character.findAll({
-                include: [{ model: User, as: 'user' }],
-                order: [['createdAt', 'DESC']]
+                where: { user_id: userId },
+                order: [['createdAt', 'ASC']]
             });
-            res.render('characters/list', {
+
+            return res.render('player/character/index', {
+                layout: 'layouts/player',
+                title: 'Meus Personagens',
+                user: req.session.user,
                 characters,
-                user: req.session.user
+                activeCharacterId: req.session.activeCharacterId || null
             });
         } catch (error) {
-            console.error(error);
-            res.status(500).send('Erro ao listar personagens');
+            console.error('Error loading characters:', error);
+            return res.status(500).send('Erro ao carregar personagens');
         }
     },
 
-    /**
-     * Show create form
-     */
-    createPage: (req, res) => {
-        res.render('characters/new', {
-            error: null,
-            user: req.session.user
-        });
+    // Exibir formulário de criação
+    async create(req, res) {
+        try {
+            return res.render('player/character/new', {
+                layout: 'layouts/player',
+                title: 'Criar Personagem',
+                user: req.session.user,
+                error: null
+            });
+        } catch (error) {
+            console.error('Error loading create form:', error);
+            return res.status(500).send('Erro ao carregar formulário');
+        }
     },
 
-    /**
-     * Create new character
-     */
-    create: async (req, res) => {
-        const { name, school_year } = req.body;
-        const userId = req.session.user.id; // Assume logged in user
-
+    // Salvar novo personagem
+    async store(req, res) {
         try {
-            // Check if user already has a character (optional rule, but good for RPGs)
-            // const existing = await Character.findOne({ where: { user_id: userId } });
-            // if (existing) return res.render('characters/new', { error: 'Você já tem um personagem!', user: req.session.user });
+            const userId = req.session.user.id;
+            const { name, school_year } = req.body;
+
+            // Validação básica
+            if (!name || !school_year) {
+                return res.render('player/character/new', {
+                    layout: 'layouts/player',
+                    title: 'Criar Personagem',
+                    user: req.session.user,
+                    error: 'Nome e ano escolar são obrigatórios'
+                });
+            }
 
             const character = await Character.create({
+                user_id: userId,
                 name,
                 school_year,
-                user_id: userId,
-                // Initial stats are default 1
-                evolution_points: 10 // Bonus inicial
+                level: 1,
+                total_xp: 0,
+                coins: 100, // Moedas iniciais
+                strength: 1,
+                dexterity: 1,
+                constitution: 1,
+                intelligence: 1,
+                reasoning: 1,
+                luck: 1,
+                evolution_points: 10
             });
 
-            // Initialize affinities for all active disciplines
-            const disciplines = await Discipline.findAll({ where: { is_active: true } });
-            for (const disc of disciplines) {
-                await CharacterAffinity.create({
-                    character_id: character.id,
-                    discipline_id: disc.id,
-                    affinity_level: 0
-                });
+            // Definir como personagem ativo se for o primeiro
+            if (!req.session.activeCharacterId) {
+                req.session.activeCharacterId = character.id;
             }
 
-            res.redirect(`/characters/${character.id}`);
-        } catch (error) {
-            console.error(error);
-            res.render('characters/new', {
-                error: 'Erro ao criar personagem',
-                user: req.session.user
-            });
-        }
-    },
+            // Handle file upload
+            if (req.file) {
+                const oldPath = req.file.path;
+                const extension = path.extname(req.file.originalname);
+                const newPath = path.join('src/public/img/player', `${character.id}${extension}`);
 
-    /**
-     * Show Character Sheet (Minha Ficha)
-     */
-    show: async (req, res) => {
-        try {
-            const character = await Character.findByPk(req.params.id, {
-                include: [
-                    {
-                        model: CharacterAffinity,
-                        as: 'affinities',
-                        include: [{ model: Discipline, as: 'discipline' }]
-                    },
-                    {
-                        model: Power,
-                        as: 'powers',
-                        through: { attributes: [] } // Don't need join table data
+                // Remove existing files with same ID but different extensions (cleanup)
+                ['.jpg', '.jpeg', '.png', '.gif'].forEach(ext => {
+                    const existingPath = path.join('src/public/img/player', `${character.id}${ext}`);
+                    if (fs.existsSync(existingPath)) {
+                        fs.unlinkSync(existingPath);
                     }
-                ]
-            });
-
-            if (!character) return res.redirect('/characters');
-
-            // Fetch all available powers to check what can be learned
-            const allPowers = await Power.findAll({
-                include: [{ model: Discipline, as: 'discipline' }]
-            });
-
-            // Logic to determine available (learnable) powers
-            // Power is available if:
-            // 1. Not already learned
-            // 2. Character has required affinity in that discipline
-            const learnedPowerIds = character.powers.map(p => p.id);
-
-            const availablePowers = allPowers.filter(power => {
-                if (learnedPowerIds.includes(power.id)) return false; // Already learned
-
-                const affinity = character.affinities.find(a => a.discipline_id === power.discipline_id);
-                const affinityLevel = affinity ? affinity.affinity_level : 0;
-
-                return affinityLevel >= power.required_affinity;
-            });
-
-            // Also get locked powers for display (optional)
-            const lockedPowers = allPowers.filter(power => {
-                if (learnedPowerIds.includes(power.id)) return false;
-                const affinity = character.affinities.find(a => a.discipline_id === power.discipline_id);
-                const affinityLevel = affinity ? affinity.affinity_level : 0;
-                return affinityLevel < power.required_affinity;
-            });
-
-            res.render('characters/show', {
-                character,
-                availablePowers,
-                lockedPowers,
-                user: req.session.user
-            });
-        } catch (error) {
-            console.error(error);
-            res.status(500).send('Erro ao carregar ficha');
-        }
-    },
-
-    /**
-     * Upgrade Attribute
-     */
-    upgradeAttribute: async (req, res) => {
-        const { id } = req.params;
-        const { attribute } = req.body; // strength, dexterity, etc.
-
-        const validAttributes = ['strength', 'dexterity', 'constitution', 'intelligence', 'reasoning', 'luck'];
-        if (!validAttributes.includes(attribute)) {
-            return res.status(400).send('Atributo inválido');
-        }
-
-        try {
-            const character = await Character.findByPk(id);
-            if (!character) return res.status(404).send('Personagem não encontrado');
-
-            if (character.evolution_points > 0) {
-                character[attribute] += 1;
-                character.evolution_points -= 1;
-                await character.save();
-            }
-
-            res.redirect(`/characters/${id}`);
-        } catch (error) {
-            console.error(error);
-            res.status(500).send('Erro ao evoluir atributo');
-        }
-    },
-
-    /**
-     * Learn Power
-     */
-    learnPower: async (req, res) => {
-        const { id } = req.params;
-        const { power_id } = req.body;
-
-        try {
-            const character = await Character.findByPk(id, {
-                include: [{ model: CharacterAffinity, as: 'affinities' }]
-            });
-            const power = await Power.findByPk(power_id);
-
-            if (!character || !power) return res.status(404).send('Erro ao aprender poder');
-
-            // Check affinity requirement
-            const affinity = character.affinities.find(a => a.discipline_id === power.discipline_id);
-            const affinityLevel = affinity ? affinity.affinity_level : 0;
-
-            if (affinityLevel < power.required_affinity) {
-                return res.status(400).send('Afinidade insuficiente');
-            }
-
-            // Check if already learned
-            const alreadyLearned = await CharacterPower.findOne({
-                where: { character_id: id, power_id: power_id }
-            });
-
-            if (!alreadyLearned) {
-                await CharacterPower.create({
-                    character_id: id,
-                    power_id: power_id
                 });
+
+                fs.renameSync(oldPath, newPath);
             }
 
-            res.redirect(`/characters/${id}`);
+            return res.redirect('/player/characters');
         } catch (error) {
-            console.error(error);
-            res.status(500).send('Erro ao aprender poder');
+            console.error('Error creating character:', error);
+            return res.render('player/character/new', {
+                layout: 'layouts/player',
+                title: 'Criar Personagem',
+                user: req.session.user,
+                error: 'Erro ao criar personagem'
+            });
         }
     },
 
-    // Edit and Delete methods would go here (standard CRUD)
-    editPage: async (req, res) => {
+    // Exibir detalhes do personagem
+    async show(req, res) {
         try {
-            const character = await Character.findByPk(req.params.id);
-            if (!character) return res.redirect('/characters');
-            res.render('characters/edit', { character, error: null, user: req.session.user });
-        } catch (error) {
-            res.redirect('/characters');
-        }
-    },
+            const userId = req.session.user.id;
+            const { id } = req.params;
 
-    update: async (req, res) => {
-        try {
-            const character = await Character.findByPk(req.params.id);
-            if (character) {
-                await character.update(req.body);
+            const character = await Character.findOne({
+                where: { id, user_id: userId }
+            });
+
+            if (!character) {
+                return res.status(404).send('Personagem não encontrado');
             }
-            res.redirect(`/characters/${req.params.id}`);
+
+            return res.render('player/character/show', {
+                layout: 'layouts/player',
+                title: character.name,
+                user: req.session.user,
+                character
+            });
         } catch (error) {
-            res.status(500).send('Erro ao atualizar');
+            console.error('Error loading character:', error);
+            return res.status(500).send('Erro ao carregar personagem');
         }
     },
 
-    delete: async (req, res) => {
+    // Exibir formulário de edição
+    async edit(req, res) {
         try {
-            await Character.destroy({ where: { id: req.params.id } });
-            res.redirect('/characters');
+            const userId = req.session.user.id;
+            const { id } = req.params;
+
+            const character = await Character.findOne({
+                where: { id, user_id: userId }
+            });
+
+            if (!character) {
+                return res.status(404).send('Personagem não encontrado');
+            }
+
+            return res.render('player/character/edit', {
+                layout: 'layouts/player',
+                title: 'Editar Personagem',
+                user: req.session.user,
+                character,
+                error: null
+            });
         } catch (error) {
-            res.status(500).send('Erro ao excluir');
+            console.error('Error loading edit form:', error);
+            return res.status(500).send('Erro ao carregar formulário');
+        }
+    },
+
+    // Atualizar personagem
+    async update(req, res) {
+        try {
+            const userId = req.session.user.id;
+            const { id } = req.params;
+            const { name, school_year } = req.body;
+
+            const character = await Character.findOne({
+                where: { id, user_id: userId }
+            });
+
+            if (!character) {
+                return res.status(404).send('Personagem não encontrado');
+            }
+
+            await character.update({ name, school_year });
+
+            // Handle file upload
+            if (req.file) {
+                const oldPath = req.file.path;
+                const extension = path.extname(req.file.originalname);
+                const newPath = path.join('src/public/img/player', `${character.id}${extension}`);
+
+                // Remove existing files with same ID but different extensions (cleanup)
+                ['.jpg', '.jpeg', '.png', '.gif'].forEach(ext => {
+                    const existingPath = path.join('src/public/img/player', `${character.id}${ext}`);
+                    if (fs.existsSync(existingPath)) {
+                        fs.unlinkSync(existingPath);
+                    }
+                });
+
+                fs.renameSync(oldPath, newPath);
+            }
+
+            return res.redirect(`/player/characters/${id}`);
+        } catch (error) {
+            console.error('Error updating character:', error);
+            return res.status(500).send('Erro ao atualizar personagem');
+        }
+    },
+
+    // Deletar personagem
+    async destroy(req, res) {
+        try {
+            const userId = req.session.user.id;
+            const { id } = req.params;
+
+            const character = await Character.findOne({
+                where: { id, user_id: userId }
+            });
+
+            if (!character) {
+                return res.status(404).send('Personagem não encontrado');
+            }
+
+            await character.destroy();
+
+            // Se era o personagem ativo, limpar da sessão
+            if (req.session.activeCharacterId == id) {
+                delete req.session.activeCharacterId;
+            }
+
+            return res.redirect('/player/characters');
+        } catch (error) {
+            console.error('Error deleting character:', error);
+            return res.status(500).send('Erro ao deletar personagem');
+        }
+    },
+
+    // Selecionar personagem ativo
+    async selectActive(req, res) {
+        try {
+            const userId = req.session.user.id;
+            const { characterId } = req.body;
+
+            // Verificar se o personagem pertence ao usuário
+            const character = await Character.findOne({
+                where: { id: characterId, user_id: userId }
+            });
+
+            if (!character) {
+                return res.status(404).send('Personagem não encontrado');
+            }
+
+            // Definir como ativo na sessão
+            req.session.activeCharacterId = characterId;
+
+            return res.redirect('/player/characters');
+        } catch (error) {
+            console.error('Error selecting character:', error);
+            return res.status(500).send('Erro ao selecionar personagem');
+        }
+    },
+
+    // Allocate evolution points to attributes
+    async allocateAttribute(req, res) {
+        try {
+            const userId = req.session.user.id;
+            const { characterId } = req.params;
+            const { attribute } = req.body;
+
+            // Valid attributes
+            const validAttributes = ['strength', 'dexterity', 'constitution', 'intelligence', 'reasoning', 'luck'];
+
+            if (!validAttributes.includes(attribute)) {
+                return res.status(400).json({ error: 'Atributo inválido' });
+            }
+
+            // Find character and verify ownership
+            const character = await Character.findOne({
+                where: { id: characterId, user_id: userId }
+            });
+
+            if (!character) {
+                return res.status(404).json({ error: 'Personagem não encontrado' });
+            }
+
+            // Check if has evolution points
+            if (character.evolution_points <= 0) {
+                return res.status(400).json({ error: 'Sem pontos de evolução disponíveis' });
+            }
+
+            // Allocate point
+            character[attribute] = character[attribute] + 1;
+            character.evolution_points = character.evolution_points - 1;
+            await character.save();
+
+            return res.json({
+                success: true,
+                character: {
+                    id: character.id,
+                    evolution_points: character.evolution_points,
+                    strength: character.strength,
+                    dexterity: character.dexterity,
+                    constitution: character.constitution,
+                    intelligence: character.intelligence,
+                    reasoning: character.reasoning,
+                    luck: character.luck
+                }
+            });
+        } catch (error) {
+            console.error('Error allocating attribute:', error);
+            return res.status(500).json({ error: 'Erro ao alocar atributo' });
         }
     }
 };
-
-module.exports = CharacterController;

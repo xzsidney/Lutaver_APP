@@ -1,0 +1,268 @@
+<div class="player-home-container">
+    <div class="section-header">
+        <h1 class="home-title">🗺️ Aventuras Disponíveis</h1>
+        <p class="home-subtitle">Escolha uma aventura e teste seus conhecimentos</p>
+    </div>
+
+    <% if (!character) { %>
+        <div class="alert alert-warning">
+            ⚠️ Você precisa criar e selecionar um personagem primeiro!
+            <a href="/player/characters" class="alert-link">Ir para Personagens</a>
+        </div>
+        <% } else { %>
+            <!-- Character Info Bar -->
+            <div class="character-info-bar">
+                <div class="char-info">
+                    <span class="char-icon">🧙</span>
+                    <div>
+                        <strong>
+                            <%= character.name %>
+                        </strong>
+                        <small>Nv <%= character.level %> | <%= character.total_xp %> XP | 💰 <%= character.coins %>
+                                        </small>
+                    </div>
+                </div>
+            </div>
+
+            <% if (adventures.length===0) { %>
+                <div class="empty-state">
+                    <div class="empty-icon">🗺️</div>
+                    <h2>Nenhuma aventura disponível</h2>
+                    <p>Aguarde novas aventuras serem criadas!</p>
+                </div>
+                <% } else { %>
+                    <div class="adventures-grid">
+                        <% adventures.forEach(adventure=> { %>
+                            <div
+                                class="adventure-card <%= completedAdventureIds.includes(adventure.id) ? 'completed' : '' %>">
+                                <% if (completedAdventureIds.includes(adventure.id)) { %>
+                                    <div class="completed-badge">✓ Concluída</div>
+                                    <% } %>
+
+                                        <div class="adventure-header">
+                                            <h3 class="adventure-title">
+                                                <%= adventure.title %>
+                                            </h3>
+                                            <span class="adventure-discipline">
+                                                <%= adventure.discipline ? adventure.discipline.name : 'Geral' %>
+                                            </span>
+                                        </div>
+
+                                        <div class="adventure-meta">
+                                            <span class="meta-item">📚 <%= adventure.school_year %></span>
+                                            <span class="meta-item">
+                                                <% for(let i=0; i < adventure.difficulty; i++) { %>⭐<% } %>
+                                            </span>
+                                        </div>
+
+                                        <p class="adventure-description">
+                                            <%= adventure.description ? adventure.description.substring(0, 100) + '...'
+                                                : 'Descrição não disponível' %>
+                                        </p>
+
+                                        <div class="adventure-rewards">
+                                            <span class="reward-item">🎯 <%= adventure.reward_xp %> XP</span>
+                                            <span class="reward-item">💰 <%= adventure.reward_item || 50 %>
+                                                    Moedas</span>
+                                        </div>
+
+                                        <div class="adventure-actions">
+                                            <a href="/player/adventures/<%= adventure.id %>" class="btn btn-view">
+                                                👁️ Ver Detalhes
+                                            </a>
+                                        </div>
+                            </div>
+                            <% }); %>
+                    </div>
+                    <% } %>
+                        <% } %>
+</div>
+
+<style>
+    .alert {
+        padding: 15px 20px;
+        border-radius: 12px;
+        margin-bottom: 20px;
+        font-weight: 500;
+        text-align: center;
+    }
+
+    .alert-warning {
+        background: #fff3cd;
+        color: #856404;
+        border: 1px solid #ffeaa7;
+    }
+
+    .alert-link {
+        color: #1E90FF;
+        font-weight: 700;
+        text-decoration: underline;
+        margin-left: 10px;
+    }
+
+    .character-info-bar {
+        background: linear-gradient(135deg, #1E90FF, #00C853);
+        color: #ffffff;
+        padding: 15px 20px;
+        border-radius: 12px;
+        margin-bottom: 30px;
+        box-shadow: 0 4px 10px rgba(30, 144, 255, 0.3);
+    }
+
+    .char-info {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+    }
+
+    .char-icon {
+        font-size: 2rem;
+    }
+
+    .char-info strong {
+        display: block;
+        font-size: 1.1rem;
+    }
+
+    .char-info small {
+        display: block;
+        opacity: 0.9;
+        margin-top: 4px;
+    }
+
+    .empty-state {
+        text-align: center;
+        padding: 60px 20px;
+        background: #ffffff;
+        border-radius: 18px;
+        border: 2px dashed #e2ecff;
+        max-width: 500px;
+        margin: 0 auto;
+    }
+
+    .empty-icon {
+        font-size: 4rem;
+        margin-bottom: 15px;
+    }
+
+    .empty-state h2 {
+        color: #123055;
+        margin-bottom: 10px;
+    }
+
+    .empty-state p {
+        color: #4b6688;
+    }
+
+    .adventures-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+        gap: 25px;
+    }
+
+    .adventure-card {
+        background: #ffffff;
+        border-radius: 18px;
+        border: 2px solid #e2ecff;
+        padding: 20px;
+        box-shadow: 0 4px 10px rgba(15, 49, 96, 0.06);
+        transition: 0.18s ease-in-out;
+        position: relative;
+    }
+
+    .adventure-card:hover {
+        transform: translateY(-4px);
+        box-shadow: 0 8px 18px rgba(15, 49, 96, 0.12);
+        border-color: #1E90FF;
+    }
+
+    .adventure-card.completed {
+        border-color: #00C853;
+        background: linear-gradient(to bottom, #ffffff, #f0fff4);
+    }
+
+    .completed-badge {
+        position: absolute;
+        top: 10px;
+        right: 10px;
+        background: #00C853;
+        color: #ffffff;
+        padding: 4px 12px;
+        border-radius: 999px;
+        font-size: 0.8rem;
+        font-weight: 600;
+    }
+
+    .adventure-header {
+        margin-bottom: 12px;
+    }
+
+    .adventure-title {
+        font-size: 1.2rem;
+        font-weight: 700;
+        color: #123055;
+        margin-bottom: 6px;
+    }
+
+    .adventure-discipline {
+        display: inline-block;
+        background: #e7f2ff;
+        color: #1E90FF;
+        padding: 4px 10px;
+        border-radius: 999px;
+        font-size: 0.8rem;
+        font-weight: 600;
+    }
+
+    .adventure-meta {
+        display: flex;
+        gap: 15px;
+        margin-bottom: 12px;
+    }
+
+    .meta-item {
+        color: #4b6688;
+        font-size: 0.9rem;
+    }
+
+    .adventure-description {
+        color: #4b6688;
+        font-size: 0.9rem;
+        margin-bottom: 15px;
+        line-height: 1.5;
+    }
+
+    .adventure-rewards {
+        display: flex;
+        gap: 12px;
+        margin-bottom: 15px;
+        padding: 10px;
+        background: #f8f9fa;
+        border-radius: 8px;
+    }
+
+    .reward-item {
+        font-size: 0.9rem;
+        font-weight: 600;
+        color: #123055;
+    }
+
+    .adventure-actions {
+        text-align: center;
+    }
+
+    .btn-view {
+        display: inline-block;
+        background: #1E90FF;
+        color: #ffffff;
+        padding: 10px 20px;
+        border-radius: 999px;
+        text-decoration: none;
+        font-weight: 600;
+        transition: 0.2s ease-in-out;
+    }
+
+    .btn-view:hover {
+        background: #0f6fd1;
+    }
+</style>

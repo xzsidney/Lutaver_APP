@@ -5,8 +5,8 @@ const router = express.Router();
 const authRoutes = require('./authRoutes');
 const adminRoutes = require('./adminRoutes');
 const teacherRoutes = require('./teacherRoutes');
-const playerRoutes = require('./playerRoutes');
 const storyRoutes = require('./storyRoutes');
+const playerRoutes = require('./playerRoutes');
 
 // ===================================================================
 // 🏠 GUEST / PUBLIC ROUTES

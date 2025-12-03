@@ -1,0 +1,454 @@
+<div class="player-home-container">
+    <div class="section-header">
+        <h1 class="home-title">
+            <%= character.name %>
+        </h1>
+        <p class="home-subtitle">
+            <%= character.title %>
+        </p>
+    </div>
+
+    <div class="character-detail-container">
+        <!-- Main Stats Card -->
+        <div class="detail-card">
+            <h2 class="card-title">📊 Informações Gerais</h2>
+
+            <div class="stat-grid">
+                <div class="stat-box">
+                    <span class="stat-label">Nível</span>
+                    <span class="stat-big">
+                        <%= character.level %>
+                    </span>
+                </div>
+                <div class="stat-box">
+                    <span class="stat-label">XP Total</span>
+                    <span class="stat-big">
+                        <%= character.total_xp %>
+                    </span>
+                </div>
+                <div class="stat-box">
+                    <span class="stat-label">Moedas</span>
+                    <span class="stat-big">💰 <%= character.coins %></span>
+                </div>
+                <div class="stat-box evolution-points-box">
+                    <span class="stat-label">Pontos de Evolução</span>
+                    <span class="stat-big" id="evolutionPoints">⭐ <%= character.evolution_points %></span>
+                </div>
+            </div>
+
+            <div class="info-row">
+                <span class="info-label">Ano Escolar:</span>
+                <span class="info-value">
+                    <%= character.school_year %>º Ano
+                </span>
+            </div>
+            <div class="info-row">
+                <span class="info-label">Mapa Atual:</span>
+                <span class="info-value">
+                    <%= character.current_map %>
+                </span>
+            </div>
+        </div>
+
+        <!-- Attributes Card with Allocation -->
+        <div class="detail-card">
+            <h2 class="card-title">⚔️ Atributos</h2>
+
+            <% if (character.evolution_points> 0) { %>
+                <div class="alert alert-info">
+                    <strong>💡 Você tem <%= character.evolution_points %> ponto(s) de evolução!</strong><br>
+                    Clique nos botões <strong>+</strong> para distribuir seus pontos.
+                </div>
+                <% } %>
+
+                    <div class="attributes-list">
+                        <!-- Força -->
+                        <div class="attribute-item">
+                            <span class="attr-icon">💪</span>
+                            <span class="attr-name">Força</span>
+                            <div class="attr-bar">
+                                <div class="attr-fill" style="width: <%= (character.strength / 10) * 100 %>%"
+                                    id="bar-strength"></div>
+                            </div>
+                            <span class="attr-value" id="value-strength">
+                                <%= character.strength %>
+                            </span>
+                            <% if (character.evolution_points> 0) { %>
+                                <button class="btn-allocate" onclick="allocatePoint('strength')"
+                                    id="btn-strength">+</button>
+                                <% } %>
+                        </div>
+
+                        <!-- Destreza -->
+                        <div class="attribute-item">
+                            <span class="attr-icon">🎯</span>
+                            <span class="attr-name">Destreza</span>
+                            <div class="attr-bar">
+                                <div class="attr-fill" style="width: <%= (character.dexterity / 10) * 100 %>%"
+                                    id="bar-dexterity"></div>
+                            </div>
+                            <span class="attr-value" id="value-dexterity">
+                                <%= character.dexterity %>
+                            </span>
+                            <% if (character.evolution_points> 0) { %>
+                                <button class="btn-allocate" onclick="allocatePoint('dexterity')"
+                                    id="btn-dexterity">+</button>
+                                <% } %>
+                        </div>
+
+                        <!-- Constituição -->
+                        <div class="attribute-item">
+                            <span class="attr-icon">🛡️</span>
+                            <span class="attr-name">Constituição</span>
+                            <div class="attr-bar">
+                                <div class="attr-fill" style="width: <%= (character.constitution / 10) * 100 %>%"
+                                    id="bar-constitution"></div>
+                            </div>
+                            <span class="attr-value" id="value-constitution">
+                                <%= character.constitution %>
+                            </span>
+                            <% if (character.evolution_points> 0) { %>
+                                <button class="btn-allocate" onclick="allocatePoint('constitution')"
+                                    id="btn-constitution">+</button>
+                                <% } %>
+                        </div>
+
+                        <!-- Inteligência -->
+                        <div class="attribute-item">
+                            <span class="attr-icon">🧠</span>
+                            <span class="attr-name">Inteligência</span>
+                            <div class="attr-bar">
+                                <div class="attr-fill" style="width: <%= (character.intelligence / 10) * 100 %>%"
+                                    id="bar-intelligence"></div>
+                            </div>
+                            <span class="attr-value" id="value-intelligence">
+                                <%= character.intelligence %>
+                            </span>
+                            <% if (character.evolution_points> 0) { %>
+                                <button class="btn-allocate" onclick="allocatePoint('intelligence')"
+                                    id="btn-intelligence">+</button>
+                                <% } %>
+                        </div>
+
+                        <!-- Raciocínio -->
+                        <div class="attribute-item">
+                            <span class="attr-icon">🤔</span>
+                            <span class="attr-name">Raciocínio</span>
+                            <div class="attr-bar">
+                                <div class="attr-fill" style="width: <%= (character.reasoning / 10) * 100 %>%"
+                                    id="bar-reasoning"></div>
+                            </div>
+                            <span class="attr-value" id="value-reasoning">
+                                <%= character.reasoning %>
+                            </span>
+                            <% if (character.evolution_points> 0) { %>
+                                <button class="btn-allocate" onclick="allocatePoint('reasoning')"
+                                    id="btn-reasoning">+</button>
+                                <% } %>
+                        </div>
+
+                        <!-- Sorte -->
+                        <div class="attribute-item">
+                            <span class="attr-icon">🍀</span>
+                            <span class="attr-name">Sorte</span>
+                            <div class="attr-bar">
+                                <div class="attr-fill" style="width: <%= (character.luck / 10) * 100 %>%" id="bar-luck">
+                                </div>
+                            </div>
+                            <span class="attr-value" id="value-luck">
+                                <%= character.luck %>
+                            </span>
+                            <% if (character.evolution_points> 0) { %>
+                                <button class="btn-allocate" onclick="allocatePoint('luck')" id="btn-luck">+</button>
+                                <% } %>
+                        </div>
+                    </div>
+        </div>
+    </div>
+
+    <div class="action-buttons">
+        <a href="/player/characters/<%= character.id %>/edit" class="btn btn-primary">✏️ Editar Personagem</a>
+        <a href="/player/dashboard" class="btn btn-secondary">← Voltar ao Dashboard</a>
+    </div>
+</div>
+
+<script>
+    const characterId = '<%= character.id %>';
+
+    async function allocatePoint(attribute) {
+        try {
+            const response = await fetch(`/player/characters/${characterId}/allocate`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ attribute })
+            });
+
+            const data = await response.json();
+
+            if (data.success) {
+                // Update evolution points
+                document.getElementById('evolutionPoints').textContent = `⭐ ${data.character.evolution_points}`;
+
+                // Update attribute value
+                document.getElementById(`value-${attribute}`).textContent = data.character[attribute];
+
+                // Update progress bar
+                const percentage = (data.character[attribute] / 10) * 100;
+                document.getElementById(`bar-${attribute}`).style.width = `${percentage}%`;
+
+                // If no more points, remove all buttons
+                if (data.character.evolution_points === 0) {
+                    const buttons = document.querySelectorAll('.btn-allocate');
+                    buttons.forEach(btn => btn.remove());
+
+                    const alert = document.querySelector('.alert-info');
+                    if (alert) {
+                        alert.innerHTML = '<strong>✅ Todos os pontos foram distribuídos!</strong>';
+                        alert.classList.remove('alert-info');
+                        alert.classList.add('alert-success');
+                    }
+                } else {
+                    // Update alert message
+                    const alert = document.querySelector('.alert-info');
+                    if (alert) {
+                        alert.innerHTML = `<strong>💡 Você tem ${data.character.evolution_points} ponto(s) de evolução!</strong><br>Clique nos botões <strong>+</strong> para distribuir seus pontos.`;
+                    }
+                }
+
+                // Show success feedback
+                const btn = document.getElementById(`btn-${attribute}`);
+                if (btn) {
+                    btn.textContent = '✓';
+                    btn.style.background = '#00C853';
+                    setTimeout(() => {
+                        if (data.character.evolution_points > 0) {
+                            btn.textContent = '+';
+                            btn.style.background = '';
+                        }
+                    }, 500);
+                }
+            } else {
+                alert(data.error || 'Erro ao alocar ponto');
+            }
+        } catch (error) {
+            console.error('Error:', error);
+            alert('Erro ao alocar ponto. Tente novamente.');
+        }
+    }
+</script>
+
+<style>
+    .character-detail-container {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 25px;
+        margin-bottom: 30px;
+    }
+
+    .detail-card {
+        background: #ffffff;
+        border-radius: 18px;
+        border: 2px solid #e2ecff;
+        padding: 25px;
+        box-shadow: 0 4px 10px rgba(15, 49, 96, 0.06);
+    }
+
+    .card-title {
+        font-size: 1.3rem;
+        font-weight: 700;
+        color: #123055;
+        margin-bottom: 20px;
+        padding-bottom: 12px;
+        border-bottom: 2px solid #f0f4f8;
+    }
+
+    .stat-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 15px;
+        margin-bottom: 20px;
+    }
+
+    .stat-box {
+        background: linear-gradient(135deg, #e7f2ff, #f0f8ff);
+        border-radius: 12px;
+        padding: 15px;
+        text-align: center;
+    }
+
+    .evolution-points-box {
+        background: linear-gradient(135deg, #fff9e6, #fffbf0);
+        border: 2px solid #F7D046;
+    }
+
+    .stat-label {
+        display: block;
+        font-size: 0.85rem;
+        color: #4b6688;
+        margin-bottom: 8px;
+    }
+
+    .stat-big {
+        display: block;
+        font-size: 1.8rem;
+        font-weight: 700;
+        color: #123055;
+    }
+
+    .info-row {
+        display: flex;
+        justify-content: space-between;
+        padding: 10px 0;
+        border-bottom: 1px solid #f0f4f8;
+    }
+
+    .info-row:last-child {
+        border-bottom: none;
+    }
+
+    .info-label {
+        font-weight: 600;
+        color: #123055;
+    }
+
+    .info-value {
+        color: #4b6688;
+    }
+
+    .alert {
+        padding: 12px 16px;
+        border-radius: 10px;
+        margin-bottom: 20px;
+        font-size: 0.9rem;
+    }
+
+    .alert-info {
+        background: #e7f2ff;
+        color: #0a2a4f;
+        border: 2px solid #1E90FF;
+    }
+
+    .alert-success {
+        background: #d3f9d8;
+        color: #2b8a3e;
+        border: 2px solid #00C853;
+    }
+
+    .attributes-list {
+        display: flex;
+        flex-direction: column;
+        gap: 15px;
+    }
+
+    .attribute-item {
+        display: grid;
+        grid-template-columns: 40px 120px 1fr 50px 40px;
+        align-items: center;
+        gap: 10px;
+    }
+
+    .attr-icon {
+        font-size: 1.5rem;
+        text-align: center;
+    }
+
+    .attr-name {
+        font-weight: 600;
+        color: #123055;
+    }
+
+    .attr-bar {
+        background: #e2ecff;
+        height: 12px;
+        border-radius: 999px;
+        overflow: hidden;
+    }
+
+    .attr-fill {
+        background: linear-gradient(90deg, #1E90FF, #00C853);
+        height: 100%;
+        transition: width 0.3s ease;
+    }
+
+    .attr-value {
+        font-weight: 700;
+        color: #123055;
+        text-align: center;
+    }
+
+    .btn-allocate {
+        width: 32px;
+        height: 32px;
+        border-radius: 50%;
+        border: 2px solid #1E90FF;
+        background: #1E90FF;
+        color: #ffffff;
+        font-size: 1.2rem;
+        font-weight: 700;
+        cursor: pointer;
+        transition: 0.2s ease-in-out;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .btn-allocate:hover {
+        background: #0f6fd1;
+        border-color: #0f6fd1;
+        transform: scale(1.1);
+    }
+
+    .btn-allocate:active {
+        transform: scale(0.95);
+    }
+
+    .action-buttons {
+        display: flex;
+        gap: 12px;
+        justify-content: center;
+    }
+
+    .btn {
+        padding: 12px 24px;
+        border-radius: 999px;
+        text-decoration: none;
+        font-weight: 600;
+        transition: 0.2s ease-in-out;
+        border: none;
+        cursor: pointer;
+    }
+
+    .btn-primary {
+        background: #1E90FF;
+        color: #ffffff;
+    }
+
+    .btn-primary:hover {
+        background: #0f6fd1;
+    }
+
+    .btn-secondary {
+        background: #6c757d;
+        color: #ffffff;
+    }
+
+    .btn-secondary:hover {
+        background: #5a6268;
+    }
+
+    @media (max-width: 768px) {
+        .character-detail-container {
+            grid-template-columns: 1fr;
+        }
+
+        .stat-grid {
+            grid-template-columns: 1fr;
+        }
+
+        .attribute-item {
+            grid-template-columns: 30px 100px 1fr 40px 35px;
+        }
+    }
+</style>

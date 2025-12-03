@@ -46,12 +46,15 @@ const ShopController = {
 
             const ownedItemIds = inventory.map(ci => ci.item_id);
 
-            res.render('shop/index', {
+            res.render('player/shop/index', {
+                layout: 'layouts/player',
+                title: 'Loja de Itens',
                 items,
                 character,
                 ownedItemIds,
                 user: req.session.user,
-                filters: { type, sort }
+                filters: { type, sort },
+                query: req.query
             });
         } catch (error) {
             console.error('Error loading shop:', error);

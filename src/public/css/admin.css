@@ -222,7 +222,7 @@ body.admin-layout.theme-light .admin-theme-toggle {
 
 /* Tema claro: sidebar mais clara */
 body.admin-layout.theme-light .admin-sidebar {
-    background: #e5f3ff;
+    background: #ffffff;
     border-right: 1px solid rgba(148, 163, 184, 0.6);
 }
 
@@ -231,7 +231,7 @@ body.admin-layout.theme-light .admin-sidebar a {
 }
 
 body.admin-layout.theme-light .admin-sidebar a:hover {
-    background: rgba(0, 200, 83, 0.18);
+    background: rgba(2, 167, 70, 0.18);
     color: #0f172a;
 }
 
@@ -248,11 +248,10 @@ body.admin-layout.theme-light .admin-sidebar a:hover {
     box-sizing: border-box;
 }
 
+
 /* Tema claro: main bem clarinho */
 body.admin-layout.theme-light .admin-main {
-    background: linear-gradient(135deg,
-            rgba(224, 242, 254, 0.9),
-            rgba(240, 249, 255, 1));
+    background: #ffffff;
 }
 
 /* Títulos de página */

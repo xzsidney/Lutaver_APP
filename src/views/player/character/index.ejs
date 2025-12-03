@@ -1,0 +1,195 @@
+<div class="player-home-container">
+    <div class="section-header">
+        <h1 class="home-title">Meus Personagens</h1>
+        <p class="home-subtitle">Gerencie seus personagens de jogo</p>
+    </div>
+
+    <div class="action-bar">
+        <a href="/player/characters/new" class="btn btn-create">➕ Criar Novo Personagem</a>
+    </div>
+
+    <% if (characters.length===0) { %>
+        <div class="empty-state">
+            <div class="empty-icon">🎭</div>
+            <h2>Nenhum personagem criado</h2>
+            <p>Crie seu primeiro personagem para começar a jogar!</p>
+            <a href="/player/characters/new" class="btn btn-primary">Criar Personagem</a>
+        </div>
+        <% } else { %>
+            <div class="characters-grid">
+                <% characters.forEach(character=> { %>
+                    <div class="character-card <%= activeCharacterId == character.id ? 'is-selected' : '' %>">
+                        <div class="character-avatar">🧙</div>
+
+                        <h3 class="character-name">
+                            <%= character.name %>
+                        </h3>
+                        <p class="character-year">Ano Escolar: <%= character.school_year %>º</p>
+
+                        <div class="character-tags">
+                            <span class="tag tag-level">Nv <%= character.level %></span>
+                            <span class="tag tag-xp">
+                                <%= character.total_xp %> XP
+                            </span>
+                            <span class="tag tag-coins">💰 <%= character.coins %></span>
+                        </div>
+
+                        <div class="character-stats">
+                            <div class="stat-item">
+                                <span class="stat-icon">💪</span>
+                                <span class="stat-value">
+                                    <%= character.strength %>
+                                </span>
+                            </div>
+                            <div class="stat-item">
+                                <span class="stat-icon">🎯</span>
+                                <span class="stat-value">
+                                    <%= character.dexterity %>
+                                </span>
+                            </div>
+                            <div class="stat-item">
+                                <span class="stat-icon">🛡️</span>
+                                <span class="stat-value">
+                                    <%= character.constitution %>
+                                </span>
+                            </div>
+                            <div class="stat-item">
+                                <span class="stat-icon">🧠</span>
+                                <span class="stat-value">
+                                    <%= character.intelligence %>
+                                </span>
+                            </div>
+                        </div>
+
+                        <% if (activeCharacterId==character.id) { %>
+                            <button class="btn-selected" disabled>✓ Selecionado</button>
+                            <% } else { %>
+                                <form action="/player/characters/select" method="POST" class="character-select-form">
+                                    <input type="hidden" name="characterId" value="<%= character.id %>">
+                                    <button type="submit" class="btn-select">Selecionar</button>
+                                </form>
+                                <% } %>
+
+                                    <div class="character-actions">
+                                        <a href="/player/characters/<%= character.id %>" class="action-link">👁️ Ver</a>
+                                        <a href="/player/characters/<%= character.id %>/edit" class="action-link">✏️
+                                            Editar</a>
+                                        <form action="/player/characters/<%= character.id %>/delete" method="POST"
+                                            style="display: inline;"
+                                            onsubmit="return confirm('Tem certeza que deseja excluir este personagem?')">
+                                            <button type="submit" class="action-link action-delete">🗑️ Excluir</button>
+                                        </form>
+                                    </div>
+                    </div>
+                    <% }); %>
+            </div>
+            <% } %>
+</div>
+
+<style>
+    .action-bar {
+        text-align: center;
+        margin-bottom: 30px;
+    }
+
+    .btn-create {
+        background: #00C853;
+        color: #ffffff;
+        padding: 12px 24px;
+        border-radius: 999px;
+        text-decoration: none;
+        font-weight: 600;
+        display: inline-block;
+        transition: 0.2s ease-in-out;
+    }
+
+    .btn-create:hover {
+        background: #02a343;
+    }
+
+    .empty-state {
+        text-align: center;
+        padding: 60px 20px;
+        background: #ffffff;
+        border-radius: 18px;
+        border: 2px dashed #e2ecff;
+        max-width: 500px;
+        margin: 0 auto;
+    }
+
+    .empty-icon {
+        font-size: 4rem;
+        margin-bottom: 15px;
+    }
+
+    .empty-state h2 {
+        color: #123055;
+        margin-bottom: 10px;
+    }
+
+    .empty-state p {
+        color: #4b6688;
+        margin-bottom: 20px;
+    }
+
+    .character-stats {
+        display: flex;
+        justify-content: center;
+        gap: 10px;
+        margin: 12px 0;
+    }
+
+    .stat-item {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 2px;
+    }
+
+    .stat-icon {
+        font-size: 1.2rem;
+    }
+
+    .stat-value {
+        font-size: 0.85rem;
+        font-weight: 600;
+        color: #123055;
+    }
+
+    .tag-coins {
+        background: #F7D046;
+        color: #123055;
+    }
+
+    .character-actions {
+        display: flex;
+        justify-content: center;
+        gap: 10px;
+        margin-top: 12px;
+        padding-top: 12px;
+        border-top: 1px solid #f0f4f8;
+    }
+
+    .action-link {
+        background: none;
+        border: none;
+        color: #1E90FF;
+        text-decoration: none;
+        font-size: 0.85rem;
+        cursor: pointer;
+        padding: 4px 8px;
+        transition: 0.2s ease-in-out;
+    }
+
+    .action-link:hover {
+        text-decoration: underline;
+    }
+
+    .action-delete {
+        color: #dc3545;
+    }
+
+    .action-delete:hover {
+        color: #c92a2a;
+    }
+</style>
