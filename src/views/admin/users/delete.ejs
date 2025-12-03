@@ -1,0 +1,56 @@
+<h1 class="admin-page-title">Usuários</h1>
+
+<p class="admin-page-subtitle">
+    Confirmação de exclusão
+</p>
+
+<section class="admin-table-card admin-form-card">
+    <div class="admin-table-header">
+        <h2>Excluir Usuário</h2>
+
+        <a href="/admin/users" class="admin-btn admin-btn-secondary" style="font-size: 0.8rem;">
+            ← Voltar para a lista
+        </a>
+    </div>
+
+    <div class="admin-alert admin-alert-error" style="margin-bottom: 1.5rem;">
+        <strong>⚠️ Atenção!</strong><br>
+        Tem certeza que deseja excluir este usuário?
+        <b>Esta ação é permanente e não poderá ser desfeita.</b>
+    </div>
+
+    <div class="admin-table-card" style="margin-bottom: 1.5rem;">
+        <h3 style="margin-top: 0; font-size: 1.1rem;">Dados do Usuário</h3>
+
+        <div style="line-height: 1.8; margin-top: .5rem;">
+            <p><strong>Nome:</strong>
+                <%= user.name %>
+            </p>
+            <p><strong>E-mail:</strong>
+                <%= user.email %>
+            </p>
+            <p>
+                <strong>Função:</strong>
+                <%= user.role==='admin' ? 'Administrador' : user.role==='teacher' ? 'Professor' : 'Aluno' %>
+            </p>
+            <p>
+                <strong>Status:</strong>
+                <%= user.is_active ? 'Ativo' : 'Inativo' %>
+            </p>
+        </div>
+    </div>
+
+    <form action="/admin/users/<%= user.id %>/delete" method="POST">
+        <div class="admin-form-actions">
+
+            <a href="/admin/users" class="admin-btn admin-btn-secondary">
+                Cancelar
+            </a>
+
+            <button type="submit" class="admin-btn admin-btn-danger">
+                🗑️ Confirmar Exclusão
+            </button>
+
+        </div>
+    </form>
+</section>

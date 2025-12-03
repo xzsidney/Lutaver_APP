@@ -1,0 +1,76 @@
+<h1 class="admin-page-title">Histórias</h1>
+<p class="admin-page-subtitle">
+    Edição de história
+</p>
+
+<section class="admin-table-card admin-form-card">
+    <div class="admin-table-header">
+        <h2>Editar História</h2>
+        <a href="/admin/stories" class="admin-btn admin-btn-secondary" style="font-size: 0.8rem;">
+            ← Voltar para a lista
+        </a>
+    </div>
+
+    <% if (typeof error !=='undefined' && error) { %>
+        <div class="admin-alert admin-alert-error">
+            <%= error %>
+        </div>
+        <% } %>
+
+            <form action="/admin/stories/<%= story.id %>" method="POST" class="admin-form">
+                <div class="admin-form-grid">
+                    <!-- Título -->
+                    <div class="admin-form-group">
+                        <label for="title">Título da História</label>
+                        <input type="text" id="title" name="title" class="admin-input" value="<%= story.title %>"
+                            required>
+                    </div>
+
+                    <!-- Nível Recomendado -->
+                    <div class="admin-form-group">
+                        <label for="recommended_level">Nível Recomendado</label>
+                        <input type="number" id="recommended_level" name="recommended_level" class="admin-input" min="1"
+                            value="<%= story.recommended_level || 1 %>">
+                    </div>
+
+                    <!-- Recompensa XP -->
+                    <div class="admin-form-group">
+                        <label for="reward_xp">Recompensa (XP)</label>
+                        <input type="number" id="reward_xp" name="reward_xp" class="admin-input" min="0"
+                            value="<%= story.reward_xp || 100 %>">
+                    </div>
+
+                    <!-- Recompensa Moedas -->
+                    <div class="admin-form-group">
+                        <label for="reward_coins">Recompensa (Moedas)</label>
+                        <input type="number" id="reward_coins" name="reward_coins" class="admin-input" min="0"
+                            value="<%= story.reward_coins || 50 %>">
+                    </div>
+
+                    <!-- Sinopse -->
+                    <div class="admin-form-group admin-form-group-inline">
+                        <label for="synopsis">Sinopse</label>
+                        <textarea id="synopsis" name="synopsis" class="admin-input"
+                            rows="4"><%= story.synopsis || '' %></textarea>
+                    </div>
+
+                    <!-- Ativa -->
+                    <div class="admin-form-group admin-form-group-inline">
+                        <label class="admin-checkbox-label">
+                            <input type="checkbox" id="is_active" name="is_active" <%=story.is_active ? 'checked' : ''
+                                %>>
+                            História Ativa
+                        </label>
+                    </div>
+                </div>
+
+                <div class="admin-form-actions">
+                    <a href="/admin/stories" class="admin-btn admin-btn-secondary">
+                        Cancelar
+                    </a>
+                    <button type="submit" class="admin-btn admin-btn-primary">
+                        Salvar
+                    </button>
+                </div>
+            </form>
+</section>

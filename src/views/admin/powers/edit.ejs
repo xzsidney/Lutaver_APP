@@ -1,0 +1,87 @@
+<h1 class="admin-page-title">Poderes</h1>
+<p class="admin-page-subtitle">
+    Edição de poder
+</p>
+
+<section class="admin-table-card admin-form-card">
+    <div class="admin-table-header">
+        <h2>Editar Poder</h2>
+        <a href="/admin/powers" class="admin-btn admin-btn-secondary" style="font-size: 0.8rem;">
+            ← Voltar para a lista
+        </a>
+    </div>
+
+    <% if (typeof error !=='undefined' && error) { %>
+        <div class="admin-alert admin-alert-error">
+            <%= error %>
+        </div>
+        <% } %>
+
+            <form action="/admin/powers/<%= power.id %>" method="POST" class="admin-form">
+                <div class="admin-form-grid">
+                    <!-- Nome -->
+                    <div class="admin-form-group">
+                        <label for="name">Nome do Poder</label>
+                        <input type="text" id="name" name="name" class="admin-input" value="<%= power.name %>" required>
+                    </div>
+
+                    <!-- Tipo de Poder -->
+                    <div class="admin-form-group">
+                        <label for="power_type">Tipo de Poder</label>
+                        <select id="power_type" name="power_type" class="admin-input" required>
+                            <option value="ataque" <%=power.power_type==='ataque' ? 'selected' : '' %>>⚔️ Ataque
+                            </option>
+                            <option value="defesa" <%=power.power_type==='defesa' ? 'selected' : '' %>>🛡️ Defesa
+                            </option>
+                            <option value="suporte" <%=power.power_type==='suporte' ? 'selected' : '' %>>✨ Suporte
+                            </option>
+                            <option value="cura" <%=power.power_type==='cura' ? 'selected' : '' %>>💚 Cura</option>
+                        </select>
+                    </div>
+
+                    <!-- Disciplina -->
+                    <div class="admin-form-group">
+                        <label for="discipline_id">ID da Disciplina</label>
+                        <input type="number" id="discipline_id" name="discipline_id" class="admin-input"
+                            value="<%= power.discipline_id %>" required>
+                    </div>
+
+                    <!-- Custo de Mana -->
+                    <div class="admin-form-group">
+                        <label for="cost_mana">Custo de Mana</label>
+                        <input type="number" id="cost_mana" name="cost_mana" class="admin-input" min="0"
+                            value="<%= power.cost_mana || 10 %>">
+                    </div>
+
+                    <!-- Cooldown -->
+                    <div class="admin-form-group">
+                        <label for="cooldown_turns">Cooldown (Turnos)</label>
+                        <input type="number" id="cooldown_turns" name="cooldown_turns" class="admin-input" min="0"
+                            value="<%= power.cooldown_turns || 0 %>">
+                    </div>
+
+                    <!-- Potência -->
+                    <div class="admin-form-group">
+                        <label for="potency">Potência</label>
+                        <input type="number" id="potency" name="potency" class="admin-input"
+                            value="<%= power.potency || 50 %>">
+                    </div>
+
+                    <!-- Descrição -->
+                    <div class="admin-form-group admin-form-group-inline">
+                        <label for="description">Descrição</label>
+                        <textarea id="description" name="description" class="admin-input"
+                            rows="3"><%= power.description || '' %></textarea>
+                    </div>
+                </div>
+
+                <div class="admin-form-actions">
+                    <a href="/admin/powers" class="admin-btn admin-btn-secondary">
+                        Cancelar
+                    </a>
+                    <button type="submit" class="admin-btn admin-btn-primary">
+                        Salvar
+                    </button>
+                </div>
+            </form>
+</section>

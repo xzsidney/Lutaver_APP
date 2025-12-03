@@ -1,18 +1,67 @@
-/* Paleta Lutaver Admin */
+/* =====================================================================
+   🎮 LUTAVER ADMIN - TEMA BRASIL (DARK + LIGHT)
+   Azul, Verde, Amarelo e Branco
+   ===================================================================== */
+
 :root {
-    --lutaver-blue: #1E90FF;
-    --lutaver-blue-dark: #0057b7;
-    --lutaver-yellow: #F7D046;
-    --lutaver-green: #34D399;
-    --lutaver-bg: #0f172a;
+    /* Paleta Brasil */
+    --br-blue: #1E90FF;
+    /* Azul brilhante */
+    --br-blue-strong: #0057b7;
+    /* Azul bandeira escuro */
+    --br-green: #00C853;
+    /* Verde forte */
+    --br-green-light: #2ecc71;
+    /* Verde claro */
+    --br-yellow: #F7D046;
+    /* Amarelo ouro */
+    --br-white: #ffffff;
+    /* Branco puro */
+
+    /* Compatibilidade com nomes antigos */
+    --lutaver-blue: var(--br-blue);
+    --lutaver-blue-dark: var(--br-blue-strong);
+    --lutaver-green: var(--br-green);
+    --lutaver-yellow: var(--br-yellow);
+
+    /* Fundos e bordas (tema escuro padrão) */
+    --lutaver-bg: #0d1117;
     --lutaver-surface: #111827;
-    --lutaver-surface-alt: #020617;
+    --lutaver-surface-alt: #0a0e14;
     --lutaver-border: #1f2937;
+
+    /* Texto */
     --lutaver-text: #e5e7eb;
     --lutaver-muted: #9ca3af;
 }
 
-/* Base */
+/* =====================================================================
+   TEMA CLARO - BRASIL CLEAN
+   Quando o body tiver .theme-light, essas variáveis sobrescrevem as do :root
+   ===================================================================== */
+
+body.admin-layout.theme-light {
+    --lutaver-bg: #f3f4f6;
+    /* fundo geral bem claro */
+    --lutaver-surface: #ffffff;
+    /* cards brancos */
+    --lutaver-surface-alt: #e5e7eb;
+    --lutaver-border: #d1d5db;
+
+    --lutaver-text: #111827;
+    /* texto escuro */
+    --lutaver-muted: #6b7280;
+}
+
+/* Dark explícito (apenas semântica, usa os valores padrão) */
+body.admin-layout.theme-dark {
+    /* usa variáveis do :root */
+}
+
+/* =====================================================================
+   BASE
+   ===================================================================== */
+
 body.admin-layout {
     margin: 0;
     font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
@@ -20,32 +69,54 @@ body.admin-layout {
     color: var(--lutaver-text);
 }
 
+a {
+    color: inherit;
+}
+
+/* Container principal (sidebar + main) */
 .admin-container {
     display: flex;
     min-height: calc(100vh - 56px);
     /* 56px ~ altura da topbar */
+    box-sizing: border-box;
 }
 
-/* Topbar */
+/* =====================================================================
+   TOPBAR
+   ===================================================================== */
+
 .admin-topbar {
     height: 56px;
-    background: linear-gradient(90deg, var(--lutaver-blue), var(--lutaver-green));
+    background: linear-gradient(90deg,
+            var(--br-blue),
+            var(--br-green),
+            var(--br-yellow));
     display: flex;
     align-items: center;
     justify-content: space-between;
     padding: 0 1.5rem;
-    color: white;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.4);
+    color: var(--br-white);
+    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.45);
+}
+
+.admin-topbar-left {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
 }
 
 .admin-logo {
     font-weight: 800;
-    margin-right: 1rem;
+    margin-right: 0.25rem;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
 }
 
 .admin-topbar-title {
     font-weight: 500;
     opacity: 0.95;
+    font-size: 0.95rem;
 }
 
 .admin-topbar-right {
@@ -61,23 +132,54 @@ body.admin-layout {
 
 .admin-logout {
     color: #111827;
-    background: var(--lutaver-yellow);
-    padding: 6px 12px;
+    background: var(--br-yellow);
+    padding: 6px 14px;
     border-radius: 999px;
     font-size: 0.85rem;
     font-weight: 600;
     text-decoration: none;
+    border: none;
+    cursor: pointer;
 }
 
 .admin-logout:hover {
     filter: brightness(1.05);
 }
 
-/* Sidebar */
+/* Botão de troca de tema */
+.admin-theme-toggle {
+    border: 1px solid rgba(255, 255, 255, 0.6);
+    background: rgba(15, 23, 42, 0.2);
+    color: #fff;
+    padding: 6px 12px;
+    border-radius: 999px;
+    font-size: 0.8rem;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.admin-theme-toggle:hover {
+    background: rgba(15, 23, 42, 0.4);
+}
+
+/* Tema claro: botão mais claro */
+body.admin-layout.theme-light .admin-theme-toggle {
+    border-color: rgba(15, 23, 42, 0.4);
+    background: rgba(255, 255, 255, 0.9);
+    color: #111827;
+}
+
+/* =====================================================================
+   SIDEBAR
+   ===================================================================== */
+
 .admin-sidebar {
     width: 240px;
-    background: var(--lutaver-surface);
-    border-right: 1px solid var(--lutaver-border);
+    background: #0d1524;
+    /* azul marinho escuro */
+    border-right: 1px solid rgba(255, 255, 255, 0.05);
     padding: 1rem 0.75rem 2rem;
     box-sizing: border-box;
 }
@@ -103,32 +205,65 @@ body.admin-layout {
 
 .admin-sidebar a {
     display: block;
-    padding: 0.5rem 0.75rem;
+    padding: 0.55rem 0.9rem;
     border-radius: 8px;
-    color: var(--lutaver-text);
-    font-size: 0.9rem;
+    color: var(--br-white);
+    font-size: 0.92rem;
     text-decoration: none;
     transition: background 0.2s, color 0.2s, transform 0.1s;
 }
 
 .admin-sidebar a:hover {
-    background: rgba(148, 163, 184, 0.2);
-    color: var(--lutaver-yellow);
-    transform: translateX(2px);
+    background: rgba(0, 200, 83, 0.25);
+    /* verde */
+    color: var(--br-yellow);
+    transform: translateX(4px);
 }
 
-/* Main */
+/* Tema claro: sidebar mais clara */
+body.admin-layout.theme-light .admin-sidebar {
+    background: #e5f3ff;
+    border-right: 1px solid rgba(148, 163, 184, 0.6);
+}
+
+body.admin-layout.theme-light .admin-sidebar a {
+    color: #111827;
+}
+
+body.admin-layout.theme-light .admin-sidebar a:hover {
+    background: rgba(0, 200, 83, 0.18);
+    color: #0f172a;
+}
+
+/* =====================================================================
+   MAIN
+   ===================================================================== */
+
 .admin-main {
     flex: 1;
     padding: 1.5rem 2rem;
-    background: radial-gradient(circle at top left, #1e293b 0, #020617 50%);
+    background: radial-gradient(circle at top left,
+            rgba(30, 136, 229, 0.28) 0%,
+            var(--lutaver-bg) 60%);
     box-sizing: border-box;
 }
 
-/* Dashboard */
+/* Tema claro: main bem clarinho */
+body.admin-layout.theme-light .admin-main {
+    background: linear-gradient(135deg,
+            rgba(224, 242, 254, 0.9),
+            rgba(240, 249, 255, 1));
+}
+
+/* Títulos de página */
 .admin-page-title {
     font-size: 1.8rem;
     margin: 0 0 0.5rem;
+}
+
+.admin-page-title span {
+    font-weight: 300;
+    opacity: 0.85;
 }
 
 .admin-page-subtitle {
@@ -137,18 +272,32 @@ body.admin-layout {
     font-size: 0.95rem;
 }
 
+/* =====================================================================
+   CARDS / PAINEL
+   ===================================================================== */
+
 .admin-cards {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
     gap: 1.25rem;
 }
 
-.admin-card {
-    background: rgba(15, 23, 42, 0.95);
+.admin-card,
+.admin-table-card {
+    background: rgba(17, 24, 39, 0.92);
     border-radius: 14px;
     padding: 1.25rem 1.2rem;
-    border: 1px solid rgba(148, 163, 184, 0.25);
-    box-shadow: 0 10px 25px rgba(15, 23, 42, 0.7);
+    border: 1px solid rgba(247, 208, 70, 0.25);
+    /* amarelo ouro */
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.55);
+}
+
+/* Tema claro: cards brancos */
+body.admin-layout.theme-light .admin-card,
+body.admin-layout.theme-light .admin-table-card {
+    background: #ffffff;
+    border: 1px solid rgba(209, 213, 219, 0.9);
+    box-shadow: 0 10px 25px rgba(148, 163, 184, 0.35);
 }
 
 .admin-card h2 {
@@ -162,28 +311,29 @@ body.admin-layout {
     font-size: 0.9rem;
 }
 
+.admin-card-metric {
+    font-size: 1.6rem;
+    font-weight: 700;
+}
+
+/* Link dentro de card */
 .admin-card-link {
     display: inline-block;
     padding: 0.4rem 0.9rem;
     border-radius: 999px;
     font-size: 0.8rem;
     text-decoration: none;
-    color: var(--lutaver-blue);
-    background: rgba(37, 99, 235, 0.12);
+    color: var(--br-blue);
+    background: rgba(30, 144, 255, 0.15);
 }
 
 .admin-card-link:hover {
-    background: rgba(59, 130, 246, 0.2);
+    background: rgba(30, 144, 255, 0.25);
 }
 
-/* Tabela admin genérica */
-.admin-table-card {
-    background: rgba(15, 23, 42, 0.95);
-    border-radius: 14px;
-    padding: 1.25rem 1.2rem;
-    border: 1px solid rgba(148, 163, 184, 0.25);
-    box-shadow: 0 10px 25px rgba(15, 23, 42, 0.7);
-}
+/* =====================================================================
+   TABELAS
+   ===================================================================== */
 
 .admin-table-header {
     display: flex;
@@ -210,6 +360,11 @@ body.admin-layout {
     text-align: left;
 }
 
+body.admin-layout.theme-light .admin-table th,
+body.admin-layout.theme-light .admin-table td {
+    border-bottom: 1px solid rgba(209, 213, 219, 0.9);
+}
+
 .admin-table th {
     font-weight: 600;
     color: var(--lutaver-muted);
@@ -222,15 +377,20 @@ body.admin-layout {
     background: rgba(15, 23, 42, 0.8);
 }
 
+body.admin-layout.theme-light .admin-table tr:hover td {
+    background: rgba(243, 244, 246, 0.9);
+}
+
 .admin-table-empty {
     text-align: center;
     color: var(--lutaver-muted);
 }
 
+/* Ações na tabela */
 .admin-table-action {
     margin-right: 0.5rem;
     font-size: 0.8rem;
-    color: var(--lutaver-blue);
+    color: var(--br-blue);
     text-decoration: none;
 }
 
@@ -239,5 +399,195 @@ body.admin-layout {
 }
 
 .admin-table-action-danger {
-    color: #f97373;
+    color: #ff6b6b;
+}
+
+.admin-table-action-danger:hover {
+    color: #ff8787;
+}
+
+/* =====================================================================
+   FORMULÁRIOS
+   ===================================================================== */
+
+.admin-form-card {
+    margin-top: 20px;
+}
+
+.admin-form {
+    margin-top: 20px;
+}
+
+.admin-form-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px 30px;
+}
+
+@media (max-width: 900px) {
+    .admin-form-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+.admin-form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.admin-form-group-inline {
+    grid-column: 1 / -1;
+}
+
+.admin-input {
+    padding: 12px 14px;
+    border-radius: 6px;
+    border: 1px solid rgba(255, 255, 255, 0.10);
+    background: rgba(255, 255, 255, 0.05);
+    color: var(--br-white);
+    font-size: 0.92rem;
+}
+
+.admin-input:focus {
+    outline: none;
+    border-color: var(--br-green);
+    box-shadow: 0 0 0 2px rgba(0, 200, 83, 0.35);
+}
+
+/* Tema claro: inputs mais claros */
+body.admin-layout.theme-light .admin-input {
+    background: #f9fafb;
+    border-color: rgba(209, 213, 219, 0.9);
+    color: #111827;
+}
+
+body.admin-layout.theme-light .admin-input:focus {
+    border-color: var(--br-blue);
+    box-shadow: 0 0 0 2px rgba(37, 99, 235, 0.35);
+}
+
+.admin-field-hint {
+    font-size: 12px;
+    opacity: 0.7;
+}
+
+.admin-checkbox-label {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    font-size: 0.92rem;
+}
+
+/* Ações do formulário */
+.admin-form-actions {
+    margin-top: 30px;
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+}
+
+.admin-btn {
+    border: none;
+    cursor: pointer;
+    padding: 10px 18px;
+    border-radius: 999px;
+    font-weight: 600;
+    font-size: 14px;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* Botão primário (verde Brasil) */
+.admin-btn-primary {
+    background: var(--br-green);
+    color: #08210d;
+}
+
+.admin-btn-primary:hover {
+    background: #00e060;
+}
+
+/* Botão secundário (borda azul) */
+.admin-btn-secondary {
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid var(--br-blue);
+    color: var(--br-white);
+}
+
+.admin-btn-secondary:hover {
+    background: rgba(30, 144, 255, 0.2);
+}
+
+/* Tema claro: secundário ajustado */
+body.admin-layout.theme-light .admin-btn-secondary {
+    background: #ffffff;
+    border-color: rgba(148, 163, 184, 0.9);
+    color: #111827;
+}
+
+body.admin-layout.theme-light .admin-btn-secondary:hover {
+    background: #e5e7eb;
+}
+
+/* =====================================================================
+   ALERTAS
+   ===================================================================== */
+
+.admin-alert {
+    padding: 10px 14px;
+    border-radius: 8px;
+    margin-top: 10px;
+    font-size: 0.9rem;
+}
+
+.admin-alert-error {
+    background: rgba(248, 113, 113, 0.1);
+    border: 1px solid #f87171;
+    color: #fecaca;
+}
+
+/* Tema claro: alerta mais claro */
+body.admin-layout.theme-light .admin-alert-error {
+    background: #fef2f2;
+    border-color: #fecaca;
+    color: #b91c1c;
+}
+
+/* =====================================================================
+   UTILITÁRIOS
+   ===================================================================== */
+
+.badge {
+    display: inline-block;
+    padding: 2px 8px;
+    border-radius: 999px;
+    font-size: 0.75rem;
+    font-weight: 600;
+}
+
+.badge-green {
+    background: rgba(16, 185, 129, 0.18);
+    color: #6ee7b7;
+}
+
+.badge-yellow {
+    background: rgba(250, 204, 21, 0.18);
+    color: #facc15;
+}
+
+.badge-blue {
+    background: rgba(59, 130, 246, 0.18);
+    color: #93c5fd;
+}
+
+.admin-btn-danger {
+    background: #ef4444;
+    color: #fff;
+}
+
+.admin-btn-danger:hover {
+    background: #dc2626;
 }

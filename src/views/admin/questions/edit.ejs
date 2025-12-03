@@ -1,0 +1,104 @@
+<h1 class="admin-page-title">Questões</h1>
+<p class="admin-page-subtitle">
+    Edição de questão
+</p>
+
+<section class="admin-table-card admin-form-card">
+    <div class="admin-table-header">
+        <h2>Editar Questão</h2>
+        <a href="/admin/questions" class="admin-btn admin-btn-secondary" style="font-size: 0.8rem;">
+            ← Voltar para a lista
+        </a>
+    </div>
+
+    <% if (typeof error !=='undefined' && error) { %>
+        <div class="admin-alert admin-alert-error">
+            <%= error %>
+        </div>
+        <% } %>
+
+            <form action="/admin/questions/<%= question.id %>" method="POST" class="admin-form">
+                <div class="admin-form-grid">
+                    <!-- Enunciado -->
+                    <div class="admin-form-group admin-form-group-inline">
+                        <label for="statement">Enunciado da Questão</label>
+                        <textarea id="statement" name="statement" class="admin-input" rows="3"
+                            required><%= question.statement %></textarea>
+                    </div>
+
+                    <!-- Opção A -->
+                    <div class="admin-form-group">
+                        <label for="option_a">Opção A</label>
+                        <input type="text" id="option_a" name="option_a" class="admin-input"
+                            value="<%= question.option_a %>" required>
+                    </div>
+
+                    <!-- Opção B -->
+                    <div class="admin-form-group">
+                        <label for="option_b">Opção B</label>
+                        <input type="text" id="option_b" name="option_b" class="admin-input"
+                            value="<%= question.option_b %>" required>
+                    </div>
+
+                    <!-- Opção C -->
+                    <div class="admin-form-group">
+                        <label for="option_c">Opção C</label>
+                        <input type="text" id="option_c" name="option_c" class="admin-input"
+                            value="<%= question.option_c %>" required>
+                    </div>
+
+                    <!-- Opção D -->
+                    <div class="admin-form-group">
+                        <label for="option_d">Opção D</label>
+                        <input type="text" id="option_d" name="option_d" class="admin-input"
+                            value="<%= question.option_d %>" required>
+                    </div>
+
+                    <!-- Resposta Correta -->
+                    <div class="admin-form-group">
+                        <label for="correct_option">Resposta Correta</label>
+                        <select id="correct_option" name="correct_option" class="admin-input" required>
+                            <option value="A" <%=question.correct_option==='A' ? 'selected' : '' %>>A</option>
+                            <option value="B" <%=question.correct_option==='B' ? 'selected' : '' %>>B</option>
+                            <option value="C" <%=question.correct_option==='C' ? 'selected' : '' %>>C</option>
+                            <option value="D" <%=question.correct_option==='D' ? 'selected' : '' %>>D</option>
+                        </select>
+                    </div>
+
+                    <!-- Dificuldade -->
+                    <div class="admin-form-group">
+                        <label for="difficulty">Dificuldade</label>
+                        <select id="difficulty" name="difficulty" class="admin-input" required>
+                            <option value="facil" <%=question.difficulty==='facil' ? 'selected' : '' %>>⭐ Fácil</option>
+                            <option value="medio" <%=question.difficulty==='medio' ? 'selected' : '' %>>⭐⭐ Médio
+                            </option>
+                            <option value="dificil" <%=question.difficulty==='dificil' ? 'selected' : '' %>>⭐⭐⭐ Difícil
+                            </option>
+                        </select>
+                    </div>
+
+                    <!-- Disciplina -->
+                    <div class="admin-form-group">
+                        <label for="discipline_id">ID da Disciplina</label>
+                        <input type="number" id="discipline_id" name="discipline_id" class="admin-input"
+                            value="<%= question.discipline_id %>" required>
+                    </div>
+
+                    <!-- Aventura -->
+                    <div class="admin-form-group">
+                        <label for="adventure_id">ID da Aventura</label>
+                        <input type="number" id="adventure_id" name="adventure_id" class="admin-input"
+                            value="<%= question.adventure_id || '' %>">
+                    </div>
+                </div>
+
+                <div class="admin-form-actions">
+                    <a href="/admin/questions" class="admin-btn admin-btn-secondary">
+                        Cancelar
+                    </a>
+                    <button type="submit" class="admin-btn admin-btn-primary">
+                        Salvar
+                    </button>
+                </div>
+            </form>
+</section>

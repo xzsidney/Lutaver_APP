@@ -1,0 +1,57 @@
+<h1 class="admin-page-title">Cenas</h1>
+<p class="admin-page-subtitle">
+    Confirmação de exclusão
+</p>
+
+<section class="admin-table-card admin-form-card">
+    <div class="admin-table-header">
+        <h2>Excluir Cena</h2>
+        <a href="/admin/scenes" class="admin-btn admin-btn-secondary" style="font-size: 0.8rem;">
+            ← Voltar para a lista
+        </a>
+    </div>
+
+    <div class="admin-alert admin-alert-error" style="margin-bottom: 1.5rem;">
+        <strong>⚠️ Atenção!</strong><br>
+        Tem certeza que deseja excluir esta cena?<br>
+        <b>Esta ação é permanente e poderá quebrar a sequência narrativa da aventura.</b>
+    </div>
+
+    <div class="admin-table-card" style="margin-bottom: 1.5rem;">
+        <h3 style="margin-top: 0; font-size: 1.1rem;">Dados da Cena</h3>
+        <div style="line-height: 1.8; margin-top: .5rem;">
+            <p><strong>Título:</strong>
+                <%= scene.title %>
+            </p>
+            <% if (scene.description) { %>
+                <p><strong>Descrição:</strong>
+                    <%= scene.description.substring(0, 150) %>
+                        <%= scene.description.length> 150 ? '...' : '' %>
+                </p>
+                <% } %>
+                    <p><strong>Ordem:</strong>
+                        <%= scene.order_index || 1 %>
+                    </p>
+                    <p><strong>Tipo:</strong>
+                        <%= scene.scene_type || 'Narrativa' %>
+                    </p>
+                    <p><strong>Cena Inicial:</strong>
+                        <%= scene.is_start ? 'Sim' : 'Não' %>
+                    </p>
+                    <p><strong>Cena Final:</strong>
+                        <%= scene.is_end ? 'Sim' : 'Não' %>
+                    </p>
+        </div>
+    </div>
+
+    <form action="/admin/scenes/<%= scene.id %>/delete" method="POST">
+        <div class="admin-form-actions">
+            <a href="/admin/scenes" class="admin-btn admin-btn-secondary">
+                Cancelar
+            </a>
+            <button type="submit" class="admin-btn admin-btn-danger">
+                🗑️ Confirmar Exclusão
+            </button>
+        </div>
+    </form>
+</section>

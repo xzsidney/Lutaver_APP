@@ -1,0 +1,81 @@
+<h1 class="admin-page-title">Histórias</h1>
+<p class="admin-page-subtitle">
+    Cadastro de nova história
+</p>
+
+<section class="admin-table-card admin-form-card">
+    <div class="admin-table-header">
+        <h2>Nova História</h2>
+        <a href="/admin/stories" class="admin-btn admin-btn-secondary" style="font-size: 0.8rem;">
+            ← Voltar para a lista
+        </a>
+    </div>
+
+    <% if (typeof error !=='undefined' && error) { %>
+        <div class="admin-alert admin-alert-error">
+            <%= error %>
+        </div>
+        <% } %>
+
+            <form action="/admin/stories" method="POST" class="admin-form">
+                <div class="admin-form-grid">
+                    <!-- Título -->
+                    <div class="admin-form-group">
+                        <label for="title">Título da História</label>
+                        <input type="text" id="title" name="title" class="admin-input"
+                            placeholder="Ex: O Mistério da Biblioteca Perdida" required>
+                    </div>
+
+                    <!-- Nível Recomendado -->
+                    <div class="admin-form-group">
+                        <label for="recommended_level">Nível Recomendado</label>
+                        <input type="number" id="recommended_level" name="recommended_level" class="admin-input" min="1"
+                            placeholder="5" value="1">
+                    </div>
+
+                    <!-- Recompensa XP -->
+                    <div class="admin-form-group">
+                        <label for="reward_xp">Recompensa (XP)</label>
+                        <input type="number" id="reward_xp" name="reward_xp" class="admin-input" min="0"
+                            placeholder="500" value="100">
+                    </div>
+
+                    <!-- Recompensa Moedas -->
+                    <div class="admin-form-group">
+                        <label for="reward_coins">Recompensa (Moedas)</label>
+                        <input type="number" id="reward_coins" name="reward_coins" class="admin-input" min="0"
+                            placeholder="100" value="50">
+                    </div>
+
+                    <!-- Sinopse -->
+                    <div class="admin-form-group admin-form-group-inline">
+                        <label for="synopsis">Sinopse</label>
+                        <textarea id="synopsis" name="synopsis" class="admin-input" rows="4"
+                            placeholder="Escreva um resumo da história..."></textarea>
+                        <span class="admin-field-hint">
+                            Breve descrição que aparecerá na seleção de histórias
+                        </span>
+                    </div>
+
+                    <!-- Ativa -->
+                    <div class="admin-form-group admin-form-group-inline">
+                        <label class="admin-checkbox-label">
+                            <input type="checkbox" id="is_active" name="is_active" checked>
+                            História Ativa
+                        </label>
+                        <span class="admin-field-hint">
+                            Desmarque para ocultar esta história dos jogadores
+                        </span>
+                    </div>
+                </div>
+
+                <div class="admin-form-actions">
+                    <a href="/admin/stories" class="admin-btn admin-btn-secondary">
+                        Cancelar
+                    </a>
+                    <button type="submit" class="admin-btn admin-btn-primary">
+                        Salvar
+                    </button>
+                </div>
+            </form>
+</section>

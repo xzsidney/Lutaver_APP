@@ -1,0 +1,83 @@
+<h1 class="admin-page-title">Personagens</h1>
+<p class="admin-page-subtitle">
+    Edição de personagem
+</p>
+
+<section class="admin-table-card admin-form-card">
+    <div class="admin-table-header">
+        <h2>Editar Personagem</h2>
+        <a href="/admin/characters" class="admin-btn admin-btn-secondary" style="font-size: 0.8rem;">
+            ← Voltar para a lista
+        </a>
+    </div>
+
+    <% if (typeof error !=='undefined' && error) { %>
+        <div class="admin-alert admin-alert-error">
+            <%= error %>
+        </div>
+        <% } %>
+
+            <form action="/admin/characters/<%= character.id %>" method="POST" class="admin-form">
+                <div class="admin-form-grid">
+                    <!-- Nome -->
+                    <div class="admin-form-group">
+                        <label for="name">Nome do Personagem</label>
+                        <input type="text" id="name" name="name" class="admin-input" value="<%= character.name %>"
+                            required>
+                    </div>
+
+                    <!-- ID do Usuário -->
+                    <div class="admin-form-group">
+                        <label for="user_id">ID do Usuário</label>
+                        <input type="number" id="user_id" name="user_id" class="admin-input"
+                            value="<%= character.user_id || '' %>">
+                    </div>
+
+                    <!-- Ano Escolar -->
+                    <div class="admin-form-group">
+                        <label for="school_year">Ano Escolar</label>
+                        <input type="number" id="school_year" name="school_year" class="admin-input" min="1" max="12"
+                            value="<%= character.school_year || 6 %>">
+                    </div>
+
+                    <!-- XP Total -->
+                    <div class="admin-form-group">
+                        <label for="total_xp">XP Total</label>
+                        <input type="number" id="total_xp" name="total_xp" class="admin-input" min="0"
+                            value="<%= character.total_xp || 0 %>">
+                    </div>
+
+                    <!-- Moedas -->
+                    <div class="admin-form-group">
+                        <label for="coins">Moedas</label>
+                        <input type="number" id="coins" name="coins" class="admin-input" min="0"
+                            value="<%= character.coins || 0 %>">
+                    </div>
+
+                    <!-- Nível -->
+                    <div class="admin-form-group">
+                        <label for="level">Nível</label>
+                        <input type="number" id="level" name="level" class="admin-input" min="1"
+                            value="<%= character.level || 1 %>">
+                    </div>
+
+                    <!-- Ativo -->
+                    <div class="admin-form-group admin-form-group-inline">
+                        <label class="admin-checkbox-label">
+                            <input type="checkbox" id="is_active" name="is_active" <%=(typeof
+                                character.is_active==='undefined' || character.is_active) ? 'checked' : '' %>>
+                            Personagem Ativo
+                        </label>
+                    </div>
+                </div>
+
+                <div class="admin-form-actions">
+                    <a href="/admin/characters" class="admin-btn admin-btn-secondary">
+                        Cancelar
+                    </a>
+                    <button type="submit" class="admin-btn admin-btn-primary">
+                        Salvar
+                    </button>
+                </div>
+            </form>
+</section>

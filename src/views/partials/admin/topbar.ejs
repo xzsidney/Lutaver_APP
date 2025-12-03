@@ -3,13 +3,22 @@
         <span class="admin-logo">🎮 Lutaver</span>
         <span class="admin-topbar-title">Painel Administrativo</span>
     </div>
+
     <div class="admin-topbar-right">
-        <% if (typeof user !=='undefined' && user) { %>
+
+        <% if (locals.user) { %>
             <span class="admin-user">
-                👤 <%= user.name %> (<%= user.role %>)
+                👤 <%= locals.user.name %> (<%= locals.user.role %>)
             </span>
             <% } %>
+
+                <button type="button" id="adminThemeToggle" class="admin-theme-toggle">
+                    🌙 Modo escuro
+                </button>
+
                 <a href="/logout" class="admin-logout">Sair</a>
     </div>
+
+
 
 </header>

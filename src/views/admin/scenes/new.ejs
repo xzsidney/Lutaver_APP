@@ -1,0 +1,95 @@
+<h1 class="admin-page-title">Cenas</h1>
+<p class="admin-page-subtitle">
+    Cadastro de nova cena
+</p>
+
+<section class="admin-table-card admin-form-card">
+    <div class="admin-table-header">
+        <h2>Nova Cena</h2>
+        <a href="/admin/scenes" class="admin-btn admin-btn-secondary" style="font-size: 0.8rem;">
+            ← Voltar para a lista
+        </a>
+    </div>
+
+    <% if (typeof error !=='undefined' && error) { %>
+        <div class="admin-alert admin-alert-error">
+            <%= error %>
+        </div>
+        <% } %>
+
+            <form action="/admin/scenes" method="POST" class="admin-form">
+                <div class="admin-form-grid">
+                    <!-- Título -->
+                    <div class="admin-form-group">
+                        <label for="title">Título da Cena</label>
+                        <input type="text" id="title" name="title" class="admin-input"
+                            placeholder="Ex: O Encontro com o Mestre" required>
+                    </div>
+
+                    <!-- ID da Aventura -->
+                    <div class="admin-form-group">
+                        <label for="adventure_id">ID da Aventura</label>
+                        <input type="number" id="adventure_id" name="adventure_id" class="admin-input"
+                            placeholder="ID da aventura" required>
+                    </div>
+
+                    <!-- Ordem -->
+                    <div class="admin-form-group">
+                        <label for="order_index">Ordem da Cena</label>
+                        <input type="number" id="order_index" name="order_index" class="admin-input" min="1"
+                            placeholder="1" value="1">
+                        <span class="admin-field-hint">
+                            Ordem de exibição na aventura
+                        </span>
+                    </div>
+
+                    <!-- Tipo de Cena -->
+                    <div class="admin-form-group">
+                        <label for="scene_type">Tipo de Cena</label>
+                        <select id="scene_type" name="scene_type" class="admin-input">
+                            <option value="narrativa">📖 Narrativa</option>
+                            <option value="combate">⚔️ Combate</option>
+                            <option value="dialogo">💬 Diálogo</option>
+                            <option value="quiz">❓ Quiz</option>
+                        </select>
+                    </div>
+
+                    <!-- Descrição -->
+                    <div class="admin-form-group admin-form-group-inline">
+                        <label for="description">Descrição Narrativa</label>
+                        <textarea id="description" name="description" class="admin-input" rows="4"
+                            placeholder="Escreva a narrativa desta cena..."></textarea>
+                    </div>
+
+                    <!-- Checkboxes -->
+                    <div class="admin-form-group">
+                        <label class="admin-checkbox-label">
+                            <input type="checkbox" id="is_start" name="is_start">
+                            Cena Inicial
+                        </label>
+                        <span class="admin-field-hint">
+                            Marque se esta é a primeira cena da aventura
+                        </span>
+                    </div>
+
+                    <div class="admin-form-group">
+                        <label class="admin-checkbox-label">
+                            <input type="checkbox" id="is_end" name="is_end">
+                            Cena Final
+                        </label>
+                        <span class="admin-field-hint">
+                            Marque se esta é a última cena da aventura
+                        </span>
+                    </div>
+                </div>
+
+                <div class="admin-form-actions">
+                    <a href="/admin/scenes" class="admin-btn admin-btn-secondary">
+                        Cancelar
+                    </a>
+                    <button type="submit" class="admin-btn admin-btn-primary">
+                        Salvar
+                    </button>
+                </div>
+            </form>
+</section>

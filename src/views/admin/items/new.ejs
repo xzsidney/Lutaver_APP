@@ -1,0 +1,85 @@
+<h1 class="admin-page-title">Itens</h1>
+<p class="admin-page-subtitle">
+    Cadastro de novo item
+</p>
+
+<section class="admin-table-card admin-form-card">
+    <div class="admin-table-header">
+        <h2>Novo Item</h2>
+        <a href="/admin/items" class="admin-btn admin-btn-secondary" style="font-size: 0.8rem;">
+            ← Voltar para a lista
+        </a>
+    </div>
+
+    <% if (typeof error !=='undefined' && error) { %>
+        <div class="admin-alert admin-alert-error">
+            <%= error %>
+        </div>
+        <% } %>
+
+            <form action="/admin/items" method="POST" class="admin-form">
+                <div class="admin-form-grid">
+                    <!-- Nome -->
+                    <div class="admin-form-group">
+                        <label for="name">Nome do Item</label>
+                        <input type="text" id="name" name="name" class="admin-input" placeholder="Ex: Poção de Vida"
+                            required>
+                    </div>
+
+                    <!-- Tipo -->
+                    <div class="admin-form-group">
+                        <label for="type">Tipo</label>
+                        <select id="type" name="type" class="admin-input" required>
+                            <option value="equipamento">⚔️ Equipamento</option>
+                            <option value="consumivel">🧪 Consumível</option>
+                            <option value="chave">🔑 Chave/Quest</option>
+                            <option value="outro">📦 Outro</option>
+                        </select>
+                    </div>
+
+                    <!-- Preço -->
+                    <div class="admin-form-group">
+                        <label for="price">Preço (Moedas)</label>
+                        <input type="number" id="price" name="price" class="admin-input" min="0" placeholder="100"
+                            value="0">
+                    </div>
+
+                    <!-- ID do Efeito -->
+                    <div class="admin-form-group">
+                        <label for="effect_id">ID do Efeito</label>
+                        <input type="number" id="effect_id" name="effect_id" class="admin-input"
+                            placeholder="ID do efeito (opcional)">
+                        <span class="admin-field-hint">
+                            Deixe vazio se o item não tiver efeito
+                        </span>
+                    </div>
+
+                    <!-- Descrição -->
+                    <div class="admin-form-group admin-form-group-inline">
+                        <label for="description">Descrição</label>
+                        <textarea id="description" name="description" class="admin-input" rows="3"
+                            placeholder="Descreva o que este item faz..."></textarea>
+                    </div>
+
+                    <!-- Consumível -->
+                    <div class="admin-form-group admin-form-group-inline">
+                        <label class="admin-checkbox-label">
+                            <input type="checkbox" id="is_consumable" name="is_consumable">
+                            Item Consumível
+                        </label>
+                        <span class="admin-field-hint">
+                            Marque se o item desaparece após o uso
+                        </span>
+                    </div>
+                </div>
+
+                <div class="admin-form-actions">
+                    <a href="/admin/items" class="admin-btn admin-btn-secondary">
+                        Cancelar
+                    </a>
+                    <button type="submit" class="admin-btn admin-btn-primary">
+                        Salvar
+                    </button>
+                </div>
+            </form>
+</section>

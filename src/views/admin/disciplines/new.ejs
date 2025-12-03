@@ -1,0 +1,70 @@
+<h1 class="admin-page-title">Disciplinas</h1>
+
+<p class="admin-page-subtitle">
+    Cadastro de nova disciplina
+</p>
+
+<section class="admin-table-card admin-form-card">
+    <div class="admin-table-header">
+        <h2>Nova Disciplina</h2>
+
+        <a href="/admin/disciplines" class="admin-btn admin-btn-secondary" style="font-size: 0.8rem;">
+            ← Voltar para a lista
+        </a>
+    </div>
+
+    <% if (typeof error !=='undefined' && error) { %>
+        <div class="admin-alert admin-alert-error">
+            <%= error %>
+        </div>
+        <% } %>
+
+
+            <form action="/admin/disciplines" method="POST" class="admin-form">
+                <div class="admin-form-grid">
+                    <!-- Nome -->
+                    <div class="admin-form-group">
+                        <label for="name">Nome da Disciplina</label>
+                        <input type="text" id="name" name="name" class="admin-input"
+                            placeholder="Ex: Matemática, Língua Portuguesa" required>
+                    </div>
+
+                    <!-- Faixa de ano escolar (opcional) -->
+                    <div class="admin-form-group">
+                        <label for="school_stage">Faixa de Ano Escolar</label>
+                        <input type="text" id="school_stage" name="school_stage" class="admin-input"
+                            placeholder="Ex: 1º ao 5º ano, 6º ao 9º ano">
+                    </div>
+
+                    <!-- Descrição -->
+                    <div class="admin-form-group admin-form-group-inline">
+                        <label for="description">Descrição</label>
+                        <textarea id="description" name="description" class="admin-input" rows="3"
+                            placeholder="Explique o foco dessa disciplina dentro do jogo (missões, atributos, afinidades)..."></textarea>
+                        <span class="admin-field-hint">
+                            Esta descrição aparece em telas de ajuda / detalhes da disciplina.
+                        </span>
+                    </div>
+
+                    <!-- Ativo -->
+                    <div class="admin-form-group admin-form-group-inline">
+                        <label class="admin-checkbox-label">
+                            <input type="checkbox" id="is_active" name="is_active" checked>
+                            Disciplina Ativa
+                        </label>
+                        <span class="admin-field-hint">
+                            Desmarque se não quiser que esta disciplina apareça para os jogadores.
+                        </span>
+                    </div>
+                </div>
+
+                <div class="admin-form-actions">
+                    <a href="/admin/disciplines" class="admin-btn admin-btn-secondary">
+                        Cancelar
+                    </a>
+                    <button type="submit" class="admin-btn admin-btn-primary">
+                        Salvar
+                    </button>
+                </div>
+            </form>
+</section>

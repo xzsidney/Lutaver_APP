@@ -1,0 +1,50 @@
+<h1 class="admin-page-title">Aventuras</h1>
+<p class="admin-page-subtitle">
+    Confirmação de exclusão
+</p>
+
+<section class="admin-table-card admin-form-card">
+    <div class="admin-table-header">
+        <h2>Excluir Aventura</h2>
+        <a href="/admin/adventures" class="admin-btn admin-btn-secondary" style="font-size: 0.8rem;">
+            ← Voltar para a lista
+        </a>
+    </div>
+
+    <div class="admin-alert admin-alert-error" style="margin-bottom: 1.5rem;">
+        <strong>⚠️ Atenção!</strong><br>
+        Tem certeza que deseja excluir esta aventura?<br>
+        <b>Esta ação é permanente e poderá impactar cenas, questões e progresso dos jogadores.</b>
+    </div>
+
+    <div class="admin-table-card" style="margin-bottom: 1.5rem;">
+        <h3 style="margin-top: 0; font-size: 1.1rem;">Dados da Aventura</h3>
+        <div style="line-height: 1.8; margin-top: .5rem;">
+            <p><strong>Nome:</strong>
+                <%= adventure.title || adventure.name %>
+            </p>
+            <% if (adventure.description) { %>
+                <p><strong>Descrição:</strong>
+                    <%= adventure.description %>
+                </p>
+                <% } %>
+                    <p><strong>Dificuldade:</strong>
+                        <%= adventure.difficulty==1 ? 'Fácil' : adventure.difficulty==2 ? 'Médio' : 'Difícil' %>
+                    </p>
+                    <p><strong>Status:</strong>
+                        <%= adventure.is_active ? 'Ativa' : 'Inativa' %>
+                    </p>
+        </div>
+    </div>
+
+    <form action="/admin/adventures/<%= adventure.id %>/delete" method="POST">
+        <div class="admin-form-actions">
+            <a href="/admin/adventures" class="admin-btn admin-btn-secondary">
+                Cancelar
+            </a>
+            <button type="submit" class="admin-btn admin-btn-danger">
+                🗑️ Confirmar Exclusão
+            </button>
+        </div>
+    </form>
+</section>

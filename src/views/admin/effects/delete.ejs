@@ -1,0 +1,54 @@
+<h1 class="admin-page-title">Efeitos</h1>
+<p class="admin-page-subtitle">
+    Confirmação de exclusão
+</p>
+
+<section class="admin-table-card admin-form-card">
+    <div class="admin-table-header">
+        <h2>Excluir Efeito</h2>
+        <a href="/admin/effects" class="admin-btn admin-btn-secondary" style="font-size: 0.8rem;">
+            ← Voltar para a lista
+        </a>
+    </div>
+
+    <div class="admin-alert admin-alert-error" style="margin-bottom: 1.5rem;">
+        <strong>⚠️ Atenção!</strong><br>
+        Tem certeza que deseja excluir este efeito?<br>
+        <b>Esta ação é permanente e poderá impactar poderes e itens que usam este efeito.</b>
+    </div>
+
+    <div class="admin-table-card" style="margin-bottom: 1.5rem;">
+        <h3 style="margin-top: 0; font-size: 1.1rem;">Dados do Efeito</h3>
+        <div style="line-height: 1.8; margin-top: .5rem;">
+            <p><strong>Nome:</strong>
+                <%= effect.name %>
+            </p>
+            <% if (effect.description) { %>
+                <p><strong>Descrição:</strong>
+                    <%= effect.description %>
+                </p>
+                <% } %>
+                    <p><strong>Tipo:</strong>
+                        <%= effect.type==='buff' ? 'Buff (Positivo)' : effect.type==='debuff' ? 'Debuff (Negativo)'
+                            : 'Neutro' %>
+                    </p>
+                    <p><strong>Potência:</strong>
+                        <%= effect.potency || 0 %>
+                    </p>
+                    <p><strong>Duração:</strong>
+                        <%= effect.duration_turns || 0 %> turnos
+                    </p>
+        </div>
+    </div>
+
+    <form action="/admin/effects/<%= effect.id %>/delete" method="POST">
+        <div class="admin-form-actions">
+            <a href="/admin/effects" class="admin-btn admin-btn-secondary">
+                Cancelar
+            </a>
+            <button type="submit" class="admin-btn admin-btn-danger">
+                🗑️ Confirmar Exclusão
+            </button>
+        </div>
+    </form>
+</section>

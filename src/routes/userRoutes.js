@@ -1,21 +1,29 @@
+// src/routes/userRoutes.js
 const express = require('express');
 const router = express.Router();
-const User = require('../models/User');
+
 const { adminMiddleware } = require('../middlewares/authMiddleware');
+const AdminUserController = require('../controllers/AdminUserController');
 
-// LISTA DE USUÁRIOS – /admin/users
-router.get('/', adminMiddleware, async (req, res) => {
-    try {
-        const users = await User.findAll();
+// LISTA – /admin/users
+router.get('/', adminMiddleware, AdminUserController.index);
 
-        return res.render('admin/users/index', {
-            title: 'Usuários - Painel Admin',
-            users
-        });
-    } catch (err) {
-        console.error(err);
-        return res.status(500).send('Erro ao carregar usuários');
-    }
-});
+// NOVO – /admin/users/new
+router.get('/new', adminMiddleware, AdminUserController.create);
+
+// SALVAR – /admin/users
+router.post('/', adminMiddleware, AdminUserController.store);
+
+// EDITAR – /admin/users/:id/edit
+router.get('/:id/edit', adminMiddleware, AdminUserController.edit);
+
+// ATUALIZAR – /admin/users/:id
+router.post('/:id', adminMiddleware, AdminUserController.update);
+
+// CONFIRMAR EXCLUSÃO – /admin/users/:id/delete
+router.get('/:id/delete', adminMiddleware, AdminUserController.confirmDelete);
+
+// EXCLUIR – /admin/users/:id/delete (pode ser POST se quiser)
+router.post('/:id/delete', adminMiddleware, AdminUserController.destroy);
 
 module.exports = router;

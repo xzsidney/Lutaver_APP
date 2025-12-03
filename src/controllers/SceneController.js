@@ -28,7 +28,7 @@ module.exports = {
     async create(req, res) {
         try {
             const adventures = await Adventure.findAll({
-                order: [['name', 'ASC']]
+                order: [['title', 'ASC']]
             });
 
             // Podemos também listar cenas para escolher success/failure
@@ -93,7 +93,7 @@ module.exports = {
             }
 
             const adventures = await Adventure.findAll({
-                order: [['name', 'ASC']]
+                order: [['title', 'ASC']]
             });
 
             const scenes = await Scene.findAll({

@@ -1,0 +1,84 @@
+<h1 class="admin-page-title">Aventuras</h1>
+<p class="admin-page-subtitle">
+    Cadastro de nova aventura
+</p>
+
+<section class="admin-table-card admin-form-card">
+    <div class="admin-table-header">
+        <h2>Nova Aventura</h2>
+        <a href="/admin/adventures" class="admin-btn admin-btn-secondary" style="font-size: 0.8rem;">
+            ← Voltar para a lista
+        </a>
+    </div>
+
+    <% if (typeof error !=='undefined' && error) { %>
+        <div class="admin-alert admin-alert-error">
+            <%= error %>
+        </div>
+        <% } %>
+
+            <form action="/admin/adventures" method="POST" class="admin-form">
+                <div class="admin-form-grid">
+                    <!-- Nome -->
+                    <div class="admin-form-group">
+                        <label for="name">Nome da Aventura</label>
+                        <input type="text" id="name" name="name" class="admin-input"
+                            placeholder="Ex: A Jornada dos Números" required>
+                    </div>
+
+                    <!-- Nível Requerido -->
+                    <div class="admin-form-group">
+                        <label for="level_required">Nível Mínimo</label>
+                        <input type="number" id="level_required" name="level_required" class="admin-input" min="1"
+                            placeholder="1" value="1">
+                    </div>
+
+                    <!-- Dificuldade -->
+                    <div class="admin-form-group">
+                        <label for="difficulty">Dificuldade</label>
+                        <select id="difficulty" name="difficulty" class="admin-input" required>
+                            <option value="1">⭐ Fácil</option>
+                            <option value="2">⭐⭐ Médio</option>
+                            <option value="3">⭐⭐⭐ Difícil</option>
+                        </select>
+                    </div>
+
+                    <!-- Disciplina -->
+                    <div class="admin-form-group">
+                        <label for="discipline_id">Disciplina</label>
+                        <input type="number" id="discipline_id" name="discipline_id" class="admin-input"
+                            placeholder="ID da disciplina" required>
+                        <span class="admin-field-hint">
+                            Informe o ID da disciplina relacionada
+                        </span>
+                    </div>
+
+                    <!-- Descrição -->
+                    <div class="admin-form-group admin-form-group-inline">
+                        <label for="description">Descrição</label>
+                        <textarea id="description" name="description" class="admin-input" rows="3"
+                            placeholder="Descreva a história e objetivos desta aventura..."></textarea>
+                    </div>
+
+                    <!-- Ativa -->
+                    <div class="admin-form-group admin-form-group-inline">
+                        <label class="admin-checkbox-label">
+                            <input type="checkbox" id="is_active" name="is_active" checked>
+                            Aventura Ativa
+                        </label>
+                        <span class="admin-field-hint">
+                            Desmarque para ocultar esta aventura dos jogadores
+                        </span>
+                    </div>
+                </div>
+
+                <div class="admin-form-actions">
+                    <a href="/admin/adventures" class="admin-btn admin-btn-secondary">
+                        Cancelar
+                    </a>
+                    <button type="submit" class="admin-btn admin-btn-primary">
+                        Salvar
+                    </button>
+                </div>
+            </form>
+</section>

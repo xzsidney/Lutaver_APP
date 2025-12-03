@@ -1,0 +1,79 @@
+<h1 class="admin-page-title">NPCs</h1>
+<p class="admin-page-subtitle">
+    Edição de NPC
+</p>
+
+<section class="admin-table-card admin-form-card">
+    <div class="admin-table-header">
+        <h2>Editar NPC</h2>
+        <a href="/admin/npcs" class="admin-btn admin-btn-secondary" style="font-size: 0.8rem;">
+            ← Voltar para a lista
+        </a>
+    </div>
+
+    <% if (typeof error !=='undefined' && error) { %>
+        <div class="admin-alert admin-alert-error">
+            <%= error %>
+        </div>
+        <% } %>
+
+            <form action="/admin/npcs/<%= npc.id %>" method="POST" class="admin-form">
+                <div class="admin-form-grid">
+                    <!-- Nome -->
+                    <div class="admin-form-group">
+                        <label for="name">Nome do NPC</label>
+                        <input type="text" id="name" name="name" class="admin-input" value="<%= npc.name %>" required>
+                    </div>
+
+                    <!-- Papel -->
+                    <div class="admin-form-group">
+                        <label for="role">Papel</label>
+                        <select id="role" name="role" class="admin-input" required>
+                            <option value="professor" <%=npc.role==='professor' ? 'selected' : '' %>>👨‍🏫 Professor
+                            </option>
+                            <option value="aluno" <%=npc.role==='aluno' ? 'selected' : '' %>>👦 Aluno</option>
+                            <option value="funcionario" <%=npc.role==='funcionario' ? 'selected' : '' %>>👷 Funcionário
+                            </option>
+                            <option value="comerciante" <%=npc.role==='comerciante' ? 'selected' : '' %>>🛒 Comerciante
+                            </option>
+                            <option value="outro" <%=npc.role==='outro' ? 'selected' : '' %>>🧑 Outro</option>
+                        </select>
+                    </div>
+
+                    <!-- Humor -->
+                    <div class="admin-form-group">
+                        <label for="mood">Humor</label>
+                        <select id="mood" name="mood" class="admin-input">
+                            <option value="amigavel" <%=npc.mood==='amigavel' ? 'selected' : '' %>>😊 Amigável</option>
+                            <option value="neutro" <%=npc.mood==='neutro' ? 'selected' : '' %>>😐 Neutro</option>
+                            <option value="severo" <%=npc.mood==='severo' ? 'selected' : '' %>>😠 Severo</option>
+                            <option value="misterioso" <%=npc.mood==='misterioso' ? 'selected' : '' %>>🤔 Misterioso
+                            </option>
+                        </select>
+                    </div>
+
+                    <!-- Avatar/Emoji -->
+                    <div class="admin-form-group">
+                        <label for="avatar">Avatar/Emoji</label>
+                        <input type="text" id="avatar" name="avatar" class="admin-input" value="<%= npc.avatar || '' %>"
+                            maxlength="10">
+                    </div>
+
+                    <!-- Descrição -->
+                    <div class="admin-form-group admin-form-group-inline">
+                        <label for="description">Descrição</label>
+                        <textarea id="description" name="description" class="admin-input"
+                            rows="3"><%= npc.description || '' %></textarea>
+                    </div>
+                </div>
+
+                <div class="admin-form-actions">
+                    <a href="/admin/npcs" class="admin-btn admin-btn-secondary">
+                        Cancelar
+                    </a>
+                    <button type="submit" class="admin-btn admin-btn-primary">
+                        Salvar
+                    </button>
+                </div>
+            </form>
+</section>

@@ -1,0 +1,57 @@
+<h1 class="admin-page-title">Questões</h1>
+<p class="admin-page-subtitle">
+    Confirmação de exclusão
+</p>
+
+<section class="admin-table-card admin-form-card">
+    <div class="admin-table-header">
+        <h2>Excluir Questão</h2>
+        <a href="/admin/questions" class="admin-btn admin-btn-secondary" style="font-size: 0.8rem;">
+            ← Voltar para a lista
+        </a>
+    </div>
+
+    <div class="admin-alert admin-alert-error" style="margin-bottom: 1.5rem;">
+        <strong>⚠️ Atenção!</strong><br>
+        Tem certeza que deseja excluir esta questão?<br>
+        <b>Esta ação é permanente e poderá impactar aventuras que usam esta questão.</b>
+    </div>
+
+    <div class="admin-table-card" style="margin-bottom: 1.5rem;">
+        <h3 style="margin-top: 0; font-size: 1.1rem;">Dados da Questão</h3>
+        <div style="line-height: 1.8; margin-top: .5rem;">
+            <p><strong>Enunciado:</strong>
+                <%= question.statement %>
+            </p>
+            <p><strong>Opção A:</strong>
+                <%= question.option_a %>
+            </p>
+            <p><strong>Opção B:</strong>
+                <%= question.option_b %>
+            </p>
+            <p><strong>Opção C:</strong>
+                <%= question.option_c %>
+            </p>
+            <p><strong>Opção D:</strong>
+                <%= question.option_d %>
+            </p>
+            <p><strong>Resposta Correta:</strong>
+                <%= question.correct_option %>
+            </p>
+            <p><strong>Dificuldade:</strong>
+                <%= question.difficulty %>
+            </p>
+        </div>
+    </div>
+
+    <form action="/admin/questions/<%= question.id %>/delete" method="POST">
+        <div class="admin-form-actions">
+            <a href="/admin/questions" class="admin-btn admin-btn-secondary">
+                Cancelar
+            </a>
+            <button type="submit" class="admin-btn admin-btn-danger">
+                🗑️ Confirmar Exclusão
+            </button>
+        </div>
+    </form>
+</section>
