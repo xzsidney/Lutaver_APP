@@ -18,6 +18,8 @@ const itemRoutes = require('./itemRoutes');
 const adminNpcRoutes = require('./adminNpcRoutes');
 const adminCharacterRoutes = require('./adminCharacterRoutes');
 const adminStoryRoutes = require('./adminStoryRoutes');
+const adminStoryChoiceRoutes = require('./adminStoryChoiceRoutes');
+const adminStorySceneRoutes = require('./adminStorySceneRoutes');
 
 // ===================================================================
 // /admin  → dashboard principal
@@ -49,5 +51,7 @@ router.use('/items', adminMiddleware, itemRoutes);              // /admin/items/
 router.use('/npcs', adminMiddleware, adminNpcRoutes);           // /admin/npcs/...
 router.use('/characters', adminMiddleware, adminCharacterRoutes); // /admin/characters/...
 router.use('/stories', adminMiddleware, adminStoryRoutes);
+router.use('/story-scenes', adminMiddleware, adminStorySceneRoutes); // /admin/story-scenes/...
+router.use('/story-choices', adminMiddleware, adminStoryChoiceRoutes); // /admin/story-choices/...
 
 module.exports = router;

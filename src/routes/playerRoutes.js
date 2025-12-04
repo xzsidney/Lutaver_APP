@@ -7,6 +7,7 @@ const accountRoutes = require('./accountRoutes');
 const characterRoutes = require('./characterRoutes');
 const playerAdventureRoutes = require('./playerAdventureRoutes');
 const playerShopRoutes = require('./playerShopRoutes');
+const playerStoryRoutes = require('./playerStoryRoutes');
 const DashboardPlayerController = require('../controllers/DashboardPlayerController');
 
 /**
@@ -27,6 +28,9 @@ router.use('/characters', characterRoutes);
 
 // Adventures: /player/adventures/*
 router.use('/adventures', playerAdventureRoutes);
+
+// Stories: /player/stories/*
+router.use('/stories', playerStoryRoutes);
 
 // Shop: /player/shop/*
 router.use('/shop', playerShopRoutes);

@@ -1,0 +1,196 @@
+<h1 class="admin-page-title">Story Choices</h1>
+<p class="admin-page-subtitle">
+    <%= typeof choice !=='undefined' ? 'Editar escolha existente' : 'Cadastro de nova escolha' %>
+</p>
+
+<section class="admin-table-card admin-form-card">
+    <div class="admin-table-header">
+        <h2>
+            <%= typeof choice !=='undefined' ? 'Editar Escolha' : 'Nova Escolha' %>
+        </h2>
+        <a href="/admin/story-choices" class="admin-btn admin-btn-secondary" style="font-size: 0.8rem;">
+            ← Voltar para a lista
+        </a>
+    </div>
+
+    <% if (typeof error !=='undefined' && error) { %>
+        <div class="admin-alert admin-alert-error">
+            <%= error %>
+        </div>
+        <% } %>
+
+            <form
+                action="<%= typeof choice !== 'undefined' ? '/admin/story-choices/' + choice.id : '/admin/story-choices' %>"
+                method="POST" class="admin-form">
+                <div class="admin-form-grid">
+
+                    <!-- Texto da Escolha -->
+                    <div class="admin-form-group admin-form-group-inline">
+                        <label for="label">Texto da Escolha *</label>
+                        <input type="text" id="label" name="label" class="admin-input" placeholder="Ex: Ir pela direita"
+                            value="<%= typeof choice !== 'undefined' ? choice.label : '' %>" required>
+                        <span class="admin-field-hint">
+                            Texto que aparecerá no botão de escolha para o jogador
+                        </span>
+                    </div>
+
+                    <!-- Cena Origem -->
+                    <div class="admin-form-group">
+                        <label for="story_scene_id">Cena Origem *</label>
+                        <select id="story_scene_id" name="story_scene_id" class="admin-input" required>
+                            <option value="">Selecione uma cena</option>
+                            <% if (scenes && scenes.length> 0) { %>
+                                <% scenes.forEach(scene=> { %>
+                                    <option value="<%= scene.id %>" <%=typeof choice !=='undefined' &&
+                                        choice.story_scene_id==scene.id ? 'selected' : '' %>>
+                                        [#<%= scene.id %>] <%= scene.title %>
+                                                <% if (scene.story) { %>(História: <%= scene.story.title %>)<% } %>
+                                    </option>
+                                    <% }) %>
+                                        <% } %>
+                        </select>
+                    </div>
+
+                    <!-- Requer Teste de Atributo? -->
+                    <div class="admin-form-group admin-form-group-inline">
+                        <label class="admin-checkbox-label">
+                            <input type="checkbox" id="requires_test" name="requires_test" <%=typeof choice
+                                !=='undefined' && choice.requires_test ? 'checked' : '' %>
+                            onchange="toggleTestFields()">
+                            Requer Teste de Atributo
+                        </label>
+                        <span class="admin-field-hint">
+                            Marque se esta escolha exige um teste d10 + atributo
+                        </span>
+                    </div>
+
+                    <!-- Campos de Teste (aparecem apenas se requires_test estiver marcado) -->
+                    <div id="test-fields" style="display: none; grid-column: 1 / -1;">
+                        <div class="admin-form-grid">
+
+                            <!-- Atributo do Teste -->
+                            <div class="admin-form-group">
+                                <label for="test_attribute">Atributo para Teste</label>
+                                <select id="test_attribute" name="test_attribute" class="admin-input">
+                                    <option value="">Nenhum</option>
+                                    <option value="strength" <%=typeof choice !=='undefined' &&
+                                        choice.test_attribute==='strength' ? 'selected' : '' %>>Força (Strength)
+                                    </option>
+                                    <option value="dexterity" <%=typeof choice !=='undefined' &&
+                                        choice.test_attribute==='dexterity' ? 'selected' : '' %>>Destreza (Dexterity)
+                                    </option>
+                                    <option value="constitution" <%=typeof choice !=='undefined' &&
+                                        choice.test_attribute==='constitution' ? 'selected' : '' %>>Constituição
+                                        (Constitution)</option>
+                                    <option value="intelligence" <%=typeof choice !=='undefined' &&
+                                        choice.test_attribute==='intelligence' ? 'selected' : '' %>>Inteligência
+                                        (Intelligence)</option>
+                                    <option value="reasoning" <%=typeof choice !=='undefined' &&
+                                        choice.test_attribute==='reasoning' ? 'selected' : '' %>>Raciocínio (Reasoning)
+                                    </option>
+                                    <option value="luck" <%=typeof choice !=='undefined' &&
+                                        choice.test_attribute==='luck' ? 'selected' : '' %>>Sorte (Luck)</option>
+                                </select>
+                            </div>
+
+                            <!-- Dificuldade do Teste -->
+                            <div class="admin-form-group">
+                                <label for="test_difficulty">Dificuldade do Teste</label>
+                                <input type="number" id="test_difficulty" name="test_difficulty" class="admin-input"
+                                    min="1" max="30" placeholder="8"
+                                    value="<%= typeof choice !== 'undefined' ? choice.test_difficulty || '' : '' %>">
+                                <span class="admin-field-hint">Valor alvo: d10 + atributo >= dificuldade</span>
+                            </div>
+
+                            <!-- Cena em Caso de Sucesso -->
+                            <div class="admin-form-group">
+                                <label for="success_scene_id">Cena se PASSAR no Teste</label>
+                                <select id="success_scene_id" name="success_scene_id" class="admin-input">
+                                    <option value="">Nenhuma</option>
+                                    <% if (scenes && scenes.length> 0) { %>
+                                        <% scenes.forEach(scene=> { %>
+                                            <option value="<%= scene.id %>" <%=typeof choice !=='undefined' &&
+                                                choice.success_scene_id==scene.id ? 'selected' : '' %>>
+                                                [#<%= scene.id %>] <%= scene.title %>
+                                            </option>
+                                            <% }) %>
+                                                <% } %>
+                                </select>
+                            </div>
+
+                            <!-- Cena em Caso de Falha -->
+                            <div class="admin-form-group">
+                                <label for="failure_scene_id">Cena se FALHAR no Teste</label>
+                                <select id="failure_scene_id" name="failure_scene_id" class="admin-input">
+                                    <option value="">Nenhuma</option>
+                                    <% if (scenes && scenes.length> 0) { %>
+                                        <% scenes.forEach(scene=> { %>
+                                            <option value="<%= scene.id %>" <%=typeof choice !=='undefined' &&
+                                                choice.failure_scene_id==scene.id ? 'selected' : '' %>>
+                                                [#<%= scene.id %>] <%= scene.title %>
+                                            </option>
+                                            <% }) %>
+                                                <% } %>
+                                </select>
+                            </div>
+
+                        </div>
+                    </div>
+
+                    <!-- Próxima Cena (para escolhas SEM teste) -->
+                    <div id="next-scene-field" class="admin-form-group">
+                        <label for="next_scene_id">Próxima Cena *</label>
+                        <select id="next_scene_id" name="next_scene_id" class="admin-input">
+                            <option value="">Selecione uma cena</option>
+                            <% if (scenes && scenes.length> 0) { %>
+                                <% scenes.forEach(scene=> { %>
+                                    <option value="<%= scene.id %>" <%=typeof choice !=='undefined' &&
+                                        choice.next_scene_id==scene.id ? 'selected' : '' %>>
+                                        [#<%= scene.id %>] <%= scene.title %>
+                                                <% if (scene.story) { %>(História: <%= scene.story.title %>)<% } %>
+                                    </option>
+                                    <% }) %>
+                                        <% } %>
+                        </select>
+                        <span class="admin-field-hint">
+                            Cena para onde ir quando esta escolha for selecionada
+                        </span>
+                    </div>
+
+                </div>
+
+                <div class="admin-form-actions">
+                    <a href="/admin/story-choices" class="admin-btn admin-btn-secondary">
+                        Cancelar
+                    </a>
+                    <button type="submit" class="admin-btn admin-btn-primary">
+                        Salvar
+                    </button>
+                </div>
+            </form>
+</section>
+
+<script>
+    // Toggle test fields based on checkbox
+    function toggleTestFields() {
+        const requiresTest = document.getElementById('requires_test').checked;
+        const testFields = document.getElementById('test-fields');
+        const nextSceneField = document.getElementById('next-scene-field');
+        const nextSceneSelect = document.getElementById('next_scene_id');
+
+        if (requiresTest) {
+            testFields.style.display = 'block';
+            nextSceneField.style.display = 'none';
+            nextSceneSelect.removeAttribute('required');
+        } else {
+            testFields.style.display = 'none';
+            nextSceneField.style.display = 'block';
+            nextSceneSelect.setAttribute('required', 'required');
+        }
+    }
+
+    // Run on page load
+    document.addEventListener('DOMContentLoaded', function () {
+        toggleTestFields();
+    });
+</script>

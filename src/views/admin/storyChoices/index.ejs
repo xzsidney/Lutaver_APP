@@ -1,0 +1,90 @@
+<h1 class="admin-page-title">Story Choices</h1>
+
+<p class="admin-page-subtitle">
+    Gerencie as escolhas de narrativa que aparecem em cada cena das histórias.
+</p>
+
+<section class="admin-table-card">
+    <div class="admin-table-header">
+        <h2>Lista de Escolhas</h2>
+        <a href="/admin/story-choices/new" class="admin-card-link">+ Nova Escolha</a>
+    </div>
+
+    <table class="admin-table">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Texto da Escolha</th>
+                <th>Cena Origem</th>
+                <th>História</th>
+                <th>Próxima Cena</th>
+                <th>Requer Teste?</th>
+                <th>Ações</th>
+            </tr>
+        </thead>
+        <tbody>
+            <% if (choices && choices.length> 0) { %>
+                <% choices.forEach(choice=> { %>
+                    <tr>
+                        <td>
+                            <%= choice.id %>
+                        </td>
+
+                        <td>
+                            <%= choice.label || ('Choice #' + choice.id) %>
+                        </td>
+
+                        <td>
+                            <% if (choice.scene) { %>
+                                <%= choice.scene.title %> (#<%= choice.story_scene_id %>)
+                                        <% } else { %>
+                                            ID: <%= choice.story_scene_id %>
+                                                <% } %>
+                        </td>
+
+                        <td>
+                            <% if (choice.scene && choice.scene.story) { %>
+                                <%= choice.scene.story.title %>
+                                    <% } else { %>
+                                        -
+                                        <% } %>
+                        </td>
+
+                        <td>
+                            <% if (choice.requires_test) { %>
+                                <span style="color: #FF9800;">
+                                    Teste: <%= choice.test_attribute || '-' %>
+                                </span>
+                                <br>
+                                <small>
+                                    Sucesso: #<%= choice.success_scene_id || '-' %><br>
+                                        Falha: #<%= choice.failure_scene_id || '-' %>
+                                </small>
+                                <% } else { %>
+                                    Cena #<%= choice.next_scene_id %>
+                                        <% } %>
+                        </td>
+
+                        <td>
+                            <%= choice.requires_test ? 'Sim' : 'Não' %>
+                        </td>
+
+                        <td>
+                            <a href="/admin/story-choices/<%= choice.id %>/edit" class="admin-table-action">Editar</a>
+                            <a href="/admin/story-choices/<%= choice.id %>/delete"
+                                class="admin-table-action admin-table-action-danger">
+                                Remover
+                            </a>
+                        </td>
+                    </tr>
+                    <% }) %>
+                        <% } else { %>
+                            <tr>
+                                <td colspan="7" class="admin-table-empty">
+                                    Nenhuma escolha cadastrada.
+                                </td>
+                            </tr>
+                            <% } %>
+        </tbody>
+    </table>
+</section>

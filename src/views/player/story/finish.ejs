@@ -1,0 +1,495 @@
+<%- include('../../partials/player/header') %>
+    <%- include('../../partials/player/navbar') %>
+
+        <main class="game-screen">
+            <div class="player-home-container">
+
+                <!-- ================================ -->
+                <!--   HEADER DE CONCLUSÃO           -->
+                <!-- ================================ -->
+                <div class="detail-card finish-header">
+                    <h1 class="finish-title">🎉 História Concluída!</h1>
+                    <h2 class="story-name">
+                        <%= story.title %>
+                    </h2>
+                    <p class="finish-subtitle">Parabéns, <%= character.name %>! Você completou esta jornada!</p>
+                </div>
+
+                <!-- ================================ -->
+                <!--   RECOMPENSAS RECEBIDAS         -->
+                <!-- ================================ -->
+                <div class="detail-card rewards-section">
+                    <h3 class="section-title">✨ Recompensas Recebidas</h3>
+
+                    <div class="rewards-grid">
+
+                        <!-- XP Reward -->
+                        <% if (rewards.xp> 0) { %>
+                            <div class="reward-card xp-card">
+                                <div class="reward-icon">⭐</div>
+                                <div class="reward-info">
+                                    <h4>Experiência</h4>
+                                    <p class="reward-value">+<%= rewards.xp %> XP</p>
+                                </div>
+                            </div>
+                            <% } %>
+
+                                <!-- Coins Reward -->
+                                <% if (rewards.coins> 0) { %>
+                                    <div class="reward-card coins-card">
+                                        <div class="reward-icon">💰</div>
+                                        <div class="reward-info">
+                                            <h4>Moedas</h4>
+                                            <p class="reward-value">+<%= rewards.coins %> moedas</p>
+                                        </div>
+                                    </div>
+                                    <% } %>
+
+                                        <!-- Item Reward -->
+                                        <% if (rewards.item) { %>
+                                            <div class="reward-card item-card">
+                                                <div class="reward-icon">🎁</div>
+                                                <div class="reward-info">
+                                                    <h4>Item Especial</h4>
+                                                    <p class="reward-value">
+                                                        <%= rewards.item.name %>
+                                                    </p>
+                                                    <% if (rewards.item.description) { %>
+                                                        <p class="item-description">
+                                                            <%= rewards.item.description %>
+                                                        </p>
+                                                        <% } %>
+                                                </div>
+                                            </div>
+                                            <% } %>
+
+                                                <!-- Level Up -->
+                                                <% if (rewards.leveledUp) { %>
+                                                    <div class="reward-card levelup-card">
+                                                        <div class="reward-icon">📈</div>
+                                                        <div class="reward-info">
+                                                            <h4>Level Up!</h4>
+                                                            <p class="reward-value">Nível <%= character.level %>
+                                                            </p>
+                                                            <p class="item-description">+5 Pontos de Evolução</p>
+                                                        </div>
+                                                    </div>
+                                                    <% } %>
+
+                    </div>
+
+                    <!-- Mensagem se não houver recompensas -->
+                    <% if (rewards.xp===0 && rewards.coins===0 && !rewards.item) { %>
+                        <div class="no-rewards">
+                            <p>A jornada foi a sua maior recompensa! 🌟</p>
+                        </div>
+                        <% } %>
+                </div>
+
+                <!-- ================================ -->
+                <!--   ESTATÍSTICAS DO PERSONAGEM    -->
+                <!-- ================================ -->
+                <div class="detail-card character-stats">
+                    <h3 class="section-title">📊 Estatísticas Atualizadas</h3>
+
+                    <div class="stats-container">
+                        <div class="stat-box">
+                            <span class="stat-label">Nível</span>
+                            <span class="stat-value">
+                                <%= character.level %>
+                            </span>
+                        </div>
+                        <div class="stat-box">
+                            <span class="stat-label">XP Total</span>
+                            <span class="stat-value">
+                                <%= character.total_xp %>
+                            </span>
+                        </div>
+                        <div class="stat-box">
+                            <span class="stat-label">Moedas</span>
+                            <span class="stat-value">
+                                <%= character.coins %>
+                            </span>
+                        </div>
+                        <div class="stat-box">
+                            <span class="stat-label">Pontos Evolução</span>
+                            <span class="stat-value">
+                                <%= character.evolution_points || 0 %>
+                            </span>
+                        </div>
+                    </div>
+
+                    <div class="attributes-display">
+                        <h4>Atributos</h4>
+                        <div class="attr-grid">
+                            <div class="attr-item">
+                                <span class="attr-icon">💪</span>
+                                <span class="attr-name">Força</span>
+                                <span class="attr-val">
+                                    <%= character.strength %>
+                                </span>
+                            </div>
+                            <div class="attr-item">
+                                <span class="attr-icon">🎯</span>
+                                <span class="attr-name">Destreza</span>
+                                <span class="attr-val">
+                                    <%= character.dexterity %>
+                                </span>
+                            </div>
+                            <div class="attr-item">
+                                <span class="attr-icon">❤️</span>
+                                <span class="attr-name">Constituição</span>
+                                <span class="attr-val">
+                                    <%= character.constitution %>
+                                </span>
+                            </div>
+                            <div class="attr-item">
+                                <span class="attr-icon">🧠</span>
+                                <span class="attr-name">Inteligência</span>
+                                <span class="attr-val">
+                                    <%= character.intelligence %>
+                                </span>
+                            </div>
+                            <div class="attr-item">
+                                <span class="attr-icon">🔍</span>
+                                <span class="attr-name">Raciocínio</span>
+                                <span class="attr-val">
+                                    <%= character.reasoning %>
+                                </span>
+                            </div>
+                            <div class="attr-item">
+                                <span class="attr-icon">🍀</span>
+                                <span class="attr-name">Sorte</span>
+                                <span class="attr-val">
+                                    <%= character.luck %>
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- ================================ -->
+                <!--   AÇÕES FINAIS                  -->
+                <!-- ================================ -->
+                <div class="actions-section">
+                    <a href="/player/stories" class="btn-primary">📖 Jogar Outra História</a>
+                    <a href="/player/dashboard" class="btn-secondary">🏠 Voltar ao Dashboard</a>
+                    <a href="/player/characters/<%= character.id %>" class="btn-secondary">👤 Ver Personagem</a>
+                </div>
+
+            </div>
+        </main>
+
+        <style>
+            /* Finish Header */
+            .finish-header {
+                background: linear-gradient(135deg, #4CAF50 0%, #45A049 100%);
+                color: #FFFFFF;
+                text-align: center;
+                padding: 40px 30px;
+                margin-bottom: 30px;
+                position: relative;
+                overflow: hidden;
+            }
+
+            .finish-header::before {
+                content: '🎊';
+                position: absolute;
+                top: 10px;
+                left: 20px;
+                font-size: 3rem;
+                opacity: 0.3;
+                animation: float 3s ease-in-out infinite;
+            }
+
+            .finish-header::after {
+                content: '🎉';
+                position: absolute;
+                bottom: 10px;
+                right: 20px;
+                font-size: 3rem;
+                opacity: 0.3;
+                animation: float 3s ease-in-out infinite 1.5s;
+            }
+
+            @keyframes float {
+
+                0%,
+                100% {
+                    transform: translateY(0);
+                }
+
+                50% {
+                    transform: translateY(-10px);
+                }
+            }
+
+            .finish-title {
+                font-size: 2.5rem;
+                font-weight: 700;
+                margin: 0 0 10px 0;
+                text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
+            }
+
+            .story-name {
+                font-size: 1.8rem;
+                font-weight: 600;
+                margin: 0 0 15px 0;
+                opacity: 0.95;
+            }
+
+            .finish-subtitle {
+                font-size: 1.1rem;
+                margin: 0;
+                opacity: 0.9;
+            }
+
+            /* Rewards Section */
+            .rewards-section {
+                background: #FFFFFF;
+                padding: 30px;
+                margin-bottom: 25px;
+            }
+
+            .section-title {
+                font-size: 1.5rem;
+                font-weight: 700;
+                color: #1976D2;
+                margin: 0 0 25px 0;
+                text-align: center;
+            }
+
+            .rewards-grid {
+                display: grid;
+                grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+                gap: 20px;
+            }
+
+            .reward-card {
+                background: linear-gradient(135deg, #E3F2FD 0%, #FFFFFF 100%);
+                padding: 20px;
+                border-radius: 12px;
+                display: flex;
+                align-items: center;
+                gap: 15px;
+                box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+                transition: transform 0.3s, box-shadow 0.3s;
+            }
+
+            .reward-card:hover {
+                transform: translateY(-5px);
+                box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+            }
+
+            .xp-card {
+                border-left: 5px solid #FFC107;
+            }
+
+            .coins-card {
+                border-left: 5px solid #FF9800;
+            }
+
+            .item-card {
+                border-left: 5px solid #9C27B0;
+            }
+
+            .levelup-card {
+                border-left: 5px solid #4CAF50;
+                background: linear-gradient(135deg, #E8F5E9 0%, #FFFFFF 100%);
+            }
+
+            .reward-icon {
+                font-size: 3rem;
+                flex-shrink: 0;
+            }
+
+            .reward-info h4 {
+                margin: 0 0 5px 0;
+                color: #424242;
+                font-size: 1rem;
+                font-weight: 600;
+            }
+
+            .reward-value {
+                margin: 0;
+                color: #1976D2;
+                font-size: 1.4rem;
+                font-weight: 700;
+            }
+
+            .item-description {
+                margin: 5px 0 0 0;
+                color: #757575;
+                font-size: 0.9rem;
+                font-style: italic;
+            }
+
+            .no-rewards {
+                text-align: center;
+                padding: 40px;
+                background: #F5F5F5;
+                border-radius: 12px;
+            }
+
+            .no-rewards p {
+                margin: 0;
+                color: #757575;
+                font-size: 1.1rem;
+            }
+
+            /* Character Stats */
+            .character-stats {
+                background: #FFFFFF;
+                padding: 30px;
+                margin-bottom: 25px;
+            }
+
+            .stats-container {
+                display: grid;
+                grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+                gap: 15px;
+                margin-bottom: 30px;
+            }
+
+            .stat-box {
+                background: #E3F2FD;
+                padding: 20px;
+                border-radius: 12px;
+                text-align: center;
+                box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+            }
+
+            .stat-label {
+                display: block;
+                font-size: 0.9rem;
+                color: #757575;
+                margin-bottom: 8px;
+                font-weight: 600;
+            }
+
+            .stat-value {
+                display: block;
+                font-size: 2rem;
+                color: #1976D2;
+                font-weight: 700;
+            }
+
+            .attributes-display h4 {
+                margin: 0 0 15px 0;
+                color: #424242;
+                font-size: 1.1rem;
+            }
+
+            .attr-grid {
+                display: grid;
+                grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+                gap: 12px;
+            }
+
+            .attr-item {
+                background: #F5F5F5;
+                padding: 12px 15px;
+                border-radius: 8px;
+                display: flex;
+                align-items: center;
+                gap: 10px;
+            }
+
+            .attr-icon {
+                font-size: 1.5rem;
+            }
+
+            .attr-name {
+                flex-grow: 1;
+                font-weight: 600;
+                color: #424242;
+                font-size: 0.95rem;
+            }
+
+            .attr-val {
+                background: #1976D2;
+                color: #FFFFFF;
+                padding: 4px 12px;
+                border-radius: 20px;
+                font-weight: 700;
+                font-size: 0.95rem;
+            }
+
+            /* Actions Section */
+            .actions-section {
+                display: flex;
+                gap: 15px;
+                justify-content: center;
+                flex-wrap: wrap;
+                margin-top: 30px;
+                padding-bottom: 30px;
+            }
+
+            .btn-primary,
+            .btn-secondary {
+                padding: 15px 30px;
+                border-radius: 12px;
+                text-decoration: none;
+                font-weight: 600;
+                font-size: 1rem;
+                transition: all 0.3s;
+                box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+                display: inline-block;
+            }
+
+            .btn-primary {
+                background: linear-gradient(135deg, #4CAF50 0%, #45A049 100%);
+                color: #FFFFFF;
+            }
+
+            .btn-primary:hover {
+                transform: translateY(-3px);
+                box-shadow: 0 6px 12px rgba(76, 175, 80, 0.3);
+            }
+
+            .btn-secondary {
+                background: #FFFFFF;
+                color: #1976D2;
+                border: 2px solid #1976D2;
+            }
+
+            .btn-secondary:hover {
+                background: #1976D2;
+                color: #FFFFFF;
+                transform: translateY(-3px);
+                box-shadow: 0 6px 12px rgba(25, 118, 210, 0.3);
+            }
+
+            /* Responsive */
+            @media (max-width: 768px) {
+                .finish-title {
+                    font-size: 2rem;
+                }
+
+                .story-name {
+                    font-size: 1.4rem;
+                }
+
+                .rewards-grid {
+                    grid-template-columns: 1fr;
+                }
+
+                .stats-container {
+                    grid-template-columns: repeat(2, 1fr);
+                }
+
+                .attr-grid {
+                    grid-template-columns: 1fr;
+                }
+
+                .actions-section {
+                    flex-direction: column;
+                }
+
+                .btn-primary,
+                .btn-secondary {
+                    width: 100%;
+                    text-align: center;
+                }
+            }
+        </style>

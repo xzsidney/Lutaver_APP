@@ -1,0 +1,128 @@
+<h1 class="admin-page-title">Story Scenes</h1>
+
+<p class="admin-page-subtitle">
+    Gerencie as cenas individuais que compõem cada história narrativa.
+</p>
+
+<!-- Filtro por História -->
+<% if (stories && stories.length> 0) { %>
+    <section class="admin-table-card" style="margin-bottom: 20px;">
+        <div class="admin-table-header">
+            <h2>Filtrar por História</h2>
+        </div>
+        <div style="padding: 15px;">
+            <form method="GET" action="/admin/story-scenes" style="display: flex; gap: 10px; align-items: end;">
+                <div style="flex: 1;">
+                    <label for="story_id" style="display: block; margin-bottom: 5px; font-weight: 600;">Selecione uma
+                        História:</label>
+                    <select id="story_id" name="story_id" class="admin-input">
+                        <option value="">Todas as histórias</option>
+                        <% stories.forEach(story=> { %>
+                            <option value="<%= story.id %>" <%=filters.story_id==story.id ? 'selected' : '' %>>
+                                <%= story.title %>
+                            </option>
+                            <% }) %>
+                    </select>
+                </div>
+                <button type="submit" class="admin-btn admin-btn-primary">Filtrar</button>
+                <% if (filters.story_id) { %>
+                    <a href="/admin/story-scenes" class="admin-btn admin-btn-secondary">Limpar</a>
+                    <% } %>
+            </form>
+        </div>
+    </section>
+    <% } %>
+
+        <section class="admin-table-card">
+            <div class="admin-table-header">
+                <h2>Lista de Cenas</h2>
+                <a href="/admin/story-scenes/new" class="admin-card-link">+ Nova Cena</a>
+            </div>
+
+            <table class="admin-table">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Título</th>
+                        <th>História</th>
+                        <th>NPC</th>
+                        <th>É Final?</th>
+                        <th>Tem Teste?</th>
+                        <th>Ações</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <% if (scenes && scenes.length> 0) { %>
+                        <% scenes.forEach(scene=> { %>
+                            <tr>
+                                <td>
+                                    <%= scene.id %>
+                                </td>
+
+                                <td>
+                                    <%= scene.title || ('Cena #' + scene.id) %>
+                                        <% if (scene.text) { %>
+                                            <br><small style="color: #757575;">
+                                                <%= scene.text.substring(0, 60) %>...
+                                            </small>
+                                            <% } %>
+                                </td>
+
+                                <td>
+                                    <% if (scene.story) { %>
+                                        <%= scene.story.title %>
+                                            <% } else { %>
+                                                -
+                                                <% } %>
+                                </td>
+
+                                <td>
+                                    <% if (scene.npc) { %>
+                                        <%= scene.npc.name %>
+                                            <% } else { %>
+                                                -
+                                                <% } %>
+                                </td>
+
+                                <td>
+                                    <% if (scene.is_ending) { %>
+                                        <span style="color: #4CAF50; font-weight: 600;">Sim</span>
+                                        <% if (scene.ending_type) { %>
+                                            <br><small>(<%= scene.ending_type %>)</small>
+                                            <% } %>
+                                                <% } else { %>
+                                                    Não
+                                                    <% } %>
+                                </td>
+
+                                <td>
+                                    <% if (scene.test_attribute) { %>
+                                        <span style="color: #FF9800;">
+                                            <%= scene.test_attribute %>
+                                        </span>
+                                        <br><small>(Dif: <%= scene.test_difficulty || '-' %>)</small>
+                                        <% } else { %>
+                                            -
+                                            <% } %>
+                                </td>
+
+                                <td>
+                                    <a href="/admin/story-scenes/<%= scene.id %>/edit"
+                                        class="admin-table-action">Editar</a>
+                                    <a href="/admin/story-scenes/<%= scene.id %>/delete"
+                                        class="admin-table-action admin-table-action-danger">
+                                        Remover
+                                    </a>
+                                </td>
+                            </tr>
+                            <% }) %>
+                                <% } else { %>
+                                    <tr>
+                                        <td colspan="7" class="admin-table-empty">
+                                            Nenhuma cena cadastrada.
+                                        </td>
+                                    </tr>
+                                    <% } %>
+                </tbody>
+            </table>
+        </section>

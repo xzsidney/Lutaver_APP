@@ -7,6 +7,7 @@ const adminRoutes = require('./adminRoutes');
 const teacherRoutes = require('./teacherRoutes');
 const storyRoutes = require('./storyRoutes');
 const playerRoutes = require('./playerRoutes');
+const playRoutes = require('./playRoutes');
 
 // ===================================================================
 // 🏠 GUEST / PUBLIC ROUTES
@@ -37,5 +38,8 @@ router.use('/teacher', teacherRoutes);
 
 // Tudo que começa com /player cai aqui
 router.use('/player', playerRoutes);
+
+// Tudo que começa com /play cai aqui
+router.use('/play', playRoutes);
 
 module.exports = router;

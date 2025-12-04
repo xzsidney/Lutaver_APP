@@ -1,0 +1,203 @@
+<h1 class="admin-page-title">Story Scenes</h1>
+<p class="admin-page-subtitle">
+    <%= typeof scene !=='undefined' ? 'Editar cena existente' : 'Cadastro de nova cena' %>
+</p>
+
+<section class="admin-table-card admin-form-card">
+    <div class="admin-table-header">
+        <h2>
+            <%= typeof scene !=='undefined' ? 'Editar Cena' : 'Nova Cena' %>
+        </h2>
+        <a href="/admin/story-scenes" class="admin-btn admin-btn-secondary" style="font-size: 0.8rem;">
+            ← Voltar para a lista
+        </a>
+    </div>
+
+    <% if (typeof error !=='undefined' && error) { %>
+        <div class="admin-alert admin-alert-error">
+            <%= error %>
+        </div>
+        <% } %>
+
+            <form
+                action="<%= typeof scene !== 'undefined' ? '/admin/story-scenes/' + scene.id : '/admin/story-scenes' %>"
+                method="POST" class="admin-form">
+                <div class="admin-form-grid">
+
+                    <!-- História -->
+                    <div class="admin-form-group">
+                        <label for="story_id">História *</label>
+                        <select id="story_id" name="story_id" class="admin-input" required>
+                            <option value="">Selecione uma história</option>
+                            <% if (stories && stories.length> 0) { %>
+                                <% stories.forEach(story=> { %>
+                                    <option value="<%= story.id %>" <%=typeof scene !=='undefined' &&
+                                        scene.story_id==story.id ? 'selected' : '' %>>
+                                        <%= story.title %>
+                                    </option>
+                                    <% }) %>
+                                        <% } %>
+                        </select>
+                    </div>
+
+                    <!-- Título da Cena -->
+                    <div class="admin-form-group">
+                        <label for="title">Título da Cena *</label>
+                        <input type="text" id="title" name="title" class="admin-input"
+                            placeholder="Ex: Corredor Principal"
+                            value="<%= typeof scene !== 'undefined' ? scene.title : '' %>" required>
+                    </div>
+
+                    <!-- Texto Narrativo -->
+                    <div class="admin-form-group admin-form-group-inline">
+                        <label for="text">Texto Narrativo *</label>
+                        <textarea id="text" name="text" class="admin-input" rows="6"
+                            placeholder="Escreva o texto narrativo desta cena..."
+                            required><%= typeof scene !== 'undefined' ? scene.text : '' %></textarea>
+                        <span class="admin-field-hint">
+                            Este é o texto que o jogador lerá quando chegar nesta cena
+                        </span>
+                    </div>
+
+                    <!-- NPC (Opcional) -->
+                    <div class="admin-form-group">
+                        <label for="npc_id">NPC Presente</label>
+                        <select id="npc_id" name="npc_id" class="admin-input">
+                            <option value="">Nenhum</option>
+                            <% if (npcs && npcs.length> 0) { %>
+                                <% npcs.forEach(npc=> { %>
+                                    <option value="<%= npc.id %>" <%=typeof scene !=='undefined' && scene.npc_id==npc.id
+                                        ? 'selected' : '' %>>
+                                        <%= npc.name %> (<%= npc.type %>)
+                                    </option>
+                                    <% }) %>
+                                        <% } %>
+                        </select>
+                        <span class="admin-field-hint">NPC que aparece nesta cena</span>
+                    </div>
+
+                    <!-- Imagem de Fundo -->
+                    <div class="admin-form-group">
+                        <label for="background_image">Imagem de Fundo (URL)</label>
+                        <input type="text" id="background_image" name="background_image" class="admin-input"
+                            placeholder="/img/backgrounds/scene1.jpg"
+                            value="<%= typeof scene !== 'undefined' ? (scene.background_image || '') : '' %>">
+                        <span class="admin-field-hint">URL ou caminho da imagem de fundo</span>
+                    </div>
+
+                    <!-- Divisor -->
+                    <div style="grid-column: 1 / -1; border-top: 2px solid #E0E0E0; margin: 20px 0;"></div>
+                    <h3 style="grid-column: 1 / -1; margin-bottom: 10px;">Teste de Atributo (Opcional)</h3>
+
+                    <!-- Atributo do Teste -->
+                    <div class="admin-form-group">
+                        <label for="test_attribute">Atributo para Teste</label>
+                        <select id="test_attribute" name="test_attribute" class="admin-input">
+                            <option value="">Nenhum</option>
+                            <option value="strength" <%=typeof scene !=='undefined' && scene.test_attribute==='strength'
+                                ? 'selected' : '' %>>Força (Strength)</option>
+                            <option value="dexterity" <%=typeof scene !=='undefined' &&
+                                scene.test_attribute==='dexterity' ? 'selected' : '' %>>Destreza (Dexterity)</option>
+                            <option value="constitution" <%=typeof scene !=='undefined' &&
+                                scene.test_attribute==='constitution' ? 'selected' : '' %>>Constituição (Constitution)
+                            </option>
+                            <option value="intelligence" <%=typeof scene !=='undefined' &&
+                                scene.test_attribute==='intelligence' ? 'selected' : '' %>>Inteligência (Intelligence)
+                            </option>
+                            <option value="reasoning" <%=typeof scene !=='undefined' &&
+                                scene.test_attribute==='reasoning' ? 'selected' : '' %>>Raciocínio (Reasoning)</option>
+                            <option value="luck" <%=typeof scene !=='undefined' && scene.test_attribute==='luck'
+                                ? 'selected' : '' %>>Sorte (Luck)</option>
+                        </select>
+                    </div>
+
+                    <!-- Dificuldade do Teste -->
+                    <div class="admin-form-group">
+                        <label for="test_difficulty">Dificuldade do Teste</label>
+                        <input type="number" id="test_difficulty" name="test_difficulty" class="admin-input" min="1"
+                            max="30" placeholder="8"
+                            value="<%= typeof scene !== 'undefined' ? (scene.test_difficulty || '') : '' %>">
+                        <span class="admin-field-hint">Valor alvo: d10 + atributo >= dificuldade</span>
+                    </div>
+
+                    <!-- Cena em Caso de Sucesso -->
+                    <div class="admin-form-group">
+                        <label for="success_scene_id">Cena se PASSAR no Teste</label>
+                        <select id="success_scene_id" name="success_scene_id" class="admin-input">
+                            <option value="">Nenhuma</option>
+                            <% if (scenes && scenes.length> 0) { %>
+                                <% scenes.forEach(sc=> { %>
+                                    <% if (typeof scene==='undefined' || sc.id !==scene.id) { %>
+                                        <option value="<%= sc.id %>" <%=typeof scene !=='undefined' &&
+                                            scene.success_scene_id==sc.id ? 'selected' : '' %>>
+                                            [#<%= sc.id %>] <%= sc.title %>
+                                                    <% if (sc.story) { %>(História: <%= sc.story.title %>)<% } %>
+                                        </option>
+                                        <% } %>
+                                            <% }) %>
+                                                <% } %>
+                        </select>
+                    </div>
+
+                    <!-- Cena em Caso de Falha -->
+                    <div class="admin-form-group">
+                        <label for="failure_scene_id">Cena se FALHAR no Teste</label>
+                        <select id="failure_scene_id" name="failure_scene_id" class="admin-input">
+                            <option value="">Nenhuma</option>
+                            <% if (scenes && scenes.length> 0) { %>
+                                <% scenes.forEach(sc=> { %>
+                                    <% if (typeof scene==='undefined' || sc.id !==scene.id) { %>
+                                        <option value="<%= sc.id %>" <%=typeof scene !=='undefined' &&
+                                            scene.failure_scene_id==sc.id ? 'selected' : '' %>>
+                                            [#<%= sc.id %>] <%= sc.title %>
+                                                    <% if (sc.story) { %>(História: <%= sc.story.title %>)<% } %>
+                                        </option>
+                                        <% } %>
+                                            <% }) %>
+                                                <% } %>
+                        </select>
+                    </div>
+
+                    <!-- Divisor -->
+                    <div style="grid-column: 1 / -1; border-top: 2px solid #E0E0E0; margin: 20px 0;"></div>
+                    <h3 style="grid-column: 1 / -1; margin-bottom: 10px;">Final da História</h3>
+
+                    <!-- É Cena Final? -->
+                    <div class="admin-form-group admin-form-group-inline">
+                        <label class="admin-checkbox-label">
+                            <input type="checkbox" id="is_ending" name="is_ending" <%=typeof scene !=='undefined' &&
+                                scene.is_ending ? 'checked' : '' %>>
+                            Esta é uma cena FINAL da história
+                        </label>
+                        <span class="admin-field-hint">
+                            Marque se esta cena encerra a história
+                        </span>
+                    </div>
+
+                    <!-- Tipo de Final -->
+                    <div class="admin-form-group">
+                        <label for="ending_type">Tipo de Final</label>
+                        <select id="ending_type" name="ending_type" class="admin-input">
+                            <option value="">Nenhum</option>
+                            <option value="success" <%=typeof scene !=='undefined' && scene.ending_type==='success'
+                                ? 'selected' : '' %>>Sucesso</option>
+                            <option value="neutral" <%=typeof scene !=='undefined' && scene.ending_type==='neutral'
+                                ? 'selected' : '' %>>Neutro</option>
+                            <option value="fail" <%=typeof scene !=='undefined' && scene.ending_type==='fail'
+                                ? 'selected' : '' %>>Falha</option>
+                        </select>
+                        <span class="admin-field-hint">Tipo de final (apenas se for cena final)</span>
+                    </div>
+
+                </div>
+
+                <div class="admin-form-actions">
+                    <a href="/admin/story-scenes" class="admin-btn admin-btn-secondary">
+                        Cancelar
+                    </a>
+                    <button type="submit" class="admin-btn admin-btn-primary">
+                        Salvar
+                    </button>
+                </div>
+            </form>
+</section>

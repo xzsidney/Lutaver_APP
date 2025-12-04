@@ -1,0 +1,353 @@
+<main class="game-screen">
+    <div class="player-home-container">
+
+        <!-- Título da Seção -->
+        <div class="detail-card story-header">
+            <h1 class="page-title">📖 Histórias Disponíveis</h1>
+            <p class="page-subtitle">Embarque em aventuras narrativas e teste suas habilidades!</p>
+        </div>
+
+        <!-- Info do Personagem Ativo -->
+        <% if (character) { %>
+            <div class="detail-card character-info-mini">
+                <h3>🎭 Jogando com: <strong>
+                        <%= character.name %>
+                    </strong></h3>
+                <p>
+                    <strong>Série:</strong>
+                    <%= character.school_year %>º ano |
+                        <strong>Nível:</strong>
+                        <%= character.level %> |
+                            <strong>XP:</strong>
+                            <%= character.total_xp %>
+                </p>
+            </div>
+            <% } else { %>
+                <div class="detail-card warning-card">
+                    <p>⚠️ Você precisa criar um personagem antes de jogar histórias.</p>
+                    <a href="/player/characters/new" class="btn-primary">Criar Personagem</a>
+                </div>
+                <% } %>
+
+                    <!-- Grid de Histórias -->
+                    <div class="stories-grid">
+                        <% if (stories.length===0) { %>
+                            <div class="detail-card empty-state">
+                                <h3>📚 Nenhuma história disponível</h3>
+                                <p>Não há histórias ativas no momento. Volte mais tarde!</p>
+                            </div>
+                            <% } else { %>
+                                <% stories.forEach((story, index)=> { %>
+                                    <div class="detail-card story-card">
+                                        <!-- Badge de Nível Requerido -->
+                                        <% if (story.required_grade) { %>
+                                            <span class="level-badge">Nível <%= story.required_grade %>º+</span>
+                                            <% } %>
+
+                                                <!-- Ícone Visual -->
+                                                <div class="story-icon-container">
+                                                    <div class="story-icon"
+                                                        style="background: <%= ['#E91E63', '#9C27B0', '#673AB7', '#3F51B5', '#2196F3', '#00BCD4', '#009688', '#4CAF50'][index % 8] %>;">
+                                                        📖
+                                                    </div>
+                                                </div>
+
+                                                <!-- Título e Descrição -->
+                                                <h3 class="story-title">
+                                                    <%= story.title %>
+                                                </h3>
+                                                <p class="story-description">
+                                                    <%= story.description || 'Uma aventura emocionante te aguarda!' %>
+                                                </p>
+
+                                                <!-- Recompensas Preview -->
+                                                <div class="rewards-preview">
+                                                    <% if (story.reward_xp && story.reward_xp> 0) { %>
+                                                        <span class="reward-item">⭐ <%= story.reward_xp %>
+                                                                XP</span>
+                                                        <% } %>
+                                                            <% if (story.reward_coins && story.reward_coins> 0)
+                                                                { %>
+                                                                <span class="reward-item">💰 <%= story.reward_coins %>
+                                                                        moedas</span>
+                                                                <% } %>
+                                                </div>
+
+                                                <!-- Botão Jogar -->
+                                                <% if (character) { %>
+                                                    <% if (!story.required_grade || character.school_year>=
+                                                        story.required_grade) { %>
+                                                        <a href="/player/stories/<%= story.id %>/play"
+                                                            class="btn-play">▶️ Jogar</a>
+                                                        <% } else { %>
+                                                            <button class="btn-locked" disabled>🔒 Nível <%=
+                                                                    story.required_grade %>º necessário</button>
+                                                            <% } %>
+                                                                <% } else { %>
+                                                                    <button class="btn-locked" disabled>🔒 Crie
+                                                                        um personagem</button>
+                                                                    <% } %>
+                                    </div>
+                                    <% }) %>
+                                        <% } %>
+                    </div>
+
+                    <!-- Botão Voltar ao Dashboard -->
+                    <div class="back-section">
+                        <a href="/player/dashboard" class="btn-back">⬅️ Voltar ao Dashboard</a>
+                    </div>
+
+    </div>
+</main>
+
+<style>
+    /* Page Header */
+    .story-header {
+        text-align: center;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: #FFFFFF;
+        padding: 30px;
+        margin-bottom: 20px;
+    }
+
+    .page-title {
+        font-size: 2.2rem;
+        font-weight: 700;
+        margin-bottom: 10px;
+    }
+
+    .page-subtitle {
+        font-size: 1.1rem;
+        opacity: 0.9;
+    }
+
+    /* Character Info Mini */
+    .character-info-mini {
+        background: #E3F2FD;
+        border-left: 5px solid #1976D2;
+        padding: 15px 20px;
+        margin-bottom: 25px;
+    }
+
+    .character-info-mini h3 {
+        margin: 0 0 8px 0;
+        color: #1976D2;
+        font-size: 1.1rem;
+    }
+
+    .character-info-mini p {
+        margin: 0;
+        color: #424242;
+        font-size: 0.95rem;
+    }
+
+    /* Warning Card */
+    .warning-card {
+        background: #FFF3E0;
+        border-left: 5px solid #FF9800;
+        padding: 20px;
+        text-align: center;
+        margin-bottom: 25px;
+    }
+
+    .warning-card p {
+        margin: 0 0 15px 0;
+        color: #E65100;
+        font-size: 1.1rem;
+    }
+
+    /* Stories Grid */
+    .stories-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+        gap: 25px;
+        margin-bottom: 30px;
+    }
+
+    .story-card {
+        position: relative;
+        background: #FFFFFF;
+        padding: 25px;
+        border-radius: 16px;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+        display: flex;
+        flex-direction: column;
+    }
+
+    .story-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+    }
+
+    /* Level Badge */
+    .level-badge {
+        position: absolute;
+        top: 15px;
+        right: 15px;
+        background: #FF4081;
+        color: #FFFFFF;
+        padding: 5px 12px;
+        border-radius: 20px;
+        font-size: 0.8rem;
+        font-weight: 600;
+        box-shadow: 0 2px 6px rgba(255, 64, 129, 0.4);
+    }
+
+    /* Story Icon */
+    .story-icon-container {
+        display: flex;
+        justify-content: center;
+        margin-bottom: 15px;
+    }
+
+    .story-icon {
+        width: 80px;
+        height: 80px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 2.5rem;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    }
+
+    /* Story Title and Description */
+    .story-title {
+        font-size: 1.3rem;
+        font-weight: 700;
+        color: #1976D2;
+        margin: 0 0 10px 0;
+        text-align: center;
+    }
+
+    .story-description {
+        font-size: 0.95rem;
+        color: #616161;
+        line-height: 1.5;
+        text-align: center;
+        margin: 0 0 15px 0;
+        flex-grow: 1;
+    }
+
+    /* Rewards Preview */
+    .rewards-preview {
+        display: flex;
+        gap: 10px;
+        justify-content: center;
+        margin-bottom: 15px;
+        flex-wrap: wrap;
+    }
+
+    .reward-item {
+        background: #E8F5E9;
+        color: #2E7D32;
+        padding: 5px 12px;
+        border-radius: 12px;
+        font-size: 0.85rem;
+        font-weight: 600;
+    }
+
+    /* Buttons */
+    .btn-play {
+        display: block;
+        width: 100%;
+        padding: 12px;
+        background: linear-gradient(135deg, #4CAF50 0%, #45A049 100%);
+        color: #FFFFFF;
+        text-align: center;
+        text-decoration: none;
+        border-radius: 8px;
+        font-weight: 600;
+        font-size: 1rem;
+        transition: transform 0.2s, box-shadow 0.2s;
+        box-shadow: 0 4px 8px rgba(76, 175, 80, 0.3);
+    }
+
+    .btn-play:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 6px 12px rgba(76, 175, 80, 0.4);
+    }
+
+    .btn-locked {
+        display: block;
+        width: 100%;
+        padding: 12px;
+        background: #BDBDBD;
+        color: #FFFFFF;
+        text-align: center;
+        border: none;
+        border-radius: 8px;
+        font-weight: 600;
+        font-size: 1rem;
+        cursor: not-allowed;
+        opacity: 0.7;
+    }
+
+    .btn-primary {
+        display: inline-block;
+        padding: 10px 20px;
+        background: #1976D2;
+        color: #FFFFFF;
+        text-decoration: none;
+        border-radius: 8px;
+        font-weight: 600;
+        transition: transform 0.2s;
+    }
+
+    .btn-primary:hover {
+        transform: translateY(-2px);
+        background: #1565C0;
+    }
+
+    /* Empty State */
+    .empty-state {
+        text-align: center;
+        padding: 60px 30px;
+        background: #F5F5F5;
+    }
+
+    .empty-state h3 {
+        font-size: 1.5rem;
+        color: #757575;
+        margin-bottom: 10px;
+    }
+
+    .empty-state p {
+        color: #9E9E9E;
+        font-size: 1rem;
+    }
+
+    /* Back Section */
+    .back-section {
+        text-align: center;
+        margin-top: 30px;
+    }
+
+    .btn-back {
+        display: inline-block;
+        padding: 12px 24px;
+        background: #757575;
+        color: #FFFFFF;
+        text-decoration: none;
+        border-radius: 8px;
+        font-weight: 600;
+        transition: transform 0.2s, background 0.2s;
+    }
+
+    .btn-back:hover {
+        transform: translateY(-2px);
+        background: #616161;
+    }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+        .stories-grid {
+            grid-template-columns: 1fr;
+        }
+
+        .page-title {
+            font-size: 1.8rem;
+        }
+    }
+</style>
