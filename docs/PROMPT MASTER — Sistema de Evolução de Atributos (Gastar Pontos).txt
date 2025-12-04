@@ -1,0 +1,126 @@
+Quero que você implemente o sistema de distribuição de **Pontos de Evolução** nos atributos do personagem, baseado na tela da “Ficha do Personagem” que já tenho no meu sistema.
+
+====================================================================
+🎨 CONTEXTO DO JOGO
+====================================================================
+
+Trata-se de um jogo educacional estilo RPG chamado **Lutaver**.
+Cada personagem possui:
+- Pontos de Evolução
+- Atributos básicos:
+  • Força  
+  • Destreza  
+  • Constituição  
+  • Inteligência  
+  • Raciocínio  
+  • Sorte  
+
+Esses atributos são exibidos na tela de ficha do personagem, exatamente como na imagem referência:
+(uma coluna esquerda com avatar, nome, nível, XP, pontos de evolução e lista de atributos com ícones)
+
+====================================================================
+🧱 O QUE PRECISO IMPLEMENTAR
+====================================================================
+
+Quero que você adicione na Ficha do Personagem a funcionalidade de:
+✔ Gastar Pontos de Evolução  
+✔ Atualizar os atributos do personagem  
+✔ Bloquear a ação se não houver pontos suficientes  
+✔ Salvar no banco (Character model usando Sequelize)
+
+O personagem deve poder:
+- Clicar em um botão **+** ao lado do atributo para aumentar o valor
+- Gastar **1 Ponto de Evolução** por incremento
+- Só aumentar se `character.points > 0`
+
+E também deve poder:
+- Clicar em um botão **–** para reduzir o atributo (opcional)
+- Ao reduzir, **devolver 1 ponto ao personagem**
+
+(Se quiser, implemente o – como opcional. Mas explique ambas alternativas)
+
+====================================================================
+📂 ARQUITETURA (IMPORTANTE)
+====================================================================
+
+Model já existe:
+`Character` com as colunas:
+- strength
+- dexterity
+- constitution
+- intelligence
+- reasoning
+- luck
+- evolution_points
+
+Backend: Node.js + Express + Sequelize  
+Views: EJS  
+Autenticação: express-session (somente personagens do próprio usuário podem ser editados)
+
+====================================================================
+🛠️ O QUE IMPLEMENTAR NA SUA RESPOSTA
+====================================================================
+
+1️⃣ **Rotas necessárias**
+Exemplo:
+- POST `/character/:id/attribute/increase`
+- POST `/character/:id/attribute/decrease`
+
+2️⃣ **O Controller**
+Implementar funções:
+- increaseAttribute
+- decreaseAttribute
+Com regras:
+- Verificar se personagem é do usuário logado
+- Verificar se há pontos de evolução
+- Atualizar o atributo solicitado
+- Salvar no DB com Sequelize
+- Retornar JSON ou redirecionar com flash message
+
+3️⃣ **Front-end (EJS)**
+No card de atributos, criar botões:
+- “+” (aumentar)
+- “–” (reduzir)
+Estilo igual ao da tela atual:
+- Ícones pequenos ao lado dos valores
+- Usa as cores principais do tema:
+  Azul Mágico (#1E90FF)
+  Amarelo Faísca (#F7D046)
+  Verde Energia (#34D399)
+
+O layout deve mostrar:
+- O valor atual do atributo
+- Os botões + e –
+- Os pontos de evolução restantes atualizando ao salvar
+
+4️⃣ **Regras obrigatórias**
+- Não pode aumentar atributo se evolution_points = 0
+- OPCIONAL: Não pode reduzir abaixo do valor inicial do personagem
+- Cada incremento = –1 ponto
+- Cada redução (se ativada) = +1 ponto
+
+5️⃣ **Validação**
+- Verificar no backend para evitar manipulação pelo navegador
+- Somente o usuário dono do personagem pode editar
+
+6️⃣ **Resposta final**
+Quero que você entregue:
+- As rotas express
+- Os handlers no controller
+- O trecho EJS dos atributos com os botões
+- O comportamento visual após clicar (submit ou fetch AJAX)
+- Como atualizar o banco corretamente
+- Mensagens de erro e sucesso
+
+====================================================================
+💡 OBJETIVO FINAL
+====================================================================
+
+O resultado deve ser uma tela intuitiva e funcional onde o jogador:
+- Entra na ficha do personagem
+- Vê seus pontos disponíveis
+- Clica em “+” para gastar pontos e melhorar atributos
+- O valor é salvo no banco
+- A tela é atualizada corretamente
+
+Use a imagem da ficha como referência visual.

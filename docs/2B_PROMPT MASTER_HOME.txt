@@ -1,0 +1,131 @@
+Quero que você desenvolva o DESIGN COMPLETO de um site responsivo para o meu jogo educacional chamado **Lutaver**, seguindo as regras e identidade visual abaixo.  
+Quero que você crie todo o layout conceitual, descreva todas as seções, e se possível gere a estrutura HTML + CSS (ou componentes) com foco em responsividade.
+
+====================================================================
+🎨 IDENTIDADE VISUAL (PALETA OFICIAL)
+====================================================================
+
+Use obrigatoriamente estas cores:
+
+1. Azul Mágico — #1E90FF  
+   • Header  
+   • Botões principais  
+   • Títulos importantes  
+
+2. Amarelo Faísca — #F7D046  
+   • Hovers  
+   • Destaques  
+   • Bordas e ícones  
+
+3. Verde Energia — #34D399  
+   • Elementos positivos  
+   • Alerts de sucesso  
+   • Indicadores  
+
+4. Branco Radiante — #FFFFFF  
+   • Fundo do site  
+   • Cards  
+   • Seções internas  
+
+Estilo geral:
+- Gamificado, divertido e moderno  
+- Bordas arredondadas  
+- Espaçamento confortável  
+- Ilustrações estilo cartoon educacional  
+
+====================================================================
+📱 RESPONSIVIDADE (OBRIGATÓRIO)
+====================================================================
+
+O site deve ser **mobile-first**, adaptando-se automaticamente para:
+
+- Mobile (celulares)
+- Tablets
+- Desktop (telas grandes)
+
+Use:
+- Layout fluido
+- Menu tipo “hambúrguer” no mobile
+- Grid ou flexbox
+- Seções que reorganizam conteúdo no celular
+
+====================================================================
+📌 O QUE O SITE DEVE CONTER (SEÇÕES COMPLETAS)
+====================================================================
+
+Quero as seguintes páginas (ou seções se for one-page):
+
+1. **Home**
+   - Hero com título forte do jogo
+   - Imagem com efeito (sala de aula mágica, corredor escolar, torre do saber)
+   - Texto explicando o que é o Lutaver
+   - Botão “Começar Agora”
+
+2. **Sobre o Jogo**
+   - O que é o Lutaver
+   - Objetivo do jogo
+   - Como funciona a Torre do Saber
+   - Sistema de Atributos e Afinidades
+   - Cards explicativos
+
+3. **Aventuras**
+   - Lista de aventuras
+   - Cards coloridos com:
+     • Nome  
+     • Disciplina  
+     • Dificuldade  
+     • Série recomendada  
+   - Botão “Ver Aventura”
+
+4. **Quiz**
+   - Pequena explicação do sistema de quiz
+   - Como o jogador evolui respondendo perguntas
+   - Link para entrar no quiz
+
+5. **Contato**
+   - Formulário simples:
+     • Nome  
+     • E-mail  
+     • Assunto  
+     • Mensagem  
+   - Botão enviar (Verde Energia)
+
+====================================================================
+📋 MENU DO SITE (NAVBAR)
+====================================================================
+
+O menu deve conter:
+
+- Logo do Lutaver  
+- Links: Home | Sobre | Aventuras | Quiz | Contato  
+- Em mobile, virar menu hamburguer  
+- Cor de fundo: Azul Mágico (#1E90FF)  
+- Hover: Amarelo Faísca (#F7D046)
+
+====================================================================
+🔻 FOOTER MODERNO
+====================================================================
+
+Deve conter:
+
+- Logotipo pequeno
+- Direitos autorais
+- Links rápidos
+- Redes sociais (ícones simples)
+- Cor de fundo: Azul Mágico
+- Texto branco (#FFFFFF)
+
+====================================================================
+💡 ENTREGUE NA RESPOSTA:
+====================================================================
+
+1. Layout completo do site (explicado seção por seção)  
+2. Estrutura HTML sugerida  
+3. CSS base usando a paleta oficial  
+4. Design responsivo (mobile → desktop)  
+5. Sugestões de melhoria (animações, gradientes, sombras, ícones)  
+6. Caso queira, pode gerar código final em HTML/CSS já pronto  
+
+====================================================================
+
+Agora crie o site completo seguindo TODAS as regras acima.

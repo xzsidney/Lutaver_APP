@@ -1,57 +1,57 @@
-<h1 class="admin-page-title">Aventuras</h1>
+<h1 class="admin-page-title">Quizzes</h1>
 
 <p class="admin-page-subtitle">
-    Gerencie as aventuras que os alunos irão jogar na Torre do Saber.
-    Cada aventura pode estar ligada a uma disciplina e ter nível de dificuldade.
+    Gerencie os quizzes que os alunos irão responder na Torre do Saber.
+    Cada quiz pode estar ligado a uma disciplina e ter nível de dificuldade.
 </p>
 
 <section class="admin-table-card">
     <div class="admin-table-header">
-        <h2>Lista de aventuras</h2>
-        <a href="/admin/adventures/new" class="admin-card-link">+ Nova aventura</a>
+        <h2>Lista de quizzes</h2>
+        <a href="/admin/quizzes/new" class="admin-card-link">+ Novo quiz</a>
     </div>
 
     <table class="admin-table">
         <thead>
             <tr>
                 <th>ID</th>
-                <th>Nome</th>
+                <th>Título</th>
                 <th>Disciplina</th>
                 <th>Dificuldade</th>
-                <th>Nível</th>
+                <th>Ano</th>
                 <th>Ações</th>
             </tr>
         </thead>
         <tbody>
-            <% if (adventures && adventures.length> 0) { %>
-                <% adventures.forEach(a=> { %>
+            <% if (quizzes && quizzes.length> 0) { %>
+                <% quizzes.forEach(q=> { %>
                     <tr>
                         <td>
-                            <%= a.id %>
+                            <%= q.id %>
                         </td>
                         <td>
-                            <%= a.name %>
+                            <%= q.title %>
                         </td>
                         <td>
-                            <%= a.discipline ? a.discipline.name : '-' %>
+                            <%= q.discipline ? q.discipline.name : '-' %>
                         </td>
                         <td>
-                            <% if (typeof a.difficulty !=='undefined' && a.difficulty !==null) { %>
-                                <%= a.difficulty %>/10
+                            <% if (typeof q.difficulty !=='undefined' && q.difficulty !==null) { %>
+                                <%= q.difficulty %>/5
                                     <% } else { %>
                                         -
                                         <% } %>
                         </td>
                         <td>
-                            <% if (typeof a.level !=='undefined' && a.level !==null) { %>
-                                <%= a.level %>
+                            <% if (q.school_year) { %>
+                                <%= q.school_year %>
                                     <% } else { %>
                                         -
                                         <% } %>
                         </td>
                         <td>
-                            <a href="/admin/adventures/<%= a.id %>/edit" class="admin-table-action">Editar</a>
-                            <a href="/admin/adventures/<%= a.id %>/delete"
+                            <a href="/admin/quizzes/<%= q.id %>/edit" class="admin-table-action">Editar</a>
+                            <a href="/admin/quizzes/<%= q.id %>/delete"
                                 class="admin-table-action admin-table-action-danger">Remover</a>
                         </td>
                     </tr>
@@ -59,7 +59,7 @@
                         <% } else { %>
                             <tr>
                                 <td colspan="6" class="admin-table-empty">
-                                    Nenhuma aventura cadastrada.
+                                    Nenhum quiz cadastrado.
                                 </td>
                             </tr>
                             <% } %>

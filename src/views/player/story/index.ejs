@@ -1,104 +1,100 @@
-<main class="game-screen">
-    <div class="player-home-container">
+<div class="player-home-container">
 
-        <!-- Título da Seção -->
-        <div class="detail-card story-header">
-            <h1 class="page-title">📖 Histórias Disponíveis</h1>
-            <p class="page-subtitle">Embarque em aventuras narrativas e teste suas habilidades!</p>
-        </div>
-
-        <!-- Info do Personagem Ativo -->
-        <% if (character) { %>
-            <div class="detail-card character-info-mini">
-                <h3>🎭 Jogando com: <strong>
-                        <%= character.name %>
-                    </strong></h3>
-                <p>
-                    <strong>Série:</strong>
-                    <%= character.school_year %>º ano |
-                        <strong>Nível:</strong>
-                        <%= character.level %> |
-                            <strong>XP:</strong>
-                            <%= character.total_xp %>
-                </p>
-            </div>
-            <% } else { %>
-                <div class="detail-card warning-card">
-                    <p>⚠️ Você precisa criar um personagem antes de jogar histórias.</p>
-                    <a href="/player/characters/new" class="btn-primary">Criar Personagem</a>
-                </div>
-                <% } %>
-
-                    <!-- Grid de Histórias -->
-                    <div class="stories-grid">
-                        <% if (stories.length===0) { %>
-                            <div class="detail-card empty-state">
-                                <h3>📚 Nenhuma história disponível</h3>
-                                <p>Não há histórias ativas no momento. Volte mais tarde!</p>
-                            </div>
-                            <% } else { %>
-                                <% stories.forEach((story, index)=> { %>
-                                    <div class="detail-card story-card">
-                                        <!-- Badge de Nível Requerido -->
-                                        <% if (story.required_grade) { %>
-                                            <span class="level-badge">Nível <%= story.required_grade %>º+</span>
-                                            <% } %>
-
-                                                <!-- Ícone Visual -->
-                                                <div class="story-icon-container">
-                                                    <div class="story-icon"
-                                                        style="background: <%= ['#E91E63', '#9C27B0', '#673AB7', '#3F51B5', '#2196F3', '#00BCD4', '#009688', '#4CAF50'][index % 8] %>;">
-                                                        📖
-                                                    </div>
-                                                </div>
-
-                                                <!-- Título e Descrição -->
-                                                <h3 class="story-title">
-                                                    <%= story.title %>
-                                                </h3>
-                                                <p class="story-description">
-                                                    <%= story.description || 'Uma aventura emocionante te aguarda!' %>
-                                                </p>
-
-                                                <!-- Recompensas Preview -->
-                                                <div class="rewards-preview">
-                                                    <% if (story.reward_xp && story.reward_xp> 0) { %>
-                                                        <span class="reward-item">⭐ <%= story.reward_xp %>
-                                                                XP</span>
-                                                        <% } %>
-                                                            <% if (story.reward_coins && story.reward_coins> 0)
-                                                                { %>
-                                                                <span class="reward-item">💰 <%= story.reward_coins %>
-                                                                        moedas</span>
-                                                                <% } %>
-                                                </div>
-
-                                                <!-- Botão Jogar -->
-                                                <% if (character) { %>
-                                                    <% if (!story.required_grade || character.school_year>=
-                                                        story.required_grade) { %>
-                                                        <a href="/player/stories/<%= story.id %>/play"
-                                                            class="btn-play">▶️ Jogar</a>
-                                                        <% } else { %>
-                                                            <button class="btn-locked" disabled>🔒 Nível <%=
-                                                                    story.required_grade %>º necessário</button>
-                                                            <% } %>
-                                                                <% } else { %>
-                                                                    <button class="btn-locked" disabled>🔒 Crie
-                                                                        um personagem</button>
-                                                                    <% } %>
-                                    </div>
-                                    <% }) %>
-                                        <% } %>
-                    </div>
-
-                    <!-- Botão Voltar ao Dashboard -->
-                    <div class="back-section">
-                        <a href="/player/dashboard" class="btn-back">⬅️ Voltar ao Dashboard</a>
-                    </div>
-
+    <!-- Título da Seção -->
+    <div class="detail-card story-header">
+        <h1 class="page-title">📖 Histórias Disponíveis</h1>
+        <p class="page-subtitle">Embarque em aventuras narrativas e teste suas habilidades!</p>
     </div>
-</main>
+
+    <!-- Info do Personagem Ativo -->
+    <% if (character) { %>
+        <div class="detail-card character-info-mini">
+            <h3>🎭 Jogando com: <strong>
+                    <%= character.name %>
+                </strong></h3>
+            <p>
+                <strong>Série:</strong>
+                <%= character.school_year %>º ano |
+                    <strong>Nível:</strong>
+                    <%= character.level %> |
+                        <strong>XP:</strong>
+                        <%= character.total_xp %>
+            </p>
+        </div>
+        <% } else { %>
+            <div class="detail-card warning-card">
+                <p>⚠️ Você precisa criar um personagem antes de jogar histórias.</p>
+                <a href="/player/characters/new" class="btn-primary">Criar Personagem</a>
+            </div>
+            <% } %>
+
+                <!-- Grid de Histórias -->
+                <div class="stories-grid">
+                    <% if (stories.length===0) { %>
+                        <div class="detail-card empty-state">
+                            <h3>📚 Nenhuma história disponível</h3>
+                            <p>Não há histórias ativas no momento. Volte mais tarde!</p>
+                        </div>
+                        <% } else { %>
+                            <% stories.forEach((story, index)=> { %>
+                                <div class="detail-card story-card">
+                                    <!-- Badge de Nível Requerido -->
+                                    <% if (story.required_grade) { %>
+                                        <span class="level-badge">Nível <%= story.required_grade %>º+</span>
+                                        <% } %>
+
+                                            <!-- Ícone Visual -->
+                                            <div class="story-icon-container">
+                                                <div class="story-icon"
+                                                    style="background: <%= ['#E91E63', '#9C27B0', '#673AB7', '#3F51B5', '#2196F3', '#00BCD4', '#009688', '#4CAF50'][index % 8] %>;">
+                                                    📖
+                                                </div>
+                                            </div>
+
+                                            <!-- Título e Descrição -->
+                                            <h3 class="story-title">
+                                                <%= story.title %>
+                                            </h3>
+                                            <p class="story-description">
+                                                <%= story.description || 'Uma aventura emocionante te aguarda!' %>
+                                            </p>
+
+                                            <!-- Recompensas Preview -->
+                                            <div class="rewards-preview">
+                                                <% if (story.reward_xp && story.reward_xp> 0) { %>
+                                                    <span class="reward-item">⭐ <%= story.reward_xp %> XP</span>
+                                                    <% } %>
+                                                        <% if (story.reward_coins && story.reward_coins> 0) { %>
+                                                            <span class="reward-item">💰 <%= story.reward_coins %>
+                                                                    moedas</span>
+                                                            <% } %>
+                                            </div>
+
+                                            <!-- Botão Jogar -->
+                                            <% if (character) { %>
+                                                <% if (!story.required_grade || character.school_year>=
+                                                    story.required_grade) { %>
+                                                    <a href="/player/stories/<%= story.id %>/play" class="btn-play">▶️
+                                                        Jogar</a>
+                                                    <% } else { %>
+                                                        <button class="btn-locked" disabled>🔒 Nível <%=
+                                                                story.required_grade %>º necessário</button>
+                                                        <% } %>
+                                                            <% } else { %>
+                                                                <button class="btn-locked" disabled>🔒 Crie um
+                                                                    personagem</button>
+                                                                <% } %>
+                                </div>
+                                <% }) %>
+                                    <% } %>
+                </div>
+
+                <!-- Botão Voltar ao Dashboard -->
+                <div class="back-section">
+                    <a href="/player/dashboard" class="btn-back">⬅️ Voltar ao Dashboard</a>
+                </div>
+
+</div>
 
 <style>
     /* Page Header */

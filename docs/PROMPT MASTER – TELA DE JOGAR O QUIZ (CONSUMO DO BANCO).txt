@@ -1,0 +1,33 @@
+Crie a TELA COMPLETA DE JOGAR O QUIZ consumindo o banco de dados.
+
+STACK:
+Node.js + Express + EJS + Sequelize + MySQL
+
+FUNCIONAMENTO:
+1. Jogador acessa /play/quiz/:adventureId
+2. Backend seleciona lista de questões:
+   - da aventura ou disciplina
+   - randomiza
+   - envia a primeira pergunta
+3. Jogador responde
+4. Backend verifica:
+   - acertou?
+   - errou?
+   - salva progresso em req.session
+5. Mostra explicação da questão
+6. Ao terminar:
+   - mostra tela final (XP, acertos, porcentagem)
+
+LAYOUT:
+- Header: título da aventura, disciplina, progresso
+- Card da pergunta
+- Botões A/B/C/D
+- Feedback “Acertou/Errou”
+- Botão próxima
+- Tela final
+
+NA RESPOSTA:
+- Rotas
+- Controllers (startQuiz, answerQuestion, finishQuiz)
+- Views EJS (quiz.ejs, quiz_result.ejs)
+- Como armazenar estado via sessão

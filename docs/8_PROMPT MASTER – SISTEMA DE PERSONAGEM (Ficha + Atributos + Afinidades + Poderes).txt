@@ -1,0 +1,228 @@
+Você agora é um desenvolvedor fullstack especializado em sistemas de RPG educacional.  
+Quero que você construa a estrutura COMPLETA do módulo **Personagem** do meu jogo chamado **Lutaver**, incluindo CRUD, lógica de atributos, afinidades e evolução.
+
+======================================================================
+🎮 1. OBJETIVO DO MÓDULO DE PERSONAGEM
+======================================================================
+O módulo deve permitir:
+- Criar personagem
+- Editar personagem
+- Exibir ficha completa
+- Gerenciar atributos
+- Administrar afinidades por disciplinas
+- Controlar pontos para distribuir
+- Associar poderes aprendidos
+- Registrar série escolar e mapa atual
+
+======================================================================
+🧱 2. STACK E ARQUITETURA
+======================================================================
+Use:
+- Node.js + Express
+- EJS
+- MySQL
+- Sequelize ORM
+- Arquitetura MVC (models, controllers, routes, views)
+
+Back-end em INGLÊS, interface em PT-BR.
+
+======================================================================
+👤 3. MODEL Character (personagem)
+======================================================================
+Crie tabela **characters** com os campos:
+
+Identidade:
+- id
+- name (string)
+- school_year (int) — série atual
+- current_map (string ou FK opcional para tabela maps)
+
+Atributos (6 básicos):
+- strength (int)
+- dexterity (int)
+- constitution (int)
+- intelligence (int)
+- reasoning (int)
+- luck (int)
+
+Pontos:
+- evolution_points (int) — pontos disponíveis para distribuir
+
+Afinidades:
+- affinities_json (JSON) ou criar tabela separada (preferível):
+  Ex: matemática: 3, português: 1, ciências: 2...
+
+Progresso:
+- total_xp (int)
+- level (int)
+
+Opção avançada:
+- inventory_json (opcional)
+- title (apelido/honraria do personagem)
+
+======================================================================
+📚 4. MODEL CharacterAffinity (afinidades por disciplinas)
+======================================================================
+Preferencial usar tabela separada:
+
+Tabela: character_affinities
+- id
+- character_id (FK)
+- discipline_id (FK)
+- affinity_level (int)
+
+Regra:
+Afinidade começa em 0.
+Sobe ao terminar quizzes.
+Poderes exigem afinidade mínima.
+
+======================================================================
+🔥 5. MODEL Powers (poderes que podem ser aprendidos)
+======================================================================
+Tabela powers:
+- id
+- name
+- discipline_id (FK)
+- required_affinity (int)
+- description
+- effect
+
+Tabela character_powers:
+- id  
+- character_id  
+- power_id  
+- learned_at  
+
+======================================================================
+⚙ 6. FUNCIONALIDADES CRUD OBRIGATÓRIAS
+======================================================================
+
+1. Criar personagem
+2. Listar personagens
+3. Editar personagem
+4. Excluir personagem
+5. Página "Minha Ficha" com todos os dados
+6. Distribuir atributos usando evolution_points
+7. Aumentar afinidades após quizzes
+8. Aprender poderes baseado na afinidade mínima
+
+======================================================================
+🎨 7. LAYOUT DA FICHA DO PERSONAGEM (EJS)
+======================================================================
+
+A ficha deve exibir:
+
+SEÇÃO 1 – Dados gerais:
+- Nome
+- Série (school_year)
+- Mapa atual
+- Nível e XP
+
+SEÇÃO 2 – Atributos:
+Exibir os 6 atributos:
+- Força
+- Destreza
+- Constituição
+- Inteligência
+- Raciocínio
+- Sorte
+Mostrar:
+- Valor atual
+- Botão (+) se tiver evolution_points
+- Mostrar evolução_points disponível
+
+SEÇÃO 3 – Afinidades:
+Lista com todas as disciplinas:
+- Matemática
+- Português
+- Ciências
+- História
+- Geografia
+- Inglês
+- etc.
+
+Para cada:
+- Barra ou badge de afinidade (0 a n)
+- Botão visualizar poderes possíveis
+
+SEÇÃO 4 – Poderes aprendidos:
+Mostrar lista com ícone, nome e descrição.
+
+SEÇÃO 5 – Botões:
+- "Distribuir Atributos"
+- "Gerenciar Afinidades"
+- "Aprender Poderes"
+- "Voltar"
+
+Visual:
+- Tema Lutaver (cores verde, amarelo, azul)
+- UI estilo jogo infantil/teen
+
+======================================================================
+📈 8. SISTEMA DE EVOLUÇÃO
+======================================================================
+
+Atributos:
+- evolution_points podem ser gastos para aumentar qualquer atributo.
+- Cada aumento custa 1 ponto.
+- Valor máximo inicial: 10 (ajustável)
+
+Afinidades:
+- Aumentam automaticamente após quizzes.
+- Cada quiz concluído aumenta +1 afinidade na disciplina da aventura.
+- Pode ter afinidade máxima configurável (ex: 10).
+
+Níveis:
+- XP sobe ao completar aventuras/quiz.
+- level = floor(total_xp / 100)
+
+======================================================================
+🔐 9. REGRAS PARA APRENDER PODERES
+======================================================================
+
+Um poder só pode ser aprendido se:
+
+affinity_level(disciplina) >= required_affinity
+
+Tela deve mostrar:
+- Poderes disponíveis
+- Poderes bloqueados (com explicação)
+- Botão “Aprender” se disponível
+
+======================================================================
+📂 10. NA SUA RESPOSTA, ENTREGUE:
+======================================================================
+
+1. Estrutura de pastas
+2. Model Character
+3. Model CharacterAffinity
+4. Model Powers + CharacterPowers
+5. Migrations de todas as tabelas
+6. Rotas:
+   - /characters
+   - /characters/new
+   - /characters/:id
+   - /characters/:id/edit
+   - /characters/:id/delete
+   - /characters/:id/attributes
+   - /characters/:id/affinities
+   - /characters/:id/powers
+7. Controllers com métodos:
+   - index, create, store, edit, update, delete
+   - upgradeAttribute
+   - increaseAffinity
+   - learnPower
+8. Views EJS:
+   - list.ejs
+   - new.ejs
+   - edit.ejs
+   - show.ejs (ficha completa)
+9. Sugestões de melhorias futuras:
+   - Sistema de talentos
+   - Classe inicial
+   - Especializações
+   - Atributos derivados (Vida, Mana, Crítico)
+
+======================================================================
+Responda com o código principal e explicações curtas.
+======================================================================

@@ -49,7 +49,7 @@ const AuthController = {
     logout: (req, res) => {
         req.session.destroy((err) => {
             if (err) console.log(err);
-            res.redirect('/login');
+            res.redirect('/');
         });
     }
 };

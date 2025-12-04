@@ -1,0 +1,37 @@
+Crie o CRUD completo de CENAS (Scenes) para o Lutaver.
+
+MODEL Scene:
+- id
+- adventure_id
+- order_index
+- title
+- npc_name
+- npc_mood
+- environment_description
+- player_feeling
+- scene_text
+- test_type (fisico/mental/social/nenhum)
+- difficulty
+- attribute_used
+- success_scene_id
+- failure_scene_id
+- is_ending
+
+FUNCIONALIDADES:
+1. Listar cenas de uma aventura (/adventures/:id/scenes)
+2. Criar cena (/adventures/:id/scenes/new)
+3. Editar (/scenes/:id/edit)
+4. Excluir
+
+VISUAL:
+- Tema storyteller
+- Exibir “Cena X”
+- Badge para cenas finais
+- Interface PT-BR / Backend inglês
+
+NA RESPOSTA:
+- Model
+- Migration
+- Rotas
+- Controller
+- Views

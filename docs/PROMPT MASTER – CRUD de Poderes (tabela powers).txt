@@ -1,0 +1,166 @@
+Quero que você implemente o CRUD completo para o módulo **Poderes** do meu jogo educacional Lutaver.
+
+Stack do projeto:
+- Node.js + Express
+- Sequelize + MySQL
+- EJS como view engine
+- Arquitetura MVC (models, controllers, routes, views)
+- Paleta de cores do painel admin já existente (Azul Mágico, Amarelo Faísca, Verde Energia, Branco Radiante)
+
+====================================================================
+🛢️ TABELA NO BANCO – powers
+====================================================================
+
+Use o seguinte modelo como referência (já existe no banco):
+
+Tabela: `powers`
+
+Campos:
+- id               (INT, PK, AI)
+- name             (STRING)              → Nome do poder
+- discipline_id    (INT, FK)             → Referência para tabela disciplines.id
+- required_affinity(INT)                 → Afinidade mínima na disciplina (0–100)
+- description      (TEXT)                → Descrição do poder
+- effect           (TEXT)                → Efeito mecânico do poder (como impacta o jogo)
+- icon             (STRING)              → Emoji ou classe de ícone
+- createdAt        (DATETIME)
+- updatedAt        (DATETIME)
+
+Crie o **model Sequelize** `Power` se ainda não existir, com essas colunas e associação:
+- `Power.belongsTo(Discipline, { foreignKey: 'discipline_id' })`
+
+====================================================================
+📂 ESTRUTURA QUE QUERO
+====================================================================
+
+Quero que você crie:
+
+1. **Model**: `models/Power.js`
+2. **Controller**: `controllers/powerController.js`
+3. **Routes**: `routes/powerRoutes.js`
+4. **Views EJS** (apenas admin):
+   - `views/admin/powers/index.ejs`   → listagem de poderes
+   - `views/admin/powers/form.ejs`    → criação/edição
+   - (opcional) `views/admin/powers/show.ejs` → detalhes
+
+As rotas devem seguir padrão REST:
+
+- GET    `/admin/powers`           → listar poderes
+- GET    `/admin/powers/new`       → formulário de criação
+- POST   `/admin/powers`           → salvar novo poder
+- GET    `/admin/powers/:id/edit`  → editar poder
+- POST/PUT `/admin/powers/:id`     → atualizar poder
+- POST/DELETE `/admin/powers/:id/delete` → excluir poder
+
+Considere que **a área admin é autenticada** e só usuários com role `admin` (ou `teacher`, se eu decidir depois) podem acessar.
+
+====================================================================
+🧪 REGRAS DE NEGÓCIO DO PODER
+====================================================================
+
+Validações:
+- `name`: obrigatório, único dentro da disciplina
+- `discipline_id`: obrigatório, deve existir na tabela disciplines
+- `required_affinity`: obrigatório, número inteiro entre 0 e 100
+- `description`: obrigatório, texto amigável explicando o poder
+- `effect`: obrigatório, explicando mecanicamente o impacto (ex.: “+2 em Inteligência em quizzes de Matemática”)
+- `icon`: opcional, mas recomendável (emoji ou nome de ícone)
+
+Regra de afinidade (conceitual):
+- Só personagens com afinidade naquela disciplina **>= required_affinity** poderão aprender esse poder.
+(Não precisa implementar essa lógica agora, mas deixe o campo bem preparado.)
+
+====================================================================
+🎨 VIEWS – LAYOUT E UX
+====================================================================
+
+Uso de EJS + Bootstrap 5.
+
+### 1) Listagem – `views/admin/powers/index.ejs`
+
+Quero:
+- Título: **"Poderes"**
+- Botão “Novo Poder”
+- Tabela com colunas:
+  - Nome do Poder
+  - Disciplina (nome, não ID)
+  - Afinidade Mínima (em %)
+  - Ícone
+  - Ações (Editar / Excluir / Ver)
+
+Visual:
+- Cards ou tabela dentro de um card branco com borda e sombra leve
+- Títulos e links em Azul Mágico (#1E90FF)
+- Botão “Novo Poder” em Azul Mágico, hover em Amarelo Faísca
+
+### 2) Formulário – `views/admin/powers/form.ejs`
+
+Campos:
+- Nome do Poder (input text)
+- Disciplina (select com opções carregadas de `disciplines`)
+- Afinidade mínima requerida (input number, 0–100)
+- Ícone (input text para emoji ou nome de ícone)
+- Descrição (textarea)
+- Efeito (textarea, pode descrever em linguagem de regra de jogo)
+
+Botões:
+- “Salvar” (primário, Azul Mágico)
+- “Cancelar” (link ou botão secundário, volta para `/admin/powers`)
+
+Validação visual:
+- Mensagem em vermelho abaixo dos campos obrigatórios se houver erro
+- Exibir mensagens de sucesso/erro (por exemplo, usando flash messages)
+
+====================================================================
+🧠 COMPORTAMENTO DO CONTROLLER
+====================================================================
+
+No `powerController`, implemente:
+
+- `index`:
+  - Buscar todos os poderes com include da disciplina
+  - Renderizar `admin/powers/index`
+
+- `newForm`:
+  - Buscar disciplinas ativas
+  - Renderizar `admin/powers/form` vazio
+
+- `create`:
+  - Receber dados do formulário
+  - Validar (campos obrigatórios, range 0–100)
+  - Criar o registro em `powers`
+  - Redirecionar para `/admin/powers` com mensagem de sucesso
+
+- `editForm`:
+  - Buscar o poder por ID
+  - Buscar lista de disciplinas
+  - Renderizar `admin/powers/form` preenchido
+
+- `update`:
+  - Atualizar campos permitidos
+  - Redirecionar com mensagem de sucesso
+
+- `destroy`:
+  - Excluir o poder
+  - Redirecionar para listagem
+
+====================================================================
+📌 O QUE ENTREGAR
+====================================================================
+
+Na resposta, quero:
+
+1. Modelo Sequelize `Power` (com associations).
+2. Rotas Express (`powerRoutes.js`) com os paths descritos.
+3. Estrutura básica do `powerController` com métodos:
+   - index, newForm, create, editForm, update, destroy.
+4. Exemplos de código EJS para:
+   - `admin/powers/index.ejs`
+   - `admin/powers/form.ejs`
+5. Sugestões de melhoria futura:
+   - Paginação
+   - Filtro por disciplina
+   - Busca por nome do poder
+   - Indicação visual de poder “disponível” ou “avançado” conforme afinidade.
+
+Lembre: código em INGLÊS, interface em PORTUGUÊS (labe

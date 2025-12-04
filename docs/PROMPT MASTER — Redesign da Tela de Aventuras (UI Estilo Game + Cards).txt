@@ -1,0 +1,116 @@
+Quero que você REFAÇA completamente a tela de Aventuras do meu jogo educacional **Lutaver**.
+Atualmente ela está muito simples e esticada (como a imagem de referência), e quero que você recrie tudo usando um visual de JOGO, com UI moderna, com cards bonitos como os cards da tela “Meus Personagens”.
+
+====================================================================
+🎯 OBJETIVO
+====================================================================
+
+Criar uma tela de “Aventuras Educacionais” com visual de GAME, usando:
+✔ Cards com bordas arredondadas, sombra suave e destaque colorido
+✔ Layout organizado por seções
+✔ Boa hierarquia visual
+✔ Cores vivas (tema Lutaver)
+✔ Ícones grandes, bonitos, estilo gamificado
+✔ Cards parecidos com os da tela “Meus Personagens” (segunda imagem)
+✔ Responsivo e limpo
+
+====================================================================
+🎨 PALETA DO PROJETO (usar)
+====================================================================
+Azul Mágico:    #1E90FF (header, títulos, destaques)
+Amarelo Faísca: #F7D046 (bordas e detalhes)
+Verde Energia:  #34D399 (status, aprovado, ações)
+Branco Radiante: #FFFFFF (fundo dos cards)
+
+====================================================================
+🧱 ESTRUTURA FINAL DA TELA (obrigatória)
+====================================================================
+
+A tela deve conter estas seções, cada uma com CARDS:
+
+1️⃣ **Cabeçalho**
+- Título: “Aventuras Educacionais”
+- Subtítulo: “Escolha seu personagem e comece sua jornada!”
+
+2️⃣ **Seção: Meus Personagens (para selecionar quem vai jogar)**
+- Reproduzir o visual dos cards da segunda imagem:
+  • Foto/avatar
+  • Nome do personagem
+  • Ano Escolar
+  • Nível / XP
+  • Botão “Selecionar” estilizado
+- Quando um personagem estiver selecionado: destacar o card com borda verde
+
+3️⃣ **Seção: Como Funciona a Aventura**
+- Um card horizontal com ícones e passos explicados:
+  ✔ Escolha um personagem
+  ✔ Escolha uma aventura
+  ✔ Resolva o quiz
+  ✔ Acerte 70% para concluir
+- Estilo gamificado, com ícones grandes
+
+4️⃣ **Seção: Aventuras Disponíveis**
+Para cada aventura exibir um CARD no estilo dos cards de personagens:
+- Borda amarela Faísca (#F7D046)
+- Ícone grande da disciplina
+- Nome da aventura
+- Disciplina e Ano
+- Dificuldade (com estrelas ou tag)
+- Resumo pequeno
+- Recompensa: “+100 XP” ou similar
+- Botão “Jogar Agora” azul (#1E90FF)
+- Caso o personagem já tenha passado (is_completed = true):
+  → Mostrar selo “Concluída ✔”
+  → Desativar botão de jogar
+
+5️⃣ **Seção: Aventuras Já Concluídas**
+- Card com borda verde (#34D399)
+- Ícone de troféu
+- Lista das aventuras já concluídas pelo personagem
+- Mostrar:
+  ✔ Nome  
+  ✔ Disciplina  
+  ✔ Percentual alcançado  
+  ✔ XP ganho  
+
+====================================================================
+🎮 ESTILO DE UI (OBRIGATÓRIO)
+====================================================================
+
+- Cards devem seguir exatamente o estilo dos cards de personagens:
+  • Bordas arredondadas com 8px
+  • Sombra leve com profundidade
+  • Fundo branco
+  • Título azul forte
+  • Destaques em amarelo Faísca
+  • Botões grandes e com sensação “game”
+
+- Ícones maiores (32px a 48px)
+- Tipografia amigável e grande
+- Espaçamento adequado (padding 20–30px)
+- Nada deve ficar espremido, tudo deve ter respirabilidade
+
+====================================================================
+💻 TECNOLOGIA
+====================================================================
+
+Você deve gerar o HTML/EJS da página usando:
+- Node.js + Express + EJS
+- Bootstrap 5 (classes simples permitidas para grid)
+- Nada de JS complexo, apenas layout responsivo
+
+====================================================================
+📌 O QUE ENTREGAR
+====================================================================
+Quero na resposta:
+
+1. O HTML/EJS completo da nova tela de aventuras com:
+   ✔ Cards de seleção de personagem  
+   ✔ Card “Como funciona”  
+   ✔ Cards de aventuras disponíveis  
+   ✔ Cards de aventuras concluídas  
+
+2. Estilo elegante e gamificado, inspirado nos cards da segunda imagem.
+
+3. Componentes limpos, responsivos e coerentes com o estilo Lutaver.
+

@@ -1,0 +1,82 @@
+Quero que você desenvolva um layout web moderno usando a paleta oficial de cores do meu jogo educacional “Lutaver”.  
+Use as diretrizes abaixo **de forma obrigatória** em todos os elementos visuais (UI, botões, cards, header, tabelas e formulários).
+
+====================================================================
+🎨 PALETA DE CORES MODERNA – LUTAVER
+====================================================================
+
+1) Azul Mágico – #1E90FF  
+   - Cor principal do header  
+   - Fundo de botões primários  
+   - Destaque de títulos  
+   - Links e ações importantes  
+
+2) Amarelo Faísca – #F7D046  
+   - Hovers e efeitos de mouse  
+   - Bordas importantes  
+   - Ícones e badges de informação  
+   - Destaques secundários  
+
+3) Verde Energia – #34D399  
+   - Elementos de ação positiva  
+   - Botões de confirmar / salvar  
+   - Indicadores de sucesso  
+   - Destaques de progresso  
+
+4) Branco Radiante – #FFFFFF  
+   - Fundo geral da página  
+   - Cards limpos  
+   - Painéis de conteúdo  
+   - Contraste com título e texto escuro  
+
+====================================================================
+📦 OBJETIVO DO PROMPT
+====================================================================
+
+Crie um layout, mockup ou estrutura visual seguindo ESSAS regras de cor:
+
+- Header com Azul Mágico (#1E90FF)  
+- Botões primários: Azul Mágico  
+- Botões de ação positiva: Verde Energia  
+- Ícones e efeitos hover: Amarelo Faísca  
+- Fundo geral: Branco Radiante  
+- Cards com bordas ou detalhes em Amarelo Faísca  
+- Destaques e mensagens de sucesso: Verde Energia  
+- Layout moderno, limpo, profissional e com cara de jogo educacional  
+
+====================================================================
+📘 COMPORTAMENTO ESPERADO
+====================================================================
+
+Ao criar o design:
+- Não use tons aleatórios — use APENAS essas 4 cores.  
+- Tons escuros só se necessário para texto (ex.: #1A1A1A).  
+- O layout deve parecer um sistema moderno (2024–2025), com bordas suaves e espaçamento confortável.  
+- Pode sugerir variações como gradientes usando **apenas** a paleta permitida.  
+- Qualquer botão ou componente deve indicar claramente o uso da cor correspondente da paleta.  
+
+====================================================================
+🧩 O QUE QUERO QUE VOCÊ GERE
+====================================================================
+
+Quero que você gere um dos seguintes (eu escolho depois):
+
+1. Mockup de layout web completo  
+2. Estilo visual para CRUD  
+3. Design de dashboard  
+4. Tela de login  
+5. Cards de listagem  
+6. Header + Menu lateral  
+7. Tela de personagem  
+8. Formulários estilizados  
+9. Página de aventuras ou quiz  
+
+====================================================================
+📌 IMPORTANTE
+====================================================================
+
+- Sempre cite no design qual cor está sendo usada (ex.: “Botão principal em Azul Mágico #1E90FF”).  
+- Siga exatamente a paleta.  
+- Priorize harmonia visual e simplicidade elegante.  
+
+Agora gere o layout ou interface usando ESTRITAMENTE essa paleta moderna do Lutaver.

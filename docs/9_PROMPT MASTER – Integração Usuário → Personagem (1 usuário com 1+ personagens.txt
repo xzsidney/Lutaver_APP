@@ -1,0 +1,171 @@
+Você agora é um desenvolvedor fullstack especializado em jogos web com sistema de usuários e personagens.
+
+Quero que você crie a **integração completa entre USUÁRIO e PERSONAGEM**, onde:
+
+- Um usuário (`User`) pode ter **1 ou mais personagens** (`Character`).
+- Cada personagem pertence a exatamente **um usuário**.
+- Usuários do tipo `player` podem gerenciar APENAS seus próprios personagens.
+- Usuários `admin` podem gerenciar todos os personagens do sistema.
+
+======================================================================
+🧱 1. STACK E ARQUITETURA
+======================================================================
+
+Use este stack (pode adaptar detalhes, mas mantenha a ideia):
+
+- Backend: Node.js + Express
+- View engine: EJS
+- Banco de dados: MySQL
+- ORM: Sequelize
+- Sessão: express-session
+- Arquitetura: MVC (models, controllers, routes, views)
+
+Regras de idioma:
+- Código (models, controllers, routes, variáveis) em INGLÊS.
+- Interface (telas, labels, botões, mensagens) em PORTUGUÊS do Brasil.
+
+Assuma que:
+- Já existe o model `User` com campos: id, name, email, password_hash, role, is_active.
+- Já existe sistema de login com `req.session.user`.
+
+======================================================================
+👤 2. RELAÇÃO USER ↔ CHARACTER
+======================================================================
+
+Quero a relação:
+
+- `User` hasMany `Character`
+- `Character` belongsTo `User`
+
+No Sequelize:
+
+- Adicionar em `User`:
+  - `User.hasMany(Character, { foreignKey: 'user_id' })`
+- Adicionar em `Character`:
+  - `Character.belongsTo(User, { foreignKey: 'user_id' })`
+
+ALTERAÇÃO NO MODEL Character:
+
+- Adicionar campo:
+  - `user_id`: INTEGER, FK → users.id
+
+Se for preciso, crie ou ajuste a migration para incluir `user_id` em `characters`.
+
+======================================================================
+🎮 3. REGRAS DE NEGÓCIO (ACESSO AOS PERSONAGENS)
+======================================================================
+
+Quero as seguintes regras:
+
+1. Usuário `player`:
+   - Pode ver apenas **seus próprios personagens**.
+   - Pode criar, editar e excluir apenas personagens que tenham `user_id = seu id`.
+   - Ao criar personagem, `user_id` deve ser automaticamente o id do usuário logado (NÃO pode escolher outro).
+
+2. Usuário `teacher` (se existir) – pode ser tratado como player para personagens (ou você pode comentar opções).
+3. Usuário `admin`:
+   - Pode listar TODOS os personagens.
+   - Pode ver, editar e excluir qualquer personagem.
+   - Pode opcionalmente criar personagens e atribuí-los a qualquer usuário.
+
+======================================================================
+🧩 4. ROTAS E FLUXO DE PERSONAGEM
+======================================================================
+
+Quero rotas separadas para:
+
+1. Player (meus personagens)
+   - GET `/my/characters` → lista só os personagens do usuário logado.
+   - GET `/my/characters/new` → formulário de criação de personagem.
+   - POST `/my/characters` → salva novo personagem com `user_id` do usuário logado.
+   - GET `/my/characters/:id/edit` → editar personagem SE pertencer ao usuário.
+   - POST/PUT `/my/characters/:id` → atualizar personagem SE pertencer ao usuário.
+   - POST/DELETE `/my/characters/:id/delete` → excluir personagem SE pertencer ao usuário.
+
+2. Admin (geral)
+   - GET `/admin/characters` → lista TODOS os personagens.
+   - GET `/admin/characters/:id` → ver ficha completa de qualquer personagem.
+   - Opcionalmente, criar/editar/deletar personagens para debug/administração.
+
+Faça uso de middlewares:
+- `authMiddleware` → exige login.
+- `roleMiddleware(['admin'])` → rotas apenas para admin.
+- Para as rotas de `/my/characters/*`, apenas exigir usuário logado, qualquer role (`player`, `teacher`, `admin`).
+
+======================================================================
+🎨 5. VIEWS EJS – LISTAS E FICHA
+======================================================================
+
+Crie EJS (ou exemplos de EJS) para:
+
+1. `my/characters/index.ejs` – Lista de personagens do usuário
+   - Título: “Meus Personagens”
+   - Mostrar: nome, série, mapa atual, nível, etc.
+   - Botão “Criar novo personagem”
+   - Botão “Ver ficha” / “Editar” / “Excluir”
+
+2. `my/characters/new.ejs` – Criar personagem
+   - Campos principais:
+     - Nome
+     - Série/ano escolar
+     - Aparência básica (opcional)
+   - Os atributos base podem começar com valores padrão.
+   - Botão “Salvar personagem”.
+
+3. `my/characters/edit.ejs` – Editar personagem
+   - Mesmo formato, com dados carregados.
+
+4. `my/characters/show.ejs` – Ficha completa
+   - Mostrar dados gerais do personagem (nome, série, mapa atual).
+   - Mostrar atributos base (Força, Destreza, Constituição, Inteligência, Raciocínio, Sorte).
+   - Mostrar afinidades por disciplina (se já integradas).
+   - Mostrar botões:
+     - “Voltar para Meus Personagens”
+     - “Ir para Aventuras”
+
+5. `admin/characters/index.ejs` – Lista geral (admin)
+   - Tabela com:
+     - Nome do personagem
+     - Dono (nome do usuário)
+     - Série
+     - Nível
+     - Ações (ver, editar, excluir)
+
+======================================================================
+🔐 6. VERIFICAÇÃO DE PROPRIEDADE DO PERSONAGEM
+======================================================================
+
+Para rotas de player como `/my/characters/:id/edit` e `/my/characters/:id/delete`:
+
+- No controller, ao buscar o personagem:
+  - Verificar se `character.user_id === req.session.user.id`.
+  - Se NÃO for:
+    - Retornar erro 403 ou redirecionar para página de “Acesso negado”.
+
+Mostre explicitamente essa parte no controller.
+
+======================================================================
+📂 7. O QUE EU QUERO NA RESPOSTA
+======================================================================
+
+Organize sua resposta em seções:
+
+1. Atualização do model `Character` (incluir `user_id` + associações com `User`).
+2. Migration para adicionar a coluna `user_id` (separada ou nova tabela).
+3. Criação das rotas:
+   - `/my/characters/*`
+   - `/admin/characters/*`
+4. Middlewares de autenticação/autorização aplicados nas rotas.
+5. Controllers:
+   - `myCharacterController` (para o usuário logado gerenciar seus personagens).
+   - `adminCharacterController` (para admin gerenciar todos).
+6. Exemplos de EJS:
+   - Lista “Meus Personagens”
+   - Ficha do personagem
+   - Lista de personagens do admin
+7. Qualquer sugestão extra:
+   - Limite máximo de personagens por usuário
+   - Vincular personagem padrão “ativo” por usuário
+   - Integração futura com sistema de aventuras/quiz
+
+Pode responder com o código principal dos arquivos e explicações curtas entre eles.

@@ -1,0 +1,205 @@
+Quero que você crie a funcionalidade COMPLETA da **Tela de Quiz** do meu jogo educacional chamado **Lutaver**, seguindo este fluxo:
+
+1. O jogador entra no painel: `/player/dashboard`
+2. Clica no menu **Jogar** → `/play`
+3. Na página `/play`, ele vê uma lista de aventuras (cards)
+4. Em cada aventura existe um botão **"Jogar Agora"**
+5. Ao clicar em "Jogar Agora", o jogador é levado para a **Tela de Quiz** daquela aventura
+
+====================================================================
+🧱 1. STACK E ARQUITETURA
+====================================================================
+
+Use:
+- Node.js + Express
+- EJS como view engine
+- Sequelize + MySQL
+- Sessão com express-session
+- Arquitetura MVC
+
+Entidades principais já existentes:
+- `User`       → usuário logado
+- `Character`  → personagem do usuário
+- `Adventure`  → aventura escolhida
+- `Question`   → questões ligadas à aventura/disciplinas
+
+Regras:
+- Código em INGLÊS
+- Interface (telas, labels, botões) em PORTUGUÊS do Brasil
+
+====================================================================
+🧩 2. RELAÇÕES IMPORTANTES
+====================================================================
+
+Considere as relações:
+
+- `User` hasMany `Character`
+- `Character` belongsTo `User`
+
+- `Adventure` belongsTo `Discipline`
+- `Adventure` hasMany `Question`
+- `Question` belongsTo `Adventure`
+
+Na **Tela de Quiz**, preciso:
+- Saber qual **Adventure** está sendo jogada
+- Saber qual **Character** está jogando
+- Carregar as **Questions** dessa aventura
+
+Sugestão de rota de quiz:
+- `/play/quiz/:adventureId/:characterId`
+
+Você pode ajustar, mas explique como o fluxo fica amarrado.
+
+====================================================================
+📍 3. FLUXO DO JOGADOR ATÉ O QUIZ
+====================================================================
+
+Quero que você considere que:
+
+- Na tela `/play`, já tenho cards de aventuras com botão **"Jogar Agora"**
+- Esse botão deve apontar para a rota de quiz, passando:
+  - adventureId
+  - characterId ativo do jogador (pode ser o principal ou um selecionado antes)
+
+Exemplo (conceitual):
+- `<a href="/play/quiz/<%= adventure.id %>/<%= activeCharacter.id %>">Jogar Agora</a>`
+
+Na sua resposta, mostre:
+- Como ficaria esse link
+- Como obter `activeCharacter` (mesmo que seja mock ou vindo da sessão)
+
+====================================================================
+🎮 4. FUNCIONAMENTO DA TELA DE QUIZ
+====================================================================
+
+Na Tela de Quiz, quero:
+
+1. Mostrar informações da aventura no topo:
+   - Nome da Aventura
+   - Disciplina
+   - Ano Escolar
+   - Dificuldade
+   - XP de Recompensa
+
+2. Mostrar informações do personagem:
+   - Nome do personagem
+   - Nível ou XP atual (se existir)
+   - Talvez um ícone/avatar simples
+
+3. Lógica de perguntas:
+   - Carregar uma lista de questões da aventura (via Sequelize)
+   - Armazenar no backend (sessão ou estrutura de controle) qual é a questão atual
+   - Exibir **uma pergunta por vez** com alternativas A, B, C, D
+   - Jogador seleciona uma alternativa e clica em **Responder**
+
+4. Ao responder:
+   - Verificar se a resposta está correta
+   - Exibir feedback:
+     - "Você acertou!" (verde)
+     - "Você errou!" (vermelho)
+   - Exibir a EXPLICAÇÃO da questão (campo explanation)
+   - Atualizar um controle de progresso (acertos/erros)
+   - Botão **"Próxima questão"**
+
+5. Ao terminar todas as questões:
+   - Exibir uma **Tela de Resultado do Quiz**:
+     - Quantidade de questões respondidas
+     - Quantas acertou
+     - Percentual de acerto
+     - XP ganho
+     - Afinidade na disciplina (se houver, ex.: +1 afinidade em Matemática)
+   - Botão "Voltar para Minhas Aventuras"
+   - Botão "Jogar novamente" (opcional)
+
+====================================================================
+🎨 5. LAYOUT DA TELA DE QUIZ (EJS)
+====================================================================
+
+Quero um layout moderno, inspirado no estilo das telas que já tenho:
+
+- Header com logo e menu (Jogar, Meus Personagens, Olá, <nome>, Sair)
+- Container central com:
+
+1) Topo:
+   - Card com informações da aventura
+   - Card pequeno com dados do personagem
+
+2) Corpo principal:
+   - Card da pergunta:
+     - Enunciado em destaque
+     - Uf, se quiser, mostrar "Pergunta X de Y"
+   - Lista de alternativas:
+     - Cada alternativa como um botão grande ou card clicável
+     - Letras (A, B, C, D) visíveis
+
+3) Rodapé da pergunta:
+   - Feedback (acertou/errou)
+   - Explicação da questão (após responder)
+   - Botão "Próxima"
+
+Além disso:
+- Barra de progresso (X/Y perguntas)
+- Pode usar cores da paleta:
+  - Azul Mágico: #1E90FF
+  - Amarelo Faísca: #F7D046
+  - Verde Energia: #34D399
+  - Branco Radiante: #FFFFFF
+
+====================================================================
+📊 6. REGISTRO DO RESULTADO (Character + Adventure)
+====================================================================
+
+Quero que você também descreva (mesmo que conceitualmente):
+
+- Como salvar o resultado do quiz para o personagem:
+  - Tabela de histórico, algo como `CharacterQuizResult` ou `AdventureProgress`
+  - Campos:
+    - character_id
+    - adventure_id
+    - total_questions
+    - correct_answers
+    - xp_earned
+    - createdAt
+
+- Como atualizar o personagem:
+  - Somar XP
+  - Aumentar afinidade na disciplina (se aplicável)
+
+Não precisa implementar tudo em detalhes, mas explique o fluxo e mostre o modelo básico.
+
+====================================================================
+🧠 7. O QUE ENTREGAR NA RESPOSTA
+====================================================================
+
+Organize sua resposta em:
+
+1. Rotas necessárias:
+   - GET `/play`
+   - GET `/play/quiz/:adventureId/:characterId`
+   - POST `/play/quiz/:adventureId/:characterId/answer`
+   - GET `/play/quiz/:adventureId/:characterId/result`
+
+2. Controller:
+   - Funções para:
+     - iniciarQuiz
+     - exibirPerguntaAtual
+     - processarResposta
+     - finalizarQuiz
+
+3. Views EJS:
+   - `play/index.ejs` (lista de aventuras com botão "Jogar Agora")
+   - `quiz/question.ejs` (tela da pergunta)
+   - `quiz/result.ejs` (resultado final)
+
+4. Exemplos de HTML/EJS para:
+   - Card da aventura
+   - Área da pergunta
+   - Lista de alternativas
+   - Barra de progresso
+
+5. Explicação de como o quiz fica vinculado:
+   - Ao Adventure (questions da aventura)
+   - Ao Character (resultado salvo para aquele personagem)
+
+Use exemplos claros e com textos em português para o jogador.
+====================================================================

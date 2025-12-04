@@ -1,7 +1,7 @@
 const { DataTypes } = require('sequelize');
 const sequelize = require('../config/database');
 
-const AdventureProgress = sequelize.define('AdventureProgress', {
+const QuizProgress = sequelize.define('QuizProgress', {
     id: {
         type: DataTypes.INTEGER,
         primaryKey: true,
@@ -15,11 +15,11 @@ const AdventureProgress = sequelize.define('AdventureProgress', {
             key: 'id'
         }
     },
-    adventure_id: {
+    quiz_id: {
         type: DataTypes.INTEGER,
         allowNull: false,
         references: {
-            model: 'adventures',
+            model: 'quizzes',
             key: 'id'
         }
     },
@@ -53,8 +53,8 @@ const AdventureProgress = sequelize.define('AdventureProgress', {
         defaultValue: DataTypes.NOW
     }
 }, {
-    tableName: 'adventure_progress',
+    tableName: 'quiz_progress',
     timestamps: true
 });
 
-module.exports = AdventureProgress;
+module.exports = QuizProgress;

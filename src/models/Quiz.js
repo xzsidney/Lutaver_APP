@@ -1,7 +1,7 @@
 const { DataTypes } = require('sequelize');
 const sequelize = require('../config/database');
 
-const Adventure = sequelize.define('Adventure', {
+const Quiz = sequelize.define('Quiz', {
     id: {
         type: DataTypes.INTEGER,
         primaryKey: true,
@@ -50,6 +50,12 @@ const Adventure = sequelize.define('Adventure', {
         defaultValue: 100,
         comment: 'XP ganho ao completar'
     },
+    reward_coins: {
+        type: DataTypes.INTEGER,
+        allowNull: false,
+        defaultValue: 50,
+        comment: 'Moedas ganhas ao completar'
+    },
     reward_item: {
         type: DataTypes.STRING,
         allowNull: true,
@@ -60,8 +66,8 @@ const Adventure = sequelize.define('Adventure', {
         defaultValue: true
     }
 }, {
-    tableName: 'adventures',
+    tableName: 'quizzes',
     timestamps: true
 });
 
-module.exports = Adventure;
+module.exports = Quiz;

@@ -3,6 +3,8 @@ const CharacterItem = require('../models/CharacterItem');
 const Item = require('../models/Item');
 const Effect = require('../models/Effect');
 const ActiveEffect = require('../models/ActiveEffect');
+const ItemUsageLog = require('../models/ItemUsageLog');
+const ItemBonusService = require('../services/ItemBonusService');
 
 const InventoryController = {
     // Show character inventory
@@ -110,11 +112,17 @@ const InventoryController = {
                 });
             }
 
-            // Apply bonus_json (instant effects like healing)
+            // Apply bonus_json (instant effects like healing, stat boosts)
+            let bonusResult = null;
             if (characterItem.item.bonus_json) {
-                // This would apply instant bonuses
-                // For now, we'll just log it (implement actual logic later)
-                console.log('Applying bonus:', characterItem.item.bonus_json);
+                bonusResult = await ItemBonusService.applyBonus(
+                    character,
+                    characterItem.item.bonus_json
+                );
+
+                if (!bonusResult.success) {
+                    console.error('Failed to apply bonus:', bonusResult.message);
+                }
             }
 
             // Decrement quantity
@@ -126,7 +134,30 @@ const InventoryController = {
                 await characterItem.save();
             }
 
-            res.redirect(`/inventory/${characterId}?success=item_used`);
+            // Log item usage for analytics and auditing
+            try {
+                await ItemUsageLog.create({
+                    character_id: character.id,
+                    item_id: characterItem.item.id,
+                    item_name: characterItem.item.name,
+                    bonus_applied: bonusResult ? bonusResult.applied : null,
+                    success: bonusResult ? bonusResult.success : true,
+                    error_message: bonusResult && !bonusResult.success ? bonusResult.message : null,
+                    used_at: new Date()
+                });
+            } catch (logError) {
+                // Don't fail the main operation if logging fails
+                console.error('Failed to log item usage:', logError);
+            }
+
+            // Build success message with bonus details
+            let successMsg = 'item_used';
+            if (bonusResult && bonusResult.applied && bonusResult.applied.length > 0) {
+                const bonusDesc = ItemBonusService.describeBonus(characterItem.item.bonus_json);
+                successMsg = `item_used&bonus=${encodeURIComponent(bonusDesc)}`;
+            }
+
+            res.redirect(`/inventory/${characterId}?success=${successMsg}`);
         } catch (error) {
             console.error('Error using item:', error);
             res.redirect(`/inventory/${req.params.characterId}?error=use_failed`);

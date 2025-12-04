@@ -1,0 +1,235 @@
+Quero que você seja meu arquiteto de software e desenvolvedor full stack em Node.js.
+
+### Objetivo Geral
+
+Vou descrever o contexto do meu projeto e quero que você ME AJUDE A IMPLEMENTAR um sistema completo de **história narrativa** (estilo RPG de mesa / livro-jogo) integrado ao meu jogo educacional já existente.
+
+Você deve sempre:
+- Seguir **Node.js + Express**.
+- Usar **EJS** como view engine.
+- Usar **Sequelize + MySQL**.
+- Usar **express-session** para sessão do usuário.
+- Seguir **arquitetura MVC** (models, controllers, routes, views).
+- Escrever **TODO o código em INGLÊS** (nomes de arquivos, variáveis, funções, comentários técnicos).
+- Escrever **toda a interface** (textos das telas, labels, botões, mensagens) em **PORTUGUÊS do Brasil**.
+
+---
+
+### Contexto do Projeto (já existente)
+
+No projeto já existem:
+
+- **Users** (usuários)
+- **Characters** (personagens) com atributos numéricos:
+  - Strength
+  - Dexterity
+  - Constitution
+  - Intelligence
+  - Wisdom
+  - Luck
+- Sistema de **perguntas/quiz** (questions) já integrado ao jogo.
+- **Itens, Loja, Inventário** (items, shop, inventory).
+- **NPCs** (implementados em outro módulo).
+- Sistema de **moedas** e **recompensas** (coins, rewards) para o personagem.
+
+Quero agora um **módulo específico** de **história narrativa**.
+
+---
+
+### Ideia do Sistema Narrativo
+
+O sistema deve funcionar como um **RPG de mesa / livro-jogo dentro do meu site**:
+
+1. O jogador faz login e escolhe um **personagem** existente.
+2. Ele entra numa **história guiada por textos**, dividida em **cenas**.
+3. Cada **cena** é um bloco de narrativa com:
+   - Texto principal.
+   - Atributo de teste principal (ex: Dexterity).
+   - Dificuldade do teste (ex: 5, 7, 9).
+   - Tempo consumido ao entrar na cena (em minutos).
+   - Opcionalmente: teste de atributo (passa/falha).
+   - Relação com cenas seguintes (sucesso/falha).
+   - Lista de **escolhas** que o jogador pode tomar.
+
+4. Em certos pontos, o jogador faz **escolhas**:
+   - Ex: “Ir pela direita”, “Descer as escadas”, “Voltar para o corredor”.
+   - Cada escolha leva a outra cena e **consome tempo**.
+   - Algumas escolhas podem ser “certas” (otimizam o caminho) e outras “erradas” (fazem o jogador perder tempo ou ir para cenas de desvio).
+
+5. Algumas cenas exigem **teste de atributo**:
+   - Sistema de teste:
+     - Rola-se **1d10**.
+     - Soma-se o valor do atributo do personagem.
+     - Fórmula: **1d10 + atributo ≥ dificuldade**.
+   - Se passar:
+     - Vai para uma cena de **sucesso**.
+   - Se falhar:
+     - Vai para uma cena de **falha**, geralmente um desvio (como uma “Sala de Reflexão”).
+
+6. Ao final da história:
+   - Se o aluno cumprir o objetivo dentro do tempo:
+     - Ganha **XP**, **moedas** e talvez **itens**.
+   - Se o tempo acabar sem cumprir o objetivo:
+     - Ele **falha** na aventura, mas pode tentar de novo depois.
+
+---
+
+### Tema da Aventura: “Primeiro Dia de Aula na Escola”
+
+A aventura se passa em uma **escola**, com o objetivo de o aluno **visitar todos os locais importantes antes do fim do horário**.
+
+Locais principais (cada um será uma cena-chave):
+
+1. Portão da Escola – Atributo: **Constitution**
+2. Corredor Principal – Atributo: **Dexterity**
+3. Secretaria – Atributo: **Intelligence**
+4. Diretoria – Atributo: **Wisdom**
+5. Enfermaria – Atributo: **Intelligence**
+6. Sala de Aula – Atributo: **Wisdom**
+7. Biblioteca – Atributo: **Intelligence**
+8. Cantina – Atributo: **Dexterity**
+9. Banheiros – Atributo: **Wisdom**
+10. Pátio – Atributo: **Strength**
+11. Sala de Reflexão / Sala de Castigo – Atributo: **Luck** (usada como cena de desvio / falha)
+
+---
+
+### Sistema de Teste por Cena
+
+Cada cena tem:
+
+- **Atributo principal** usado no teste.
+- **Dificuldade recomendada**:
+  - Fácil: 5
+  - Média: 7
+  - Difícil: 9
+- **Teste**:
+  - Rola 1d10.
+  - Soma o valor do atributo do personagem.
+  - Se 1d10 + atributo ≥ dificuldade → SUCESSO.
+  - Caso contrário → FALHA.
+- **Rota**:
+  - Em caso de sucesso: vai para a cena correta (dentro da rota “ideal” da escola).
+  - Em caso de falha: vai para uma cena alternativa, geralmente **Sala de Reflexão** (ou outro desvio).
+
+---
+
+### Sistema de Tempo
+
+- O jogador tem **8 horas de escola** para explorar tudo:
+  - Tempo total: **480 minutos**.
+- Cada movimento entre locais consome tempo:
+  - Caminho certo: –30 minutos.
+  - Caminho errado: –30 minutos e pode exigir nova escolha (gerando mais perdas).
+  - Teste falho:
+    - +30 minutos de tempo perdido em cenas de desvio.
+- Se o **tempoRestante ≤ 0**:
+  - O aluno **falha** na aventura.
+  - Mensagem em PT-BR, por exemplo:
+    > "O horário da escola acabou antes de você concluir sua jornada. Você volta para casa, sabendo que amanhã pode tentar novamente!"
+
+---
+
+### Sistema de Dicas Inteligentes
+
+Cada cena pode ter uma **dica em texto** ajudando o aluno a escolher o próximo local.
+
+Exemplo de dica na Cena 2 – Corredor Principal:
+
+- Dica (em PT-BR):
+  > "Seu próximo destino começa com a 4ª letra do alfabeto."
+
+- Interpretação:
+  - A, B, C, **D** → Diretoria.
+
+- Opções mostradas ao jogador (em botões/links):
+  - “Ir para a Enfermaria” – leva para Cena 5.
+  - “Ir para a Diretoria” – leva para Cena 4 (caminho correto).
+  - “Ir para o Banheiro” – leva para Cena 9.
+
+Cada opção consome tempo e move o jogador para outra cena.
+
+---
+
+### Regras de Interface
+
+- As views devem ser feitas em **EJS**.
+- Todo o **texto visível ao usuário** deve estar em **PORTUGUÊS do Brasil**.
+- Exemplos de textos:
+  - Botão: `Iniciar Aventura`
+  - Botão: `Escolher Personagem`
+  - Botão: `Ir para a Diretoria`
+  - Botão: `Próxima Cena`
+  - Mensagens: “Você passou no teste!”, “Você falhou no teste…”, etc.
+
+---
+
+### O que eu quero que você faça AGORA
+
+Quero que você comece **passo a passo**, SEM PULAR ETAPAS, seguindo este plano:
+
+1. **Modelagem de Banco e Sequelize**
+   - Propor as tabelas e modelos Sequelize para:
+     - `stories` (histórias)
+     - `story_scenes` (cenas)
+     - `story_choices` (escolhas por cena)
+   - Campos sugeridos, em inglês, por exemplo:
+     - `stories`: id, title, description, isActive, createdAt, updatedAt...
+     - `story_scenes`: id, story_id, title, text, npc_id (opcional), background_image, test_attribute, test_difficulty, time_cost, success_scene_id, failure_scene_id, is_ending, ending_type, hint_text, createdAt, updatedAt...
+     - `story_choices`: id, scene_id, label, target_scene_id, time_cost, is_optimal, createdAt, updatedAt...
+   - Já gerar o SQL ou migrations do Sequelize (em inglês).
+
+2. **Rotas e Controllers**
+   - Criar rotas REST para:
+     - Listar histórias disponíveis.
+     - Entrar em uma história com um personagem logado.
+     - Carregar cena atual.
+     - Fazer escolha (via POST).
+     - Executar teste de atributo (quando necessário).
+   - Toda regra de negócio em inglês, mas mensagens de erro/sucesso para o usuário em português.
+
+3. **Views em EJS**
+   - Criar uma página principal da história com:
+     - Nome da cena.
+     - Texto da cena.
+     - Dica (se existir).
+     - Exibição do tempo restante (em minutos / horas).
+     - Botões de escolhas.
+     - Mensagens de sucesso/falha de teste (quando ocorrer).
+   - Lembrar: toda interface em PT-BR.
+
+4. **Lógica de Teste de Atributo e Tempo**
+   - Implementar uma função em JavaScript (Node) para:
+     - Rolar 1d10.
+     - Somar o atributo correto do personagem.
+     - Comparar com a dificuldade da cena.
+     - Atualizar:
+       - Cena atual (success_scene_id ou failure_scene_id).
+       - Tempo restante (subtraindo custo de tempo da cena e/ou da escolha).
+   - Salvar o estado da aventura (cena atual, tempoRestante, etc.) na **sessão** do usuário.
+
+5. **Recompensas Finais**
+   - Propor como integrar, ao finalizar a história:
+     - Geração de XP, moedas e itens.
+     - Atualização nos models já existentes de personagem/inventário.
+
+❗ IMPORTANTE:
+- Sempre que responder, mostre:
+  - Arquitetura de pastas.
+  - Models do Sequelize.
+  - Rotas (Express).
+  - Controllers.
+  - Exemplo de views EJS com textos em português.
+- Faça tudo por etapas, explicando cada parte.
+- NÃO pule direto para tudo pronto. Quero construir e testar módulo a módulo.
+
+Comece pela **modelagem das tabelas e models Sequelize** (`stories`, `story_scenes`, `story_choices`), já pensando nos campos necessários para:
+
+- Atributo de teste
+- Dificuldade
+- Dica
+- Cenas de sucesso/falha
+- Consumo de tempo
+- Final bom/final ruim
+
+E depois siga para rotas, controllers e views.

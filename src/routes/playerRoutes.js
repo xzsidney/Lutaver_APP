@@ -5,7 +5,7 @@ const { authMiddleware } = require('../middlewares/auth');
 // Import sub-routes
 const accountRoutes = require('./accountRoutes');
 const characterRoutes = require('./characterRoutes');
-const playerAdventureRoutes = require('./playerAdventureRoutes');
+const playerQuizRoutes = require('./playerQuizRoutes');
 const playerShopRoutes = require('./playerShopRoutes');
 const playerStoryRoutes = require('./playerStoryRoutes');
 const DashboardPlayerController = require('../controllers/DashboardPlayerController');
@@ -26,8 +26,8 @@ router.use('/account', accountRoutes);
 // Character management: /player/characters/*
 router.use('/characters', characterRoutes);
 
-// Adventures: /player/adventures/*
-router.use('/adventures', playerAdventureRoutes);
+// Quizzes: /player/quizzes/*
+router.use('/quizzes', playerQuizRoutes);
 
 // Stories: /player/stories/*
 router.use('/stories', playerStoryRoutes);

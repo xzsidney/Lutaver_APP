@@ -16,14 +16,14 @@ const Question = sequelize.define('Question', {
         },
         comment: 'FK para disciplina'
     },
-    adventure_id: {
+    quiz_id: {
         type: DataTypes.INTEGER,
         allowNull: true,
         references: {
-            model: 'adventures',
+            model: 'quizzes',
             key: 'id'
         },
-        comment: 'FK para aventura (opcional)'
+        comment: 'FK para quiz (opcional)'
     },
     school_year: {
         type: DataTypes.STRING(20),

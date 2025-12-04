@@ -1,0 +1,233 @@
+PROMPT MASTER – Implementar Sistema COMPLETO de NPC
+
+Quero que você implemente o sistema COMPLETO de NPCs do meu jogo educacional RPG "Lutaver", GERANDO TODO O CÓDIGO necessário (model, migration, rotas, controllers e views EJS).
+
+⚠ IMPORTANTE:
+- NÃO quero apenas explicações ou documentação.
+- Quero CÓDIGO pronto para usar (pode ser em trechos de arquivos).
+- Stack fixa: Node.js + Express + Sequelize + MySQL + EJS.
+- Arquitetura MVC, com pastas típicas:
+  - /models
+  - /migrations
+  - /controllers
+  - /routes
+  - /views/admin/npcs
+
+====================================================================
+🎓 CONTEXTO
+====================================================================
+
+O jogo possui:
+- Personagens jogáveis
+- Aventuras
+- Quiz
+- Itens / Loja / Inventário
+- Sistema de efeitos, buffs e status
+- Painel Admin que controla o conteúdo do jogo
+
+Agora quero adicionar **NPCs** que vão interagir com o jogador:
+- Professores
+- Alunos
+- Funcionários
+- Bosses especiais
+- Figurantes
+
+Os NPCs servirão de base para:
+- Aventuras
+- Iniciar quizzes
+- Loja
+- Conversas e diálogos
+- Acesso a setores da escola
+- Eventos e cutscenes
+
+====================================================================
+🧩 OBJETIVO
+====================================================================
+
+Quero que você CRIE o sistema completo de NPCs:
+
+✔ Model de NPC (Sequelize)  
+✔ Migration da tabela `npcs`  
+✔ Rotas Express para CRUD (admin)  
+✔ Controller com ações CRUD (index, create, store, edit, update, delete, show)  
+✔ Views EJS: lista, criar, editar, ficha (show)  
+✔ Campos da ficha seguindo os BLOCOS 01 a 05 abaixo  
+✔ Organização de pastas de views dentro de `/views/admin/npcs`  
+
+Quero TRECHOS de código reais para cada arquivo.
+
+====================================================================
+📌 FICHA DO NPC – BLOCOS 01 AO 05 (CAMPOS DO MODEL)
+====================================================================
+
+Use os BLOCOS abaixo para definir os CAMPOS do model/migration de NPC.
+
+--------------------------------------------------
+🟦 BLOCO 01 — IDENTIDADE BÁSICA
+--------------------------------------------------
+Campos obrigatórios no model:
+- name (STRING) → Nome do NPC
+- type (STRING) → valores esperados: 'teacher', 'student', 'staff', 'boss', 'npc'
+- subject (STRING, allowNull true) → Disciplina associada (para professores)
+- grade_level (STRING, allowNull true) → Ano/série de atuação
+- location (STRING) → Local onde aparece (corredor, biblioteca, sala X, cantina)
+- avatar (STRING, allowNull true) → caminho da imagem / ícone
+- personality (STRING, allowNull true) → calmo, bravo, alegre, misterioso…
+- short_description (STRING) → descrição curta (1 linha)
+- long_description (TEXT) → história, personalidade, papel
+
+--------------------------------------------------
+🟩 BLOCO 02 — FUNÇÃO NO JOGO
+--------------------------------------------------
+Campos no model:
+- role_flags (STRING ou JSON em TEXT) → guarda o papel do NPC no jogo (ex.: 'quest_giver,shop,quiz,boss')
+- starts_adventure_ids (TEXT) → lista de IDs de aventuras que ele pode iniciar (pode ser JSON em TEXT)
+- shop_id (INTEGER, allowNull true) → caso seja vendedor, pode referenciar uma futura tabela de lojas
+- main_discipline (STRING, allowNull true) → ainda reforça a disciplina, para quizzes
+- map_zone (STRING) → qual mapa/setor pertence (ex.: 'corredor_1_andar', 'biblioteca')
+
+--------------------------------------------------
+🟧 BLOCO 03 — CARACTERÍSTICAS DE JOGO
+--------------------------------------------------
+Campos no model:
+- difficulty (STRING) → 'easy', 'medium', 'hard', 'boss'
+- participates_in_battle (BOOLEAN) → se entra em combates/testes
+- stat_strength (INTEGER, default 0)
+- stat_dexterity (INTEGER, default 0)
+- stat_constitution (INTEGER, default 0)
+- stat_intelligence (INTEGER, default 0)
+- stat_reasoning (INTEGER, default 0)
+- stat_luck (INTEGER, default 0)
+- math_affinity (INTEGER, default 0) → exemplo de afinidade especial
+  (pode ser genérico: 'main_affinity' se quiser simplificar)
+
+--------------------------------------------------
+🟨 BLOCO 04 — COMPORTAMENTO E DIÁLOGOS
+--------------------------------------------------
+Campos no model:
+- dialogue_greeting (TEXT) → fala de apresentação
+- dialogue_farewell (TEXT) → fala de despedida
+- dialogue_start_quest (TEXT) → fala ao iniciar aventura/missão
+- dialogue_success (TEXT) → fala de sucesso (quando o jogador passa)
+- dialogue_failure (TEXT) → fala de falha (quando não atinge 70%)
+
+--------------------------------------------------
+🟥 BLOCO 05 — INTEGRAÇÕES FUTURAS
+--------------------------------------------------
+Campos no model:
+- linked_shop_key (STRING, allowNull true) → chave de loja vinculada
+- linked_adventure_keys (TEXT, allowNull true) → lista (JSON) de aventuras vinculadas
+- linked_quiz_discipline (STRING, allowNull true) → disciplina/tema associado
+- special_reward_info (TEXT, allowNull true) → descrição de recompensas especiais, acesso, etc.
+
+====================================================================
+🛢️ 1. MODEL + MIGRATION (Sequelize)
+====================================================================
+
+Quero:
+- O código do model `Npc` em `/models/Npc.js`
+- A migration para criar a tabela `npcs` com todos os campos acima
+- Usar `DataTypes` adequado para cada campo (STRING, TEXT, BOOLEAN, INTEGER, etc.)
+
+Explique brevemente cada campo DO MODEL em comentário, se quiser.
+
+====================================================================
+🛣️ 2. ROTAS (Express)
+====================================================================
+
+Criar um arquivo de rotas admin, por exemplo:
+- `/routes/adminNpcRoutes.js`
+
+Com rotas:
+
+- GET    `/admin/npcs`           → lista todos
+- GET    `/admin/npcs/new`       → form de criação
+- POST   `/admin/npcs`           → salvar novo
+- GET    `/admin/npcs/:id`       → mostrar ficha (show)
+- GET    `/admin/npcs/:id/edit`  → form de edição
+- POST   `/admin/npcs/:id`       → atualizar
+- POST   `/admin/npcs/:id/delete` → deletar
+
+Quero o código completo dessas rotas, importando o controller.
+
+====================================================================
+🧠 3. CONTROLLER (NPC Controller)
+====================================================================
+
+Criar `controllers/npcController.js` com funções:
+
+- index  → listar NPCs
+- show   → mostrar ficha completa
+- newForm → exibir form de criação
+- create → salvar novo NPC
+- editForm → exibir form com dados
+- update → atualizar NPC
+- destroy → deletar NPC
+
+Quero o código dessas funções usando Sequelize (model Npc), com try/catch e `res.render` para as views EJS.
+
+====================================================================
+🎨 4. VIEWS EJS (CRUD + FICHA)
+====================================================================
+
+Criar as seguintes views em `/views/admin/npcs/`:
+
+1) `index.ejs`
+   - Tabela com:
+     • Nome
+     • Tipo
+     • Disciplina associada
+     • Local
+     • Papel (role_flags)
+   - Botão “Novo NPC”
+   - Links para “Editar” e “Ver Ficha”
+
+2) `form.ejs` (reutilizada para criar/editar)
+   - Campos organizados por BLOCOS:
+     • Bloco 01: Identidade básica
+     • Bloco 02: Função no jogo
+     • Bloco 03: Características de jogo
+     • Bloco 04: Diálogos
+     • Bloco 05: Integrações futuras
+   - Botão “Salvar”
+   - Botão “Cancelar”
+
+3) `show.ejs`
+   - Exibir a ficha completa do NPC, separada visualmente por seções:
+     • Identidade
+     • Função no jogo
+     • Características
+     • Diálogos
+     • Integrações
+
+Quero o código EJS básico desses arquivos, usando o layout padrão (assuma que existe um `layout` ou inclui de header/footer).
+
+====================================================================
+🎯 5. ESTILO E PADRÕES
+====================================================================
+
+- Código em JavaScript (Node/Express/Sequelize).
+- Views em EJS.
+- Textos exibidos para o usuário em português do Brasil.
+- Seguir MVC.
+- Usar nomes de arquivos e variáveis em inglês (Npc, npcController, etc.).
+
+====================================================================
+📄 O QUE ENTREGAR NA SUA RESPOSTA
+====================================================================
+
+Na sua resposta, entregue:
+
+1. Model `Npc` completo (Sequelize).  
+2. Migration `create-npcs` com todos os campos.  
+3. Arquivo de rotas `adminNpcRoutes.js`.  
+4. Controller `npcController.js` com todas as ações CRUD.  
+5. Views EJS:
+   - `views/admin/npcs/index.ejs`
+   - `views/admin/npcs/form.ejs`
+   - `views/admin/npcs/show.ejs`
+
+Tudo em forma de código que eu possa copiar e adaptar direto no projeto.
+
+NÃO faça apenas descrição conceitual.  
+Quero CÓDIGO FUNCIONAL de exemplo para cada arquivo.

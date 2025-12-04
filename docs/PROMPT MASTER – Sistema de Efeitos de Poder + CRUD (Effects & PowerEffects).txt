@@ -1,0 +1,200 @@
+Quero que você implemente no meu jogo educacional **Lutaver** um sistema completo de **efeitos de poderes**, com tabelas novas, relações e CRUD no painel administrativo.
+
+A ideia é separar a parte TEMÁTICA do poder da parte MECÂNICA:
+
+- Na tabela `powers`, o campo `effect` passa a ser APENAS DESCRITIVO (texto amigável para o jogador).
+- A mecânica real (tonto, sonolento, dano, cura, etc.) será modelada em tabelas específicas de efeitos.
+
+====================================================================
+🧱 STACK DO PROJETO
+====================================================================
+
+- Node.js + Express
+- Sequelize + MySQL
+- EJS como view engine
+- Arquitetura MVC
+- Já existe:
+  - Tabela `powers`
+  - Painel Admin (sidebar com Usuários, Disciplinas, Aventuras, Cenas, Questões, Personagens)
+  - Layout bonito e responsivo (não alterar o tema, só reaproveitar)
+
+====================================================================
+🎯 OBJETIVO GERAL
+====================================================================
+
+Criar um SISTEMA DE EFEITOS para os poderes, com:
+
+1. Tabela de **Effects** (catálogo de todos os tipos de efeito do jogo).
+2. Tabela de **PowerEffects** (relação N:N entre Power e Effect).
+3. CRUD completo para **Effects** no painel admin.
+4. Integração com o CRUD de **Powers** para selecionar efeitos de um poder.
+5. Modelo conceitual de **ActiveEffects** (efeitos em tempo de jogo), mesmo que numa primeira versão seja só definido o model, sem lógica de combate complexa.
+
+====================================================================
+🛢️ 1. NOVA TABELA – Effects (catálogo de efeitos)
+====================================================================
+
+Criar o model Sequelize `Effect` e a tabela `effects` com os campos:
+
+- id                (PK, AI)
+- name              (STRING)    → Nome do efeito (ex.: "Tonto", "Sonolento", "Dano Físico Leve")
+- effect_type       (ENUM ou STRING) → Ex.: 'status_negativo', 'status_positivo', 'dano', 'cura', 'buff', 'debuff'
+- target_type       (STRING)    → 'self', 'ally', 'enemy', 'all'
+- attribute_target  (STRING)    → Qual atributo/valor atinge: 'hp', 'mp', 'forca', 'destreza', 'raciocinio', etc. (pode ser null)
+- base_value        (INTEGER)   → Valor base do efeito (ex.: 10 de dano, +2 em atributo). Pode ser null.
+- intensity_label   (STRING)    → ex.: 'leve', 'médio', 'forte' (opcional)
+- duration_type     (STRING)    → 'instant', 'turns', 'scene', 'permanent'
+- duration_value    (INTEGER)   → número de turnos/cenas (quando aplicável)
+- can_stack         (BOOLEAN)   → Se é acumulativo
+- description       (TEXT)      → Descrição temática do efeito (“O alvo fica tonto e perde o próximo turno.”)
+- icon              (STRING)    → emoji ou classe de ícone
+- createdAt, updatedAt
+
+Regras:
+- `name` obrigatório.
+- `effect_type` obrigatório.
+- `target_type` obrigatório.
+
+====================================================================
+🛢️ 2. TABELA DE LIGAÇÃO – PowerEffects
+====================================================================
+
+Criar o model Sequelize `PowerEffect` e a tabela `power_effects` para relação N:N:
+
+Campos:
+- id           (PK, AI)
+- power_id     (FK → powers.id)
+- effect_id    (FK → effects.id)
+- chance       (INTEGER)  → chance (%) do efeito acontecer (0–100)
+- override_value (INTEGER, opcional) → caso queira usar um valor específico para esse poder, ao invés do base_value do efeito
+- createdAt, updatedAt
+
+Associações:
+
+- `Power.belongsToMany(Effect, { through: PowerEffect, foreignKey: 'power_id' })`
+- `Effect.belongsToMany(Power, { through: PowerEffect, foreignKey: 'effect_id' })`
+
+====================================================================
+🛢️ 3. OPCIONAL – TABELA DE EFEITOS ATIVOS (ActiveEffects)
+====================================================================
+
+Criar apenas o model (não precisa lógica completa ainda), para o futuro sistema de combate:
+
+Tabela: `active_effects`
+Campos:
+- id
+- character_id ou npc_id (pode começar só com character_id)
+- effect_id
+- source_power_id (opcional: qual poder originou)
+- remaining_turns (INTEGER)
+- is_expired (BOOLEAN)
+- createdAt, updatedAt
+
+====================================================================
+🎨 4. CRUD – EFFECTS (Painel Admin)
+====================================================================
+
+Criar o CRUD completo para `Effect` na área admin:
+
+Pasta de views:
+- `views/admin/effects/index.ejs`
+- `views/admin/effects/form.ejs`
+- `views/admin/effects/show.ejs` (opcional)
+
+Rotas:
+- GET  `/admin/effects`           → listagem
+- GET  `/admin/effects/new`       → form de criação
+- POST `/admin/effects`           → salvar novo
+- GET  `/admin/effects/:id/edit`  → form de edição
+- POST `/admin/effects/:id`       → atualizar
+- POST `/admin/effects/:id/delete` → excluir
+
+Controller `effectController` com métodos:
+- index, newForm, create, editForm, update, destroy, show (opcional)
+
+Listagem:
+- Colunas:
+  - Nome
+  - Tipo (effect_type)
+  - Alvo (target_type)
+  - Atributo afetado
+  - Duração (duration_type/value)
+  - Icone
+  - Ações
+
+Formulário:
+- Inputs para:
+  - name
+  - effect_type (select)
+  - target_type (select)
+  - attribute_target (input text ou select)
+  - base_value (number)
+  - intensity_label (text)
+  - duration_type (select: instant, turns, scene, permanent)
+  - duration_value (number)
+  - can_stack (checkbox)
+  - icon (text)
+  - description (textarea)
+
+Interface:
+- Manter o mesmo estilo dos outros CRUDs do admin (cards, botões, sidebar).
+- Textos em português: “Efeitos”, “Novo Efeito”, “Editar Efeito”.
+
+====================================================================
+🎨 5. INTEGRAÇÃO COM PODERES (Powers)
+====================================================================
+
+Na tela de criação/edição de Poder (`powers`):
+
+- Manter os campos atuais (name, discipline_id, required_affinity, description, effect (texto descritivo), icon, etc.).
+- Adicionar uma seção **“Efeitos do Poder”**, onde o admin pode:
+
+  - Ver lista de efeitos já vinculados ao poder
+  - Adicionar novo efeito ao poder:
+    - Combobox/select para escolher um `Effect` existente
+    - Campo “chance (%)”
+    - Campo “override_value” (opcional)
+    - Botão “Adicionar”
+  - Remover um efeito da lista (botão remover na linha)
+
+Na resposta quero:
+- Modelagem conceitual de como o controller de `Power` manipula `PowerEffects` (criação/atualização/exclusão).
+- Como carregar, na edição de um poder, a lista de efeitos disponíveis e os efeitos já vinculados.
+
+====================================================================
+🔗 6. AJUSTES NO PAINEL ADMIN
+====================================================================
+
+- Adicionar um item “Efeitos” na sidebar do admin, apontando para `/admin/effects`.
+- Opcional: adicionar um card de resumo no dashboard:
+  - Total de efeitos cadastrados.
+
+====================================================================
+📌 7. O QUE ENTREGAR NA RESPOSTA
+====================================================================
+
+Quero que você entregue:
+
+1. Definição dos models Sequelize:
+   - Effect
+   - PowerEffect
+   - (opcional) ActiveEffect
+
+2. As associações entre:
+   - Power ↔ Effect (via PowerEffect)
+   - Character ↔ ActiveEffect (se fizer o modelo)
+
+3. Estrutura das rotas e controller para CRUD de Effects.
+
+4. Estrutura da view EJS para:
+   - `admin/effects/index.ejs`
+   - `admin/effects/form.ejs`
+   - Ajustes em `admin/powers/form.ejs` para vincular efeitos ao poder.
+
+5. Explicação clara de como:
+   - O campo `powers.effect` passa a ser apenas descritivo (flavor text).
+   - A lógica mecânica fica toda nas tabelas `effects` e `power_effects`.
+
+6. Sugestões de evolução futura:
+   - Como usar ActiveEffects em combate/testes de cena.
+   - Como aplicar esses efeitos no personagem/NPC na hora da aventura.

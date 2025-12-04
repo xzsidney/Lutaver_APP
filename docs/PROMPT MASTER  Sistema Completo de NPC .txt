@@ -1,0 +1,196 @@
+PROMPT MASTER — Sistema Completo de NPC (Blocos 01 ao 05)
+Quero que você implemente o sistema COMPLETO de NPCs do meu jogo educacional RPG "Lutaver", baseado no conceito abaixo.  
+A ideia já está madura: quero agora organizar em Models, CRUD, Views e estrutura de ficha, mas SEM mudar nada do conceito original.
+
+====================================================================
+🎓 CONTEXTO
+====================================================================
+
+O jogo possui:
+- Personagens jogáveis
+- Aventuras
+- Quiz
+- Itens / Loja / Inventário
+- Sistema de efeitos, buffs e status
+- Admin que controla o conteúdo do jogo
+
+Agora quero adicionar **NPCs** que vão interagir com o jogador:
+- Professores
+- Alunos
+- Funcionários
+- Bosses especiais
+- Figurantes
+
+Os NPCs servirão como base para:
+- Aventura
+- Iniciar quizzes
+- Loja
+- Conversas e diálogos
+- Acesso a setores da escola
+- Eventos e cutscenes
+
+====================================================================
+🧩 OBJETIVO
+====================================================================
+
+Criar:
+✔ Model de NPC  
+✔ CRUD para o ADMIN cadastrar e editar NPCs  
+✔ Views detalhadas (lista, criar, editar, ficha)  
+✔ Estrutura da ficha do NPC conforme os Blocos 01 a 05  
+✔ Preparação para integrar NPC com loja, aventuras, quizzes e efeitos  
+
+Sem gerar código agora — quero tudo organizado, descrito, planejado.
+
+====================================================================
+📌 FICHA DO NPC – BLOCOS 01 AO 05
+====================================================================
+
+A ficha do NPC precisa ter exatamente estes 5 blocos:
+
+--------------------------------------------------
+🟦 BLOCO 01 — IDENTIDADE BÁSICA
+--------------------------------------------------
+- Nome do NPC
+- Tipo:
+  • Professor
+  • Aluno
+  • Funcionário
+  • Boss
+  • Figurante / Outro
+- Disciplina Associada (professor)
+- Ano/série de atuação
+- Local onde aparece (corredor, biblioteca, sala X, cantina, enfermaria)
+- Avatar / imagem / ícone
+- Humor / personalidade (calmo, bravo, alegre, misterioso, exigente, etc.)
+- Descrição curta (1 linha)
+- Descrição longa (história, personalidade, papel)
+
+--------------------------------------------------
+🟩 BLOCO 02 — FUNÇÃO NO JOGO
+--------------------------------------------------
+Define o papel funcional do NPC:
+
+- Papel no jogo (multiopção):
+  • Inicia aventura  
+  • Dá quiz  
+  • Vende itens (lojinha)  
+  • Dá missão / cutscene  
+  • É boss  
+  • É figurante que só conversa  
+- Conexões:
+  • Qual aventura ele inicia  
+  • Qual loja ele controla (se for vendedor)  
+  • Qual disciplina ele representa (para quizzes)  
+  • Qual mapa/setor ele pertence
+
+--------------------------------------------------
+🟧 BLOCO 03 — CARACTERÍSTICAS DE JOGO
+--------------------------------------------------
+Essas informações são úteis para quando o NPC entra em testes, mini combates ou dificuldades:
+
+- Dificuldade geral:
+  • Fácil / Médio / Difícil / Boss
+- Participa de combates/testes? (sim/não)
+- Atributos (opcional):
+  • Força  
+  • Destreza  
+  • Constituição  
+  • Inteligência  
+  • Raciocínio  
+  • Sorte
+- Afinidade especial com disciplinas (ex.: professor de matemática tem afinidade 100)
+
+Essas informações deixam a ficha pronta para quando o sistema de combate/testes vier no futuro.
+
+--------------------------------------------------
+🟨 BLOCO 04 — COMPORTAMENTO E DIÁLOGOS
+--------------------------------------------------
+
+O NPC precisa ter falas pré-definidas para o jogo exibir:
+
+- Fala de apresentação:
+  Ex.: “Olá, aluno! Pronto para mais um desafio?”
+
+- Fala de despedida:
+  Ex.: “Volte sempre, jovem estudioso!”
+
+- Fala ao iniciar aventura:
+  Ex.: “Tenho um desafio especial para você.”
+
+- Fala de sucesso (quando o jogador passa):
+  Ex.: “Excelente! Você dominou este conteúdo.”
+
+- Fala de falha (quando jogador não atinge 70%):
+  Ex.: “Você ainda não está pronto. Tente novamente.”
+
+Essas falas servirão para:
+- Sistema de cenas
+- Tela de aventura
+- Quiz
+- Loja
+- Diálogos in-world
+
+--------------------------------------------------
+🟥 BLOCO 05 — INTEGRAÇÕES FUTURAS
+--------------------------------------------------
+
+O NPC deve estar pronto para integrar com outros sistemas:
+
+- Loja:
+  • Se o NPC for vendedor, qual catálogo de itens ele oferta
+
+- Aventura:
+  • Quais aventuras ele inicia
+
+- Quiz:
+  • Qual disciplina/tema está associado
+
+- Eventos especiais:
+  • Cutscenes
+  • Acesso a setores da escola
+  • Entrega de recompensas
+  • Modificar atributos/afinidade do jogador
+
+Mesmo que não implemente agora, o NPC precisa ter os campos para isso.
+
+====================================================================
+📂 O QUE EU QUERO QUE VOCÊ GERE
+====================================================================
+
+Quero que você me entregue:
+
+1. **O modelo completo (conceitual)** da entidade NPC baseado nos Blocos 01 a 05  
+   - Cada campo explicadinho  
+   - Categorias e tipos de dados recomendados  
+
+2. **A estrutura do CRUD do admin** (sem código, apenas planejamento):
+   - Quais páginas o admin terá  
+   - Quais campos aparecem em cada página  
+   - Como ficará a experiência do administrador  
+   - Como apresentar a ficha do NPC  
+
+3. **A arquitetura de arquivos/views**:
+   - /views/admin/npc/index  
+   - /views/admin/npc/create  
+   - /views/admin/npc/edit  
+   - /views/admin/npc/show (ficha completa)
+
+4. **Recomendações visuais**:
+   - Como a ficha deve ser organizada  
+   - Como apresentar os blocos  
+   - Como padronizar ícones, descrição, personalidade  
+
+5. **Sugestões de extensões futuras**:
+   - Como ligar NPC à loja  
+   - Como ligar NPC à aventura  
+   - Como ligar NPC ao sistema de efeitos  
+   - Como permitir que NPC “progrida” na história  
+
+Tudo deve ser:
+✔ organizado  
+✔ detalhado  
+✔ fácil para transformar em model, view e CRUD depois  
+✔ fiel aos BLOCOS 01 a 05  
+✔ sem gerar código agora  
+✔ apenas planejamento/projeto avançado  

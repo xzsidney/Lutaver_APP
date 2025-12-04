@@ -1,0 +1,354 @@
+<div class="player-home-container">
+
+    <!-- Resume Card -->
+    <div class="resume-container">
+        <div class="resume-card">
+            <!-- Save Icon -->
+            <div class="save-icon-container">
+                <div class="save-icon">💾</div>
+                <div class="pulse-ring"></div>
+            </div>
+
+            <!-- Title -->
+            <h1 class="resume-title">Progresso Encontrado!</h1>
+            <p class="resume-subtitle">Você tem uma aventura em andamento nesta história</p>
+
+            <!-- Story Info -->
+            <div class="story-info-card">
+                <h2 class="story-title">
+                    <%= story.title %>
+                </h2>
+                <% if (story.description) { %>
+                    <p class="story-description">
+                        <%= story.description %>
+                    </p>
+                    <% } %>
+            </div>
+
+            <!-- Progress Stats -->
+            <div class="progress-stats">
+                <div class="stat-item">
+                    <span class="stat-icon">📍</span>
+                    <span class="stat-label">Última Cena</span>
+                    <span class="stat-value">
+                        <%= savedScene ? savedScene.title : 'Cena não encontrada' %>
+                    </span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-icon">🎬</span>
+                    <span class="stat-label">Cenas Visitadas</span>
+                    <span class="stat-value">
+                        <%= progress.scenes_visited || 0 %>
+                    </span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-icon">🕐</span>
+                    <span class="stat-label">Último Acesso</span>
+                    <span class="stat-value">
+                        <%= new Date(lastPlayed).toLocaleDateString('pt-BR', { day: '2-digit' , month: '2-digit' ,
+                            year: 'numeric' , hour: '2-digit' , minute: '2-digit' }) %>
+                    </span>
+                </div>
+                <% if (progress.choices_history && progress.choices_history.length> 0) { %>
+                    <div class="stat-item">
+                        <span class="stat-icon">🎯</span>
+                        <span class="stat-label">Escolhas Feitas</span>
+                        <span class="stat-value">
+                            <%= progress.choices_history.length %>
+                        </span>
+                    </div>
+                    <% } %>
+            </div>
+
+            <!-- Character Info -->
+            <div class="character-badge">
+                <span class="character-icon">🎭</span>
+                <span class="character-name">
+                    <%= character.name %>
+                </span>
+                <span class="character-level">Nível <%= character.level %></span>
+            </div>
+
+            <!-- Action Buttons -->
+            <div class="resume-actions">
+                <a href="/player/stories/<%= story.id %>/play?continue=true" class="btn-continue">
+                    <span class="btn-icon">▶️</span>
+                    <span class="btn-text">Continuar Aventura</span>
+                </a>
+                <a href="/player/stories/<%= story.id %>/play?restart=true" class="btn-restart"
+                    onclick="return confirm('Tem certeza que deseja reiniciar? Todo o progresso será perdido!')">
+                    <span class="btn-icon">🔄</span>
+                    <span class="btn-text">Reiniciar do Início</span>
+                </a>
+            </div>
+
+            <!-- Back Link -->
+            <a href="/player/stories" class="back-link">⬅️ Voltar para Histórias</a>
+        </div>
+    </div>
+
+</div>
+
+<style>
+    .resume-container {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        min-height: 80vh;
+        padding: 20px;
+    }
+
+    .resume-card {
+        background: #FFFFFF;
+        border-radius: 24px;
+        box-shadow: 0 10px 40px rgba(0, 0, 0, 0.15);
+        padding: 40px;
+        max-width: 520px;
+        width: 100%;
+        text-align: center;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .resume-card::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 6px;
+        background: linear-gradient(90deg, #667eea 0%, #764ba2 50%, #f093fb 100%);
+    }
+
+    /* Save Icon */
+    .save-icon-container {
+        position: relative;
+        width: 100px;
+        height: 100px;
+        margin: 0 auto 20px;
+    }
+
+    .save-icon {
+        width: 100px;
+        height: 100px;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 3rem;
+        box-shadow: 0 8px 24px rgba(102, 126, 234, 0.4);
+        position: relative;
+        z-index: 2;
+    }
+
+    .pulse-ring {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        width: 100px;
+        height: 100px;
+        border: 3px solid #667eea;
+        border-radius: 50%;
+        animation: pulse 2s ease-out infinite;
+    }
+
+    @keyframes pulse {
+        0% {
+            transform: translate(-50%, -50%) scale(1);
+            opacity: 1;
+        }
+
+        100% {
+            transform: translate(-50%, -50%) scale(1.5);
+            opacity: 0;
+        }
+    }
+
+    /* Title */
+    .resume-title {
+        font-size: 1.8rem;
+        font-weight: 700;
+        color: #1976D2;
+        margin: 0 0 8px 0;
+    }
+
+    .resume-subtitle {
+        font-size: 1rem;
+        color: #757575;
+        margin: 0 0 25px 0;
+    }
+
+    /* Story Info */
+    .story-info-card {
+        background: linear-gradient(135deg, #E3F2FD 0%, #F3E5F5 100%);
+        border-radius: 12px;
+        padding: 20px;
+        margin-bottom: 25px;
+    }
+
+    .story-title {
+        font-size: 1.3rem;
+        font-weight: 700;
+        color: #424242;
+        margin: 0 0 8px 0;
+    }
+
+    .story-description {
+        font-size: 0.9rem;
+        color: #616161;
+        margin: 0;
+        line-height: 1.5;
+    }
+
+    /* Progress Stats */
+    .progress-stats {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 12px;
+        margin-bottom: 25px;
+    }
+
+    .stat-item {
+        background: #F5F5F5;
+        border-radius: 10px;
+        padding: 15px 10px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 4px;
+    }
+
+    .stat-icon {
+        font-size: 1.5rem;
+    }
+
+    .stat-label {
+        font-size: 0.75rem;
+        color: #9E9E9E;
+        text-transform: uppercase;
+        font-weight: 600;
+    }
+
+    .stat-value {
+        font-size: 0.9rem;
+        color: #424242;
+        font-weight: 600;
+    }
+
+    /* Character Badge */
+    .character-badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 10px;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: #FFFFFF;
+        padding: 10px 20px;
+        border-radius: 50px;
+        margin-bottom: 30px;
+        box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+    }
+
+    .character-icon {
+        font-size: 1.3rem;
+    }
+
+    .character-name {
+        font-weight: 600;
+        font-size: 1rem;
+    }
+
+    .character-level {
+        font-size: 0.85rem;
+        opacity: 0.9;
+    }
+
+    /* Action Buttons */
+    .resume-actions {
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+        margin-bottom: 25px;
+    }
+
+    .btn-continue {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 10px;
+        padding: 16px 24px;
+        background: linear-gradient(135deg, #4CAF50 0%, #45A049 100%);
+        color: #FFFFFF;
+        text-decoration: none;
+        border-radius: 12px;
+        font-weight: 600;
+        font-size: 1.1rem;
+        transition: all 0.3s ease;
+        box-shadow: 0 4px 12px rgba(76, 175, 80, 0.3);
+    }
+
+    .btn-continue:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 6px 20px rgba(76, 175, 80, 0.4);
+    }
+
+    .btn-restart {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 10px;
+        padding: 14px 24px;
+        background: #FFFFFF;
+        color: #757575;
+        text-decoration: none;
+        border: 2px solid #E0E0E0;
+        border-radius: 12px;
+        font-weight: 600;
+        font-size: 1rem;
+        transition: all 0.3s ease;
+    }
+
+    .btn-restart:hover {
+        background: #FFEBEE;
+        border-color: #EF5350;
+        color: #D32F2F;
+    }
+
+    .btn-icon {
+        font-size: 1.2rem;
+    }
+
+    /* Back Link */
+    .back-link {
+        display: inline-block;
+        color: #9E9E9E;
+        text-decoration: none;
+        font-size: 0.95rem;
+        transition: color 0.2s;
+    }
+
+    .back-link:hover {
+        color: #1976D2;
+    }
+
+    /* Responsive */
+    @media (max-width: 480px) {
+        .resume-card {
+            padding: 30px 20px;
+        }
+
+        .resume-title {
+            font-size: 1.5rem;
+        }
+
+        .progress-stats {
+            grid-template-columns: 1fr;
+        }
+
+        .character-badge {
+            padding: 8px 16px;
+            font-size: 0.9rem;
+        }
+    }
+</style>

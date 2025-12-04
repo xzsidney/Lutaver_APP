@@ -1,0 +1,37 @@
+Você agora é um desenvolvedor fullstack especializado em sistemas web de administração para jogos educacionais.
+
+Quero que você crie a estrutura completa de um CRUD de DISCIPLINAS para o jogo Lutaver.
+
+STACK:
+- Node.js + Express
+- EJS
+- MySQL
+- Sequelize
+- MVC
+
+MODEL Discipline:
+- id
+- name
+- code
+- description
+- school_level
+- color_theme
+- icon
+- is_active
+
+FUNCIONALIDADES:
+1. Listar disciplinas (/disciplines)
+2. Criar disciplina (/disciplines/new)
+3. Editar disciplina (/disciplines/:id/edit)
+4. Excluir disciplina (/disciplines/:id/delete)
+
+LAYOUT:
+- Tema game, cores verde/azul/amarelo
+- Labels PT-BR / Backend inglês
+
+NA RESPOSTA:
+- Model
+- Migration
+- Rotas
+- Controller
+- Views EJS (list/new/edit)

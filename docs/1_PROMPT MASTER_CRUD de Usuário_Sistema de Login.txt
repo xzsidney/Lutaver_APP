@@ -1,0 +1,202 @@
+Você agora é um desenvolvedor fullstack especializado em sistemas web com autenticação.
+
+Quero que você crie a estrutura COMPLETA de:
+
+1. CRUD de USUÁRIOS
+2. Sistema de LOGIN / LOGOUT / AUTENTICAÇÃO
+
+para um projeto de jogo educacional chamado **Lutaver**.
+
+======================================================================
+🧱 1. STACK E ARQUITETURA
+======================================================================
+
+Use este stack (pode adaptar detalhes, mas mantendo a ideia):
+
+- Backend: Node.js + Express
+- View engine: EJS
+- Banco de dados: MySQL
+- ORM: Sequelize
+- Arquitetura: MVC (models, controllers, routes, views)
+- Sessões: express-session (ou similar)
+- Criptografia de senha: bcrypt (ou bcryptjs)
+
+Regra de idioma:
+- Código (models, controllers, routes, variáveis) em INGLÊS
+- Interface (labels, textos, botões) em PORTUGUÊS do Brasil
+
+======================================================================
+👤 2. MODEL USER (TABELA users)
+======================================================================
+
+Crie o model `User` com estes campos:
+
+- id: INTEGER, PK, auto-increment
+- name: STRING — nome completo do usuário
+- email: STRING — único (unique)
+- password_hash: STRING — senha criptografada (NUNCA guardar senha em texto puro)
+- role: STRING — papel do usuário (ex: "player", "admin", "teacher")
+- is_active: BOOLEAN — se o usuário está ativo
+- created_at, updated_at (padrão Sequelize)
+
+Regra:
+- Não armazenar senha em texto plano.
+- A senha deve ser recebida em texto plano no cadastro, mas convertida para `password_hash` com bcrypt.
+
+======================================================================
+🧩 3. FUNCIONALIDADES DE CRUD DE USUÁRIO
+======================================================================
+
+1. Listar usuários
+   - Rota: GET `/users`
+   - Mostrar: id, nome, email, role, status (ativo/inativo)
+   - Botões: Editar, Desativar/Ativar, Excluir (se fizer sentido)
+
+2. Criar usuário (via painel administrativo)
+   - Rota: GET `/users/new`
+   - Formulário com:
+     - Nome
+     - E-mail
+     - Senha
+     - Confirmação de senha
+     - Papel (select: player, admin, teacher)
+     - Ativo? (checkbox)
+   - Rota: POST `/users`
+   - Validar:
+     - e-mail único
+     - senha = confirmação
+   - Criptografar senha antes de salvar (`password_hash`)
+
+3. Editar usuário
+   - Rota: GET `/users/:id/edit`
+   - Pode alterar:
+     - nome
+     - email
+     - role
+     - is_active
+   - Rota: POST/PUT `/users/:id`
+   - Se for permitir troca de senha aqui, deixar claro no form.
+
+4. Excluir usuário
+   - Rota: POST/DELETE `/users/:id/delete`
+   - Pode comentar que em produção é melhor só desativar (`is_active` = false).
+
+5. Visualizar perfil individual (opcional)
+   - Rota: GET `/users/:id`
+   - Mostrar ficha básica do usuário.
+
+======================================================================
+🔐 4. SISTEMA DE LOGIN / LOGOUT / AUTENTICAÇÃO
+======================================================================
+
+Quero:
+
+1. Tela de Login
+   - Rota: GET `/login`
+   - Formulário:
+     - E-mail
+     - Senha
+     - (opcional) “Lembrar-me”
+   - Interface em PT-BR, com mensagens amigáveis.
+
+2. Processar Login
+   - Rota: POST `/login`
+   - Fluxo:
+     - Buscar usuário por e-mail.
+     - Verificar se é ativo.
+     - Comparar senha enviada com `password_hash` via bcrypt.
+     - Se falhar → voltar para `/login` com mensagem de erro (ex: "E-mail ou senha inválidos").
+     - Se sucesso → salvar dados na sessão (ex: `req.session.user = { id, name, role }`).
+
+3. Logout
+   - Rota: POST ou GET `/logout`
+   - Destruir a sessão e redirecionar para `/login`.
+
+4. Middleware de autenticação
+   - Um middleware `authMiddleware` que:
+     - verifica se `req.session.user` existe;
+     - se não existir, redireciona para `/login`.
+   - Um middleware `adminMiddleware` que:
+     - verifica se usuário logado possui `role = 'admin'`;
+     - caso contrário, redireciona para uma página de acesso negado.
+
+5. Proteção de rotas
+   - Rotas como `/users`, `/users/new`, etc. devem ser acessíveis apenas por admin.
+   - Rotas de jogo (ex: `/play`, `/characters`) podem exigir apenas usuário logado.
+
+======================================================================
+🎨 5. LAYOUT DAS PÁGINAS (EJS)
+======================================================================
+
+Quero exemplos de views EJS:
+
+1. login.ejs
+   - Formulário centralizado
+   - Título: “Entrar no Lutaver”
+   - Campos e botões em PT-BR:
+     - “E-mail”
+     - “Senha”
+     - Botão “Entrar”
+   - Exibir mensagem de erro, se houver (ex: `E-mail ou senha inválidos`).
+
+2. users/list.ejs
+   - Tabela de usuários
+   - Botão “Novo usuário”
+   - Colunas:
+     - Nome
+     - E-mail
+     - Papel
+     - Status
+     - Ações
+
+3. users/new.ejs
+   - Formulário de criação
+   - Labels PT-BR
+   - Select para papel
+   - Checkbox “Usuário ativo?”
+
+4. users/edit.ejs
+   - Similar ao `new.ejs`, mas com dados carregados.
+
+======================================================================
+🧠 6. VALIDAÇÕES E REGRAS EXTRAS
+======================================================================
+
+Peço que você inclua:
+
+- Validação de e-mail (formato e duplicidade).
+- Validação de senha mínima (ex: 6 ou 8 caracteres).
+- Tratamento de erros com mensagens amigáveis na interface.
+- Senhas sempre criptografadas com bcrypt.
+- Não expor `password_hash` em nenhuma view.
+
+======================================================================
+📂 7. O QUE EU QUERO NA RESPOSTA
+======================================================================
+
+Organize a resposta em seções claras, por exemplo:
+
+1. Estrutura de pastas sugerida (`src/models`, `src/controllers`, `src/routes`, `src/views`, etc.)
+2. Definição do model Sequelize `User`
+3. Migration da tabela `users`
+4. Arquivo de rotas:
+   - `/login`, `/logout`
+   - `/users/...`
+5. Middlewares:
+   - `authMiddleware`
+   - `adminMiddleware`
+6. Controllers:
+   - `authController` (login, logout)
+   - `userController` (CRUD)
+7. Views EJS:
+   - `login.ejs`
+   - `users/list.ejs`
+   - `users/new.ejs`
+   - `users/edit.ejs`
+8. Exemplos de como usar os middlewares nas rotas.
+9. Sugestões de melhorias futuras:
+   - recuperação de senha
+   - confirmação de e-mail
+   - bloqueio após muitas tentativas de login
+
+Pode responder com o código principal de cada arquivo e explicações curtas entre eles.

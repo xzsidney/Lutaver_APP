@@ -1,0 +1,135 @@
+Quero que você implemente no meu jogo educacional “Lutaver” a lógica completa para:
+✔ Aprovar ou reprovar o personagem na aventura
+✔ Bloquear a aventura após aprovação
+✔ Permitir repetir somente em caso de reprovação
+✔ Exigir 70% ou mais para considerar como aprovado
+
+====================================================================
+🧩 CONTEXTO
+====================================================================
+
+As aventuras são jogadas como quizzes:
+- Cada aventura possui várias questões.
+- O personagem tenta resolver todas.
+- No final, calcula-se o percentual de acertos.
+
+Estas aventuras pertencem ao personagem e podem ser feitas pela tela `/play`.
+
+====================================================================
+🎯 REGRAS PRINCIPAIS
+====================================================================
+
+1. O personagem **só passa** se tiver **>= 70% de acertos**.
+2. Se passar:
+   - A aventura é marcada como **concluída**.
+   - O personagem recebe XP + recompensas + afinidade.
+   - A aventura fica **bloqueada** (não pode jogar novamente).
+3. Se NÃO passar:
+   - NÃO ganha XP.
+   - NÃO ganha afinidade.
+   - NÃO marca como concluída.
+   - Pode repetir quantas vezes quiser.
+4. Ao tentar acessar novamente uma aventura concluída:
+   - Mostrar aviso: “Você já concluiu esta aventura.”
+   - Botão “Voltar”.
+   - Não permitir jogar novamente.
+
+====================================================================
+🛢️ BANCO DE DADOS
+====================================================================
+
+Crie uma tabela (ou use o modelo já existente):
+
+Table: `character_adventure_progress`
+Campos:
+- id
+- character_id
+- adventure_id
+- total_questions
+- correct_answers
+- percentage
+- is_completed (boolean)
+- createdAt, updatedAt
+
+Regras:
+- Deve existir **um único registro** por (character_id, adventure_id) após aprovação.
+- Antes da aprovação, múltiplas tentativas não salvam nada (ou salvam somente histórico secundário, se quiser).
+
+====================================================================
+🛠️ FLUXO QUE QUERO
+====================================================================
+
+1. Player clica em “Jogar Agora”.
+2. Backend verifica:
+   - Se já existe progress com is_completed = true
+     → Bloquear acesso
+3. Player faz o quiz normalmente.
+4. Ao finalizar:
+   - Calcular `percentage = correct_answers / total_questions * 100`.
+
+5. Se percentage >= 70:
+   - Criar registro `character_adventure_progress` com:
+       • percentage
+       • correct_answers
+       • total_questions
+       • is_completed = true
+   - Somar XP da aventura ao personagem
+   - Aumentar afinidade na disciplina
+   - Exibir tela de sucesso com:
+       • Parabéns!
+       • Percentual alcançado
+       • XP ganho
+       • Nova afinidade
+
+6. Se percentage < 70:
+   - NÃO criar progress
+   - NÃO dar XP
+   - NÃO dar afinidade
+   - Exibir tela:
+       “Você ainda não atingiu 70%. Tente novamente!”
+       com botão “Refazer Aventura”
+
+====================================================================
+📂 ROTAS NECESSÁRIAS
+====================================================================
+
+GET  /play/quiz/:adventureId/:characterId
+POST /play/quiz/:adventureId/:characterId/submit
+GET  /play/quiz/:adventureId/:characterId/result
+
+====================================================================
+📌 VALIDAÇÕES NO BACKEND
+====================================================================
+
+- Bloquear aventura se personagem já tiver progress salvo com is_completed = true.
+- Impedir manipulação de score pelo cliente.
+- Verificar integridade:
+   percentage deve ser calculado no backend.
+- Garantir que apenas o dono do personagem pode jogar.
+
+====================================================================
+🎨 AJUSTE NO FRONT-END (EJS)
+====================================================================
+
+Na página da aventura (`/play`):
+- Se aventura estiver concluída, mostrar selo:
+   ✔ “Concluída”
+- Remover botão “Jogar Agora” e substituir por:
+   “Aventura Concluída – Você já passou!”
+
+Na tela de resultado:
+- Se aprovado:
+   Mostrar card verde com XP.
+- Se reprovado:
+   Mostrar card vermelho com:
+   ❗ “Você acertou X de Y (Z%). Continue tentando!”
+   Botão “Refazer Aventura”.
+
+====================================================================
+🔐 REGRA FINAL
+====================================================================
+
+✔ O personagem só conclui a aventura uma vez  
+✔ Só recebe recompensas se acertar 70% ou mais  
+✔ Se reprovar, pode tentar de novo ilimitadamente  
+✔ Se aprovar, trava a aventura permanentemente  

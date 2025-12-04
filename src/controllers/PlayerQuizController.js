@@ -1,11 +1,11 @@
-const Adventure = require('../models/Adventure');
+const Quiz = require('../models/Quiz');
 const Character = require('../models/Character');
 const Question = require('../models/Question');
-const AdventureProgress = require('../models/AdventureProgress');
+const QuizProgress = require('../models/QuizProgress');
 const Discipline = require('../models/Discipline');
 
 module.exports = {
-    // Listar aventuras disponíveis
+    // Listar quizzes disponíveis
     async index(req, res) {
         try {
             const activeCharacterId = req.session.activeCharacterId;
@@ -15,36 +15,36 @@ module.exports = {
             }
 
             const character = await Character.findByPk(activeCharacterId);
-            const adventures = await Adventure.findAll({
+            const quizzes = await Quiz.findAll({
                 where: { is_active: true },
                 include: [{ model: Discipline, as: 'discipline' }],
                 order: [['difficulty', 'ASC']]
             });
 
             // Buscar progresso do personagem
-            const progress = await AdventureProgress.findAll({
+            const progress = await QuizProgress.findAll({
                 where: { character_id: activeCharacterId }
             });
 
-            const completedAdventureIds = progress
+            const completedQuizIds = progress
                 .filter(p => p.is_completed)
-                .map(p => p.adventure_id);
+                .map(p => p.quiz_id);
 
-            return res.render('player/adventure/index', {
+            return res.render('player/quizzes/index', {
                 layout: 'layouts/player',
-                title: 'Aventuras',
+                title: 'Quizzes',
                 user: req.session.user,
                 character,
-                adventures,
-                completedAdventureIds
+                quizzes,
+                completedQuizIds
             });
         } catch (error) {
-            console.error('Error loading adventures:', error);
-            return res.status(500).send('Erro ao carregar aventuras');
+            console.error('Error loading quizzes:', error);
+            return res.status(500).send('Erro ao carregar quizzes');
         }
     },
 
-    // Exibir detalhes da aventura
+    // Exibir detalhes do quiz
     async show(req, res) {
         try {
             const activeCharacterId = req.session.activeCharacterId;
@@ -55,35 +55,35 @@ module.exports = {
             }
 
             const character = await Character.findByPk(activeCharacterId);
-            const adventure = await Adventure.findByPk(id, {
+            const quiz = await Quiz.findByPk(id, {
                 include: [{ model: Discipline, as: 'discipline' }]
             });
 
-            if (!adventure) {
-                return res.status(404).send('Aventura não encontrada');
+            if (!quiz) {
+                return res.status(404).send('Quiz não encontrado');
             }
 
             // Verificar se já completou
-            const progress = await AdventureProgress.findOne({
+            const progress = await QuizProgress.findOne({
                 where: {
                     character_id: activeCharacterId,
-                    adventure_id: id,
+                    quiz_id: id,
                     is_completed: true
                 }
             });
 
-            return res.render('player/adventure/show', {
+            return res.render('player/quizzes/show', {
                 layout: 'layouts/player',
-                title: adventure.title,
+                title: quiz.title,
                 user: req.session.user,
                 character,
-                adventure,
+                quiz,
                 isCompleted: !!progress,
                 progress
             });
         } catch (error) {
-            console.error('Error loading adventure:', error);
-            return res.status(500).send('Erro ao carregar aventura');
+            console.error('Error loading quiz:', error);
+            return res.status(500).send('Erro ao carregar quiz');
         }
     },
 
@@ -98,24 +98,24 @@ module.exports = {
             }
 
             const character = await Character.findByPk(activeCharacterId);
-            const adventure = await Adventure.findByPk(id);
+            const quiz = await Quiz.findByPk(id);
 
-            if (!adventure) {
-                return res.status(404).send('Aventura não encontrada');
+            if (!quiz) {
+                return res.status(404).send('Quiz não encontrado');
             }
 
             // Buscar questões
             const questions = await Question.findAll({
-                where: { adventure_id: id }
+                where: { quiz_id: id }
             });
 
             if (questions.length === 0) {
-                return res.send('Esta aventura ainda não possui questões');
+                return res.send('Este quiz ainda não possui questões');
             }
 
             // Inicializar quiz na sessão
             req.session.quiz = {
-                adventureId: id,
+                quizId: id,
                 characterId: activeCharacterId,
                 questions: questions.map(q => q.toJSON()),
                 currentIndex: 0,
@@ -123,7 +123,7 @@ module.exports = {
                 answers: []
             };
 
-            return res.redirect(`/player/adventures/${id}/quiz`);
+            return res.redirect(`/player/quizzes/${id}/play`);
         } catch (error) {
             console.error('Error starting quiz:', error);
             return res.status(500).send('Erro ao iniciar quiz');
@@ -134,30 +134,30 @@ module.exports = {
     async showQuiz(req, res) {
         try {
             const { id } = req.params;
-            const quiz = req.session.quiz;
+            const quizSession = req.session.quiz;
 
-            if (!quiz || quiz.adventureId != id) {
-                return res.redirect(`/player/adventures/${id}`);
+            if (!quizSession || quizSession.quizId != id) {
+                return res.redirect(`/player/quizzes/${id}`);
             }
 
             // Se terminou, redirecionar para resultados
-            if (quiz.currentIndex >= quiz.questions.length) {
-                return res.redirect(`/player/adventures/${id}/results`);
+            if (quizSession.currentIndex >= quizSession.questions.length) {
+                return res.redirect(`/player/quizzes/${id}/results`);
             }
 
-            const character = await Character.findByPk(quiz.characterId);
-            const adventure = await Adventure.findByPk(id);
-            const currentQuestion = quiz.questions[quiz.currentIndex];
+            const character = await Character.findByPk(quizSession.characterId);
+            const quiz = await Quiz.findByPk(id);
+            const currentQuestion = quizSession.questions[quizSession.currentIndex];
 
-            return res.render('player/adventure/quiz', {
+            return res.render('player/quizzes/quiz', {
                 layout: 'layouts/player',
-                title: `Quiz - ${adventure.title}`,
+                title: `Quiz - ${quiz.title}`,
                 user: req.session.user,
                 character,
-                adventure,
+                quiz,
                 question: currentQuestion,
-                questionIndex: quiz.currentIndex + 1,
-                totalQuestions: quiz.questions.length
+                questionIndex: quizSession.currentIndex + 1,
+                totalQuestions: quizSession.questions.length
             });
         } catch (error) {
             console.error('Error showing quiz:', error);
@@ -170,35 +170,35 @@ module.exports = {
         try {
             const { id } = req.params;
             const { answer } = req.body;
-            const quiz = req.session.quiz;
+            const quizSession = req.session.quiz;
 
-            if (!quiz || quiz.adventureId != id) {
-                return res.redirect(`/player/adventures/${id}`);
+            if (!quizSession || quizSession.quizId != id) {
+                return res.redirect(`/player/quizzes/${id}`);
             }
 
-            const currentQuestion = quiz.questions[quiz.currentIndex];
+            const currentQuestion = quizSession.questions[quizSession.currentIndex];
             const isCorrect = answer === currentQuestion.correct_option;
 
             if (isCorrect) {
-                quiz.score++;
+                quizSession.score++;
             }
 
-            quiz.answers.push({
+            quizSession.answers.push({
                 questionId: currentQuestion.id,
                 userAnswer: answer,
                 correctAnswer: currentQuestion.correct_option,
                 isCorrect
             });
 
-            quiz.currentIndex++;
+            quizSession.currentIndex++;
 
             // Se terminou, redirecionar para resultados
-            if (quiz.currentIndex >= quiz.questions.length) {
-                return res.redirect(`/player/adventures/${id}/results`);
+            if (quizSession.currentIndex >= quizSession.questions.length) {
+                return res.redirect(`/player/quizzes/${id}/results`);
             }
 
             // Próxima questão
-            return res.redirect(`/player/adventures/${id}/quiz`);
+            return res.redirect(`/player/quizzes/${id}/play`);
         } catch (error) {
             console.error('Error submitting answer:', error);
             return res.status(500).send('Erro ao processar resposta');
@@ -209,32 +209,32 @@ module.exports = {
     async showResults(req, res) {
         try {
             const { id } = req.params;
-            const quiz = req.session.quiz;
+            const quizSession = req.session.quiz;
 
-            if (!quiz || quiz.adventureId != id) {
-                return res.redirect(`/player/adventures/${id}`);
+            if (!quizSession || quizSession.quizId != id) {
+                return res.redirect(`/player/quizzes/${id}`);
             }
 
-            const character = await Character.findByPk(quiz.characterId);
-            const adventure = await Adventure.findByPk(id);
+            const character = await Character.findByPk(quizSession.characterId);
+            const quiz = await Quiz.findByPk(id);
 
-            const percentage = (quiz.score / quiz.questions.length) * 100;
+            const percentage = (quizSession.score / quizSession.questions.length) * 100;
             const PASS_THRESHOLD = 70;
             const isPassed = percentage >= PASS_THRESHOLD;
 
             let xpEarned = 0;
             let coinsEarned = 0;
 
-            if (isPassed && !quiz.saved) {
-                xpEarned = adventure.reward_xp || 100;
-                coinsEarned = adventure.reward_item || 50;
+            if (isPassed && !quizSession.saved) {
+                xpEarned = quiz.reward_xp || 100;
+                coinsEarned = quiz.reward_coins || 50;
 
                 // Salvar progresso
-                await AdventureProgress.create({
-                    character_id: quiz.characterId,
-                    adventure_id: id,
-                    total_questions: quiz.questions.length,
-                    correct_answers: quiz.score,
+                await QuizProgress.create({
+                    character_id: quizSession.characterId,
+                    quiz_id: id,
+                    total_questions: quizSession.questions.length,
+                    correct_answers: quizSession.score,
                     percentage: percentage,
                     is_completed: true,
                     xp_earned: xpEarned
@@ -245,17 +245,17 @@ module.exports = {
                 character.coins = (character.coins || 0) + coinsEarned;
                 await character.save();
 
-                quiz.saved = true;
+                quizSession.saved = true;
             }
 
-            return res.render('player/adventure/results', {
+            return res.render('player/quizzes/results', {
                 layout: 'layouts/player',
                 title: 'Resultados',
                 user: req.session.user,
                 character,
-                adventure,
-                score: quiz.score,
-                total: quiz.questions.length,
+                quiz,
+                score: quizSession.score,
+                total: quizSession.questions.length,
                 percentage,
                 isPassed,
                 xpEarned,

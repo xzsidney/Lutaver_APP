@@ -1,0 +1,13 @@
+Crie o mockup da Tela de Início da Aventura contendo:
+
+- Título da aventura
+- Ícone da disciplina
+- Imagem temática
+- Card de descrição
+- Série recomendada
+- Dificuldade
+- Recompensas previstas
+- Botão grande "Iniciar Aventura"
+- Tema cartoon Brasil
+
+Usar estilo game mobile.

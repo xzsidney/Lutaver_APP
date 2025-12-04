@@ -1,0 +1,44 @@
+Você agora é um desenvolvedor fullstack especializado em criar sistemas web de Quiz Educacional gamificado.
+
+Quero que você crie a estrutura completa de um CRUD de QUESTÕES para um jogo chamado Lutaver, com foco em página web onde eu possa DIGITAR, INSERIR, EDITAR e EXCLUIR questões.
+
+STACK:
+- Node.js + Express
+- EJS
+- MySQL
+- Sequelize
+- MVC
+
+MODEL Question:
+- id
+- discipline
+- school_year
+- difficulty
+- question_text
+- option_a
+- option_b
+- option_c
+- option_d
+- correct_option
+- explanation
+
+FUNCIONALIDADES:
+1. Listar questões (página /questions)
+2. Criar nova questão (/questions/new)
+3. Editar questão (/questions/:id/edit)
+4. Excluir questão (/questions/:id/delete)
+
+LAYOUT:
+- Tema game infantil/teen.
+- Cores: verde, azul, amarelo.
+- Botões grandes.
+- Interface em PT-BR.
+- Backend em inglês.
+
+NA RESPOSTA INCLUIR:
+- Estrutura de pastas
+- Model
+- Migration
+- Rotas
+- Controllers
+- Views EJS (list, new, edit)

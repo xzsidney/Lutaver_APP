@@ -1,0 +1,12 @@
+Crie o mockup cartoon da Tela de Vitória do Quiz:
+
+- Fundo alegre
+- Card central com medalha
+- Texto “Parabéns! Você concluiu o Quiz!”
+- Lista de recompensas:
+  - XP ganho
+  - Afinidade aumentada
+  - Item recebido
+- Botão “Próxima Aventura”
+- Cores verde/amarelo/azul
+- Estilo gamificado

@@ -31,12 +31,12 @@ app.use(bodyParser.json());
    3. SESSION (PRECISA VIR ANTES DO setUserLayout)
    ============================================================ */
 app.use(session({
-    secret: process.env.SESSION_SECRET || 'lutaver_secret_key',
-    resave: false,
-    saveUninitialized: false,
-    cookie: {
-        maxAge: 1000 * 60 * 60 * 24 // 24h
-    }
+   secret: process.env.SESSION_SECRET || 'lutaver_secret_key',
+   resave: false,
+   saveUninitialized: false,
+   cookie: {
+      maxAge: 1000 * 60 * 60 * 24 // 24h
+   }
 }));
 
 /* ============================================================
@@ -61,28 +61,45 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 // Models principais
 const Discipline = require('./models/Discipline');
-const Adventure = require('./models/Adventure');
+const Quiz = require('./models/Quiz');
 const Scene = require('./models/Scene');
 const Question = require('./models/Question');
 
-// RELACIONAMENTOS: Adventures ↔ Discipline
-Adventure.belongsTo(Discipline, { foreignKey: 'discipline_id', as: 'discipline' });
-Discipline.hasMany(Adventure, { foreignKey: 'discipline_id', as: 'adventures' });
+// RELACIONAMENTOS: Quizzes ↔ Discipline
+Quiz.belongsTo(Discipline, { foreignKey: 'discipline_id', as: 'discipline' });
+Discipline.hasMany(Quiz, { foreignKey: 'discipline_id', as: 'quizzes' });
 
-// RELACIONAMENTOS: Scenes ↔ Adventure
-Scene.belongsTo(Adventure, { foreignKey: 'adventure_id', as: 'adventure' });
-Adventure.hasMany(Scene, { foreignKey: 'adventure_id', as: 'scenes' });
+// RELACIONAMENTOS: Scenes ↔ Quiz (Legacy Adventure support if needed, but Scenes are for Stories usually? Wait, the context says Adventure = Quiz, Story = Story. Does Adventure have scenes? The user said "Story = funcionalidade onde o jogador vive uma história com escolhas, testes e cenas". Adventure = Quiz. So Adventure should NOT have scenes. But app.js has `Scene.belongsTo(Adventure)`. This might be legacy or confusion. The user said "Story = sistema RPG narrativo (já implementado com stories/scenes)". 
+// However, looking at app.js: `Scene` seems to be different from `StoryScene`. `StoryScene` is for `Story`. `Scene` is for `Adventure`?
+// Let's check `Scene.js`. If `Scene` is part of the old "Adventure" system that is becoming "Quiz", does a Quiz have Scenes?
+// The user said "Adventure" is just a quiz. "Story" is the narrative one.
+// If `Scene` is linked to `Adventure`, and `Adventure` becomes `Quiz`, maybe `Scene` should be removed or refactored?
+// But the user said "NÃO apagar dados".
+// If `Scene` is used in Adventure, maybe I should rename it to `QuizScene`? Or maybe it's not used?
+// Let's look at `Scene.js` content later. For now, I will rename `Adventure` to `Quiz` in the association.
+// If `Scene` belongs to `Adventure`, it now belongs to `Quiz`.
+// But wait, `Scene` might be the old name for `StoryScene`? No, `StoryScene` exists.
+// I will assume `Scene` is part of the Adventure system and should be linked to `Quiz`.
+// But a Quiz usually doesn't have scenes.
+// The user said: "Adventure = funcionalidade onde o jogador responde perguntas (quiz)".
+// Maybe `Scene` is not used in the new "Quiz" concept.
+// But I should probably keep the association valid for now, just renamed.
+// So `Scene.belongsTo(Quiz)`.
+
+// RELACIONAMENTOS: Scenes ↔ Quiz
+Scene.belongsTo(Quiz, { foreignKey: 'quiz_id', as: 'quiz' });
+Quiz.hasMany(Scene, { foreignKey: 'quiz_id', as: 'scenes' });
 
 // SELF-REFERENCING: scene success/failure
 Scene.belongsTo(Scene, { foreignKey: 'success_scene_id', as: 'successScene' });
 Scene.belongsTo(Scene, { foreignKey: 'failure_scene_id', as: 'failureScene' });
 
-// RELACIONAMENTOS: Questions ↔ Discipline / Adventure
+// RELACIONAMENTOS: Questions ↔ Discipline / Quiz
 Question.belongsTo(Discipline, { foreignKey: 'discipline_id', as: 'discipline' });
 Discipline.hasMany(Question, { foreignKey: 'discipline_id', as: 'questions' });
 
-Question.belongsTo(Adventure, { foreignKey: 'adventure_id', as: 'adventure' });
-Adventure.hasMany(Question, { foreignKey: 'adventure_id', as: 'questions' });
+Question.belongsTo(Quiz, { foreignKey: 'quiz_id', as: 'quiz' });
+Quiz.hasMany(Question, { foreignKey: 'quiz_id', as: 'questions' });
 
 // CHARACTER SYSTEM
 const Character = require('./models/Character');
@@ -110,12 +127,12 @@ Character.belongsToMany(Power, { through: CharacterPower, foreignKey: 'character
 Power.belongsToMany(Character, { through: CharacterPower, foreignKey: 'power_id', as: 'characters' });
 Character.hasMany(CharacterPower, { foreignKey: 'character_id' });
 
-// ADVENTURE PROGRESS
-const AdventureProgress = require('./models/AdventureProgress');
-Character.hasMany(AdventureProgress, { foreignKey: 'character_id', as: 'progress' });
-AdventureProgress.belongsTo(Character, { foreignKey: 'character_id', as: 'character' });
-Adventure.hasMany(AdventureProgress, { foreignKey: 'adventure_id', as: 'progress' });
-AdventureProgress.belongsTo(Adventure, { foreignKey: 'adventure_id', as: 'adventure' });
+// QUIZ PROGRESS
+const QuizProgress = require('./models/QuizProgress');
+Character.hasMany(QuizProgress, { foreignKey: 'character_id', as: 'quizProgress' });
+QuizProgress.belongsTo(Character, { foreignKey: 'character_id', as: 'character' });
+Quiz.hasMany(QuizProgress, { foreignKey: 'quiz_id', as: 'progress' });
+QuizProgress.belongsTo(Quiz, { foreignKey: 'quiz_id', as: 'quiz' });
 
 // EFFECT SYSTEM
 const Effect = require('./models/Effect');
@@ -177,14 +194,14 @@ app.use('/', routes);
    9. SYNC + START
    ============================================================ */
 sequelize.sync()
-    .then(() => {
-        console.log('✅ Database connected and synchronized');
-        const HOST = process.env.HOST || '0.0.0.0';
-        app.listen(PORT, HOST, () => {
-            console.log(`🚀 Server running on http://localhost:${PORT}`);
-            console.log(`🎮 Lutaver is ready!`);
-        });
-    })
-    .catch(err => {
-        console.error('❌ Database connection error:', err);
-    });
+   .then(() => {
+      console.log('✅ Database connected and synchronized');
+      const HOST = process.env.HOST || '0.0.0.0';
+      app.listen(PORT, HOST, () => {
+         console.log(`🚀 Server running on http://localhost:${PORT}`);
+         console.log(`🎮 Lutaver is ready!`);
+      });
+   })
+   .catch(err => {
+      console.error('❌ Database connection error:', err);
+   });

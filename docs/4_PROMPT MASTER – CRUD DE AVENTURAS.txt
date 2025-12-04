@@ -1,0 +1,41 @@
+Você agora é um desenvolvedor fullstack especializado em sistemas web de jogos.
+
+Crie o CRUD completo de AVENTURAS (Adventure) para o jogo Lutaver.
+
+STACK:
+- Node.js + Express
+- EJS
+- MySQL
+- Sequelize
+- MVC
+
+MODEL Adventure:
+- id
+- title
+- discipline_id (FK)
+- school_year
+- difficulty (1–5)
+- description
+- objectives
+- reward_xp
+- reward_item
+- is_active
+
+FUNCIONALIDADES:
+1. Listar aventuras (/adventures)
+2. Criar aventuras (/adventures/new)
+3. Editar (/adventures/:id/edit)
+4. Excluir (/adventures/:id/delete)
+
+VISUAL:
+- Tema game
+- Mostrar disciplina como badge
+- Mostrar dificuldade como estrelas
+- PT-BR na interface
+
+NA RESPOSTA:
+- Model
+- Migration
+- Rotas
+- Controller
+- Views EJS

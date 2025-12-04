@@ -1,0 +1,166 @@
+Você agora é um desenvolvedor fullstack especializado em autenticação e controle de acesso (RBAC – Role-Based Access Control).
+
+Quero que você crie um **sistema de perfis (roles)** com permissões diferentes para um projeto de jogo educacional chamado **Lutaver**.
+
+======================================================================
+🧱 1. STACK E ARQUITETURA
+======================================================================
+
+Use este stack (pode adaptar detalhes se necessário, mas mantenha a ideia):
+
+- Backend: Node.js + Express
+- View engine: EJS
+- Banco de dados: MySQL
+- ORM: Sequelize
+- Sessão: express-session
+- Arquitetura: MVC (models, controllers, routes, views)
+
+Regras de idioma:
+- Código (files, models, controllers, variáveis) em INGLÊS
+- Interface do usuário (telas, labels, mensagens) em PORTUGUÊS do Brasil
+
+Assuma que já existe:
+- Model `User` com campo `role` (string)
+
+======================================================================
+👥 2. PERFIS (ROLES) DO SISTEMA
+======================================================================
+
+Quero três perfis básicos:
+
+1. **admin**
+   - Acesso total ao sistema
+   - Pode gerenciar usuários, disciplinas, aventuras, cenas, questões, etc.
+
+2. **teacher** (professor)
+   - Pode:
+     - ver lista de alunos/players (sem acesso total de usuário)
+     - criar e gerenciar questões (questions)
+     - criar e gerenciar aventuras (adventures) ligadas às suas disciplinas
+     - ver resultados de quizzes dos alunos
+   - NÃO pode:
+     - gerenciar outros admins
+     - deletar tudo no sistema (limitações em relação ao admin)
+
+3. **player** (aluno)
+   - Pode:
+     - jogar o quiz
+     - ver seu próprio personagem
+     - ver suas aventuras, progresso, XP, afinidades, etc.
+   - NÃO pode:
+     - acessar CRUD de usuários
+     - acessar painel administrativo
+     - cadastrar novas disciplinas, aventuras globais, etc.
+
+======================================================================
+🔐 3. SISTEMA DE AUTORIZAÇÃO (MIDDLEWARES)
+======================================================================
+
+Crie middlewares para controlar acesso:
+
+1. `authMiddleware`
+   - Verifica se o usuário está logado (existe `req.session.user`)
+   - Se não estiver logado → redirecionar para `/login`
+
+2. `roleMiddleware` ou middlewares específicos
+   Sugestão A (genérico):
+   - Um middleware `roleMiddleware(requiredRoles)` que recebe uma lista de roles permitidos.
+   - Exemplo: `roleMiddleware(['admin'])`, `roleMiddleware(['admin', 'teacher'])`
+   - Se o usuário logado NÃO tiver um dos perfis da lista → retornar 403 ou redirecionar para página "Acesso negado".
+
+   Sugestão B (específicos, se preferir):
+   - `adminOnlyMiddleware`
+   - `teacherOrAdminMiddleware`
+   - `playerOnlyMiddleware`
+
+Quero que você implemente **pelo menos uma solução** de middleware para roles (pode ser a A ou a B, você escolhe, mas explique qual usou).
+
+======================================================================
+🗺️ 4. EXEMPLOS DE ROTAS E PERMISSÕES
+======================================================================
+
+Crie exemplos práticos de rotas com proteção:
+
+1. Rotas administrativas (apenas admin)
+   - `/admin/dashboard`
+   - `/users` (CRUD de usuários)
+   - `/disciplines` (CRUD global de disciplinas)
+   - `/system/settings` (opcional)
+
+2. Rotas de professor (teacher + admin)
+   - `/teacher/dashboard`
+   - `/questions` (CRUD de questões)
+   - `/adventures` (CRUD de aventuras)
+   - `/reports/quizzes` (ver resultados dos alunos)
+
+3. Rotas de jogador (player + teacher + admin – qualquer logado)
+   - `/play`
+   - `/characters/me`
+   - `/play/quiz/:adventureId`
+   - `/profile`
+
+Peço que você:
+
+- Mostre como usar os middlewares nas rotas (exemplo em `routes/*.js`)
+- Deixe claro qual rota é para qual tipo de role
+
+======================================================================
+🎨 5. INTERFACE (EJS) – EXEMPLOS IMPORTANTES
+======================================================================
+
+Crie exemplos simples de views EJS:
+
+1. Navbar / Menu condicional
+   - Mostrar opções diferentes dependendo do `role` do usuário:
+
+   Em pseudocódigo EJS:
+   - Se `role === 'admin'` → mostrar link "Administração"
+   - Se `role === 'teacher'` → mostrar link "Painel do Professor"
+   - Se `role === 'player'` → mostrar link "Minhas Aventuras"
+
+2. Página de acesso negado
+   - Exemplo: `views/errors/accessDenied.ejs`
+   - Mensagem em PT-BR, ex:
+     - "Você não tem permissão para acessar esta área."
+   - Botão "Voltar para a página inicial"
+
+3. Dashboard simples para cada papel:
+   - `views/dashboard/admin.ejs`
+   - `views/dashboard/teacher.ejs`
+   - `views/dashboard/player.ejs`
+
+Mostre, pelo menos, trechos de EJS demonstrando como acessar `user.role` na view.
+
+======================================================================
+🧠 6. VALIDAÇÕES E DETALHES IMPORTANTES
+======================================================================
+
+- Ao criar usuário, definir `role` com valor padrão 'player' (quando não especificado).
+- Em ROTAS de CRUD de usuário, apenas admin pode alterar `role`.
+- Professores e players NÃO podem se promover para admin.
+- Se um usuário estiver `is_active = false`, trate como se estivesse bloqueado (não loga).
+
+======================================================================
+📂 7. O QUE EU QUERO NA RESPOSTA
+======================================================================
+
+Organize sua resposta em seções:
+
+1. Atualização do model `User` (garantindo campo `role`)
+2. Middlewares:
+   - `authMiddleware`
+   - `roleMiddleware` (ou variações específicas)
+3. Exemplo de rotas com proteção por role:
+   - admin
+   - teacher
+   - player
+4. Exemplos de views EJS:
+   - Navbar condicional por role
+   - Página de acesso negado
+   - Dashboard simples por role
+5. Explicação de como o `user` e o `role` ficam salvos em `req.session.user`.
+6. Sugestões de melhorias futuras:
+   - Sistema de permissões mais granular (tabela permissions)
+   - Logs de auditoria para ações de admin.
+
+Pode responder com o código dos arquivos principais (models, middlewares, routes, views) e explicações curtas entre eles.
