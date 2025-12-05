@@ -84,6 +84,17 @@ const StoryProgress = sequelize.define('StoryProgress', {
         allowNull: false,
         defaultValue: 0,
         comment: 'Number of scenes visited in this playthrough'
+    },
+    time_remaining: {
+        type: DataTypes.INTEGER,
+        allowNull: true,
+        comment: 'Tempo restante em minutos (inicia com 480)'
+    },
+    locations_visited: {
+        type: DataTypes.JSON,
+        allowNull: true,
+        defaultValue: [],
+        comment: 'Array de scene_ids visitados'
     }
 }, {
     tableName: 'story_progress',

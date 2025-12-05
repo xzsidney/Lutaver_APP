@@ -18,4 +18,7 @@ router.post('/:storyId/choice/:choiceId', PlayerStoryController.choose);
 // Tela de finalização
 router.get('/:storyId/finish', PlayerStoryController.finish);
 
+// Tela de timeout (tempo esgotado)
+router.get('/:storyId/timeout', PlayerStoryController.timeout);
+
 module.exports = router;

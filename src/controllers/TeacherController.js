@@ -1,4 +1,4 @@
-const Adventure = require('../models/Adventure');
+const Quiz = require('../models/Quiz');
 const Question = require('../models/Question');
 const Discipline = require('../models/Discipline');
 const User = require('../models/User');
@@ -9,10 +9,9 @@ const TeacherController = {
     dashboard: async (req, res) => {
         try {
             const stats = {
-                adventuresCount: await Adventure.count(),
+                quizzesCount: await Quiz.count(),
                 questionsCount: await Question.count(),
-                studentsCount: await User.count({ where: { role: 'player' } }),
-                quizzesCount: 0 // Placeholder
+                studentsCount: await User.count({ where: { role: 'player' } })
             };
             res.render('teacher/dashboard', { user: req.session.user, stats });
         } catch (error) {
@@ -21,8 +20,8 @@ const TeacherController = {
         }
     },
 
-    // --- Adventures ---
-    listAdventures: async (req, res) => {
+    // --- Quizzes ---
+    listQuizzes: async (req, res) => {
         try {
             const { discipline_id, school_year, is_active } = req.query;
             const where = {};
@@ -30,75 +29,75 @@ const TeacherController = {
             if (school_year) where.school_year = school_year;
             if (is_active) where.is_active = is_active === '1';
 
-            const adventures = await Adventure.findAll({
+            const quizzes = await Quiz.findAll({
                 where,
                 include: [{ model: Discipline, as: 'discipline' }],
                 order: [['createdAt', 'DESC']]
             });
             const disciplines = await Discipline.findAll({ where: { is_active: true } });
 
-            res.render('teacher/adventures/index', { adventures, disciplines, user: req.session.user });
+            res.render('teacher/quizzes/index', { quizzes, disciplines, user: req.session.user });
         } catch (error) {
             console.error(error);
-            res.status(500).send('Erro ao listar aventuras');
+            res.status(500).send('Erro ao listar quizzes');
         }
     },
 
-    createAdventurePage: async (req, res) => {
+    createQuizPage: async (req, res) => {
         const disciplines = await Discipline.findAll({ where: { is_active: true } });
-        res.render('teacher/adventures/form', { adventure: null, disciplines, user: req.session.user });
+        res.render('teacher/quizzes/form', { quiz: null, disciplines, user: req.session.user });
     },
 
-    createAdventure: async (req, res) => {
+    createQuiz: async (req, res) => {
         try {
             const { title, discipline_id, school_year, difficulty, description, objectives, xp_reward, item_reward, is_active } = req.body;
-            await Adventure.create({
+            await Quiz.create({
                 title, discipline_id, school_year, difficulty, description, objectives,
                 reward_xp: xp_reward, reward_item: item_reward, is_active: is_active === 'on'
             });
-            res.redirect('/teacher/adventures');
+            res.redirect('/teacher/quizzes');
         } catch (error) {
             console.error(error);
-            res.redirect('/teacher/adventures/new');
+            res.redirect('/teacher/quizzes/new');
         }
     },
 
-    editAdventurePage: async (req, res) => {
+    editQuizPage: async (req, res) => {
         try {
-            const adventure = await Adventure.findByPk(req.params.id);
+            const quiz = await Quiz.findByPk(req.params.id);
             const disciplines = await Discipline.findAll({ where: { is_active: true } });
-            res.render('teacher/adventures/form', { adventure, disciplines, user: req.session.user });
+            res.render('teacher/quizzes/form', { quiz, disciplines, user: req.session.user });
         } catch (error) {
-            res.redirect('/teacher/adventures');
+            res.redirect('/teacher/quizzes');
         }
     },
 
-    updateAdventure: async (req, res) => {
+    updateQuiz: async (req, res) => {
         try {
             const { id } = req.params;
             const { title, discipline_id, school_year, difficulty, description, objectives, xp_reward, item_reward, is_active } = req.body;
-            await Adventure.update({
+            await Quiz.update({
                 title, discipline_id, school_year, difficulty, description, objectives,
                 reward_xp: xp_reward, reward_item: item_reward, is_active: is_active === 'on'
             }, { where: { id } });
-            res.redirect('/teacher/adventures');
+            res.redirect('/teacher/quizzes');
         } catch (error) {
-            res.redirect(`/teacher/adventures/${req.params.id}/edit`);
+            res.redirect(`/teacher/quizzes/${req.params.id}/edit`);
         }
     },
 
-    deleteAdventure: async (req, res) => {
-        await Adventure.destroy({ where: { id: req.params.id } });
-        res.redirect('/teacher/adventures');
+    deleteQuiz: async (req, res) => {
+        await Quiz.destroy({ where: { id: req.params.id } });
+        res.redirect('/teacher/quizzes');
     },
 
     // --- Questions ---
     listQuestions: async (req, res) => {
         try {
-            const { discipline_id, adventure_id, school_year, difficulty } = req.query;
+            const { discipline_id, quiz_id, school_year, difficulty } = req.query;
             const where = {};
             if (discipline_id) where.discipline_id = discipline_id;
-            if (adventure_id) where.adventure_id = adventure_id;
+            if (quiz_id) where.quiz_id = quiz_id;
             if (school_year) where.school_year = school_year;
             if (difficulty) where.difficulty = difficulty;
 
@@ -106,14 +105,14 @@ const TeacherController = {
                 where,
                 include: [
                     { model: Discipline, as: 'discipline' },
-                    { model: Adventure, as: 'adventure' }
+                    { model: Quiz, as: 'quiz' }
                 ],
                 order: [['createdAt', 'DESC']]
             });
             const disciplines = await Discipline.findAll({ where: { is_active: true } });
-            const adventures = await Adventure.findAll({ where: { is_active: true } });
+            const quizzes = await Quiz.findAll({ where: { is_active: true } });
 
-            res.render('teacher/questions/index', { questions, disciplines, adventures, user: req.session.user });
+            res.render('teacher/questions/index', { questions, disciplines, quizzes, user: req.session.user });
         } catch (error) {
             console.error(error);
             res.status(500).send('Erro ao listar questões');
@@ -122,8 +121,8 @@ const TeacherController = {
 
     createQuestionPage: async (req, res) => {
         const disciplines = await Discipline.findAll({ where: { is_active: true } });
-        const adventures = await Adventure.findAll({ where: { is_active: true } });
-        res.render('teacher/questions/form', { question: null, disciplines, adventures, user: req.session.user });
+        const quizzes = await Quiz.findAll({ where: { is_active: true } });
+        res.render('teacher/questions/form', { question: null, disciplines, quizzes, user: req.session.user });
     },
 
     createQuestion: async (req, res) => {
@@ -140,8 +139,8 @@ const TeacherController = {
         try {
             const question = await Question.findByPk(req.params.id);
             const disciplines = await Discipline.findAll({ where: { is_active: true } });
-            const adventures = await Adventure.findAll({ where: { is_active: true } });
-            res.render('teacher/questions/form', { question, disciplines, adventures, user: req.session.user });
+            const quizzes = await Quiz.findAll({ where: { is_active: true } });
+            res.render('teacher/questions/form', { question, disciplines, quizzes, user: req.session.user });
         } catch (error) {
             res.redirect('/teacher/questions');
         }
@@ -201,28 +200,28 @@ const TeacherController = {
         res.render('teacher/reports/students', { students: studentsWithStats, user: req.session.user });
     },
 
-    reportAdventures: async (req, res) => {
-        const adventures = await Adventure.findAll({
+    reportQuizzes: async (req, res) => {
+        const quizzes = await Quiz.findAll({
             include: [{ model: Discipline, as: 'discipline' }]
         });
 
-        const adventureStats = adventures.map(adv => ({
-            id: adv.id,
-            title: adv.title,
-            discipline_name: adv.discipline ? adv.discipline.name : 'Geral',
-            color_theme: adv.discipline ? adv.discipline.color_theme : '#6c757d',
+        const quizStats = quizzes.map(quiz => ({
+            id: quiz.id,
+            title: quiz.title,
+            discipline_name: quiz.discipline ? quiz.discipline.name : 'Geral',
+            color_theme: quiz.discipline ? quiz.discipline.color_theme : '#6c757d',
             players_count: Math.floor(Math.random() * 50), // Mock
             avg_accuracy: Math.floor(Math.random() * 100) // Mock
         }));
 
-        res.render('teacher/reports/adventures', { adventureStats, user: req.session.user });
+        res.render('teacher/reports/quizzes', { quizStats, user: req.session.user });
     },
 
     reportQuestions: async (req, res) => {
         const questions = await Question.findAll({
             include: [
                 { model: Discipline, as: 'discipline' },
-                { model: Adventure, as: 'adventure' }
+                { model: Quiz, as: 'quiz' }
             ],
             limit: 20
         });
@@ -231,7 +230,7 @@ const TeacherController = {
             id: q.id,
             question_text: q.question_text,
             discipline_name: q.discipline ? q.discipline.name : 'Geral',
-            adventure_title: q.adventure ? q.adventure.title : null,
+            quiz_title: q.quiz ? q.quiz.title : null,
             attempts: Math.floor(Math.random() * 100), // Mock
             accuracy_rate: Math.floor(Math.random() * 100) // Mock
         }));

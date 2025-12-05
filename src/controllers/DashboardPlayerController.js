@@ -1,5 +1,5 @@
 const Character = require('../models/Character');
-const Adventure = require('../models/Adventure');
+const Quiz = require('../models/Quiz');
 const Story = require('../models/Story');
 const Discipline = require('../models/Discipline');
 
@@ -22,8 +22,8 @@ module.exports = {
                 activeCharacter = await Character.findByPk(activeCharacterId);
             }
 
-            // Get available adventures
-            const adventures = await Adventure.findAll({
+            // Get available quizzes
+            const quizzes = await Quiz.findAll({
                 where: { is_active: true },
                 include: [{ model: Discipline, as: 'discipline' }],
                 limit: 8,
@@ -49,7 +49,7 @@ module.exports = {
                 user: req.session.user,
                 characters,
                 activeCharacter,
-                adventures,
+                quizzes,
                 stories
             });
         } catch (error) {

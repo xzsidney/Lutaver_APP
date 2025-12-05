@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tempo Esgotado - <%= story.title %>
+    </title>
+    <link rel="stylesheet" href="/css/player-style.css">
+</head>
+
+<body>
+    <div class="player-container">
+        <div class="timeout-container">
+            <!-- Header de Timeout -->
+            <div class="timeout-header">
+                <div class="timeout-icon">⏰</div>
+                <h1 class="timeout-title">O Tempo Acabou!</h1>
+            </div>
+
+            <!-- Mensagem Principal -->
+            <div class="timeout-message">
+                <p class="timeout-text">
+                    O horário da escola acabou antes de você concluir sua jornada.
+                    Você volta para casa, sabendo que amanhã pode tentar novamente!
+                </p>
+            </div>
+
+            <!-- Info da História -->
+            <div class="story-info-card">
+                <h3>📖 <%= story.title %>
+                </h3>
+                <p>
+                    <%= story.description %>
+                </p>
+            </div>
+
+            <!-- Dicas para Próxima Tentativa -->
+            <div class="tips-card">
+                <h4>💡 Dicas para a Próxima Vez:</h4>
+                <ul>
+                    <li>Preste atenção nas <strong>dicas</strong> de cada cena</li>
+                    <li>Evite escolhas erradas que fazem você perder tempo</li>
+                    <li>Aumente seus <strong>atributos</strong> para passar nos testes mais facilmente</li>
+                    <li>Planeje sua rota com antecedência</li>
+                </ul>
+            </div>
+
+            <!-- Botões de Ação -->
+            <div class="action-buttons">
+                <a href="/player/stories/<%= story.id %>/play?restart=true" class="btn-retry">
+                    🔄 Tentar Novamente
+                </a>
+                <a href="/player/stories" class="btn-stories">
+                    📚 Ver Outras Histórias
+                </a>
+                <a href="/player/dashboard" class="btn-dashboard">
+                    🏠 Voltar ao Dashboard
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .player-container {
+            width: 100%;
+            max-width: 700px;
+            padding: 20px;
+        }
+
+        .timeout-container {
+            background: #FFFFFF;
+            border-radius: 20px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+            overflow: hidden;
+        }
+
+        /* Header */
+        .timeout-header {
+            background: linear-gradient(135deg, #FF6B6B 0%, #FF8E53 100%);
+            color: #FFFFFF;
+            text-align: center;
+            padding: 40px 20px;
+        }
+
+        .timeout-icon {
+            font-size: 4rem;
+            margin-bottom: 15px;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+
+            0%,
+            100% {
+                transform: scale(1);
+            }
+
+            50% {
+                transform: scale(1.1);
+            }
+        }
+
+        .timeout-title {
+            font-size: 2rem;
+            font-weight: 700;
+            margin: 0;
+        }
+
+        /* Message */
+        .timeout-message {
+            padding: 30px;
+            text-align: center;
+            background: #FFF3E0;
+            border-left: 5px solid #FF9800;
+        }
+
+        .timeout-text {
+            font-size: 1.2rem;
+            color: #E65100;
+            line-height: 1.6;
+            margin: 0;
+        }
+
+        /* Story Info */
+        .story-info-card {
+            padding: 25px 30px;
+            border-bottom: 2px solid #F5F5F5;
+        }
+
+        .story-info-card h3 {
+            font-size: 1.4rem;
+            color: #1976D2;
+            margin: 0 0 10px 0;
+        }
+
+        .story-info-card p {
+            color: #616161;
+            line-height: 1.5;
+            margin: 0;
+        }
+
+        /* Tips Card */
+        .tips-card {
+            padding: 25px 30px;
+            background: #E8F5E9;
+            border-left: 5px solid #4CAF50;
+        }
+
+        .tips-card h4 {
+            font-size: 1.2rem;
+            color: #2E7D32;
+            margin: 0 0 15px 0;
+        }
+
+        .tips-card ul {
+            margin: 0;
+            padding-left: 20px;
+            color: #424242;
+        }
+
+        .tips-card li {
+            margin-bottom: 8px;
+            line-height: 1.5;
+        }
+
+        .tips-card strong {
+            color: #1B5E20;
+        }
+
+        /* Action Buttons */
+        .action-buttons {
+            padding: 30px;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .action-buttons a {
+            padding: 15px;
+            text-align: center;
+            text-decoration: none;
+            border-radius: 10px;
+            font-weight: 600;
+            font-size: 1.05rem;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        .btn-retry {
+            background: linear-gradient(135deg, #4CAF50 0%, #45A049 100%);
+            color: #FFFFFF;
+            box-shadow: 0 4px 12px rgba(76, 175, 80, 0.3);
+        }
+
+        .btn-retry:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 16px rgba(76, 175, 80, 0.4);
+        }
+
+        .btn-stories {
+            background: linear-gradient(135deg, #2196F3 0%, #1976D2 100%);
+            color: #FFFFFF;
+            box-shadow: 0 4px 12px rgba(33, 150, 243, 0.3);
+        }
+
+        .btn-stories:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 16px rgba(33, 150, 243, 0.4);
+        }
+
+        .btn-dashboard {
+            background: #757575;
+            color: #FFFFFF;
+        }
+
+        .btn-dashboard:hover {
+            transform: translateY(-2px);
+            background: #616161;
+        }
+
+        /* Responsive */
+        @media (max-width: 600px) {
+            .timeout-title {
+                font-size: 1.6rem;
+            }
+
+            .timeout-text {
+                font-size: 1.05rem;
+            }
+
+            .timeout-icon {
+                font-size: 3rem;
+            }
+        }
+    </style>
+</body>
+
+</html>

@@ -17,152 +17,183 @@
                 </div>
 
                 <!-- ================================ -->
-                <!--   INFO DO PERSONAGEM            -->
-                <!-- ================================ -->
-                <div class="detail-card character-info">
-                    <h3>🎭 Personagem Atual</h3>
-                    <div class="char-stats-row">
-                        <div class="stat-item">
-                            <strong>Nome:</strong>
-                            <%= character?.name || "Desconhecido" %>
-                        </div>
-                        <div class="stat-item">
-                            <strong>Série:</strong>
-                            <%= character?.school_year %>º ano
-                        </div>
-                        <div class="stat-item">
-                            <strong>Nível:</strong>
-                            <%= character?.level || 1 %>
-                        </div>
-                    </div>
-                    <div class="char-attributes">
-                        <span>💪 FOR: <%= character?.strength || 1 %></span>
-                        <span>🎯 DES: <%= character?.dexterity || 1 %></span>
-                        <span>❤️ CON: <%= character?.constitution || 1 %></span>
-                        <span>🧠 INT: <%= character?.intelligence || 1 %></span>
-                        <span>🔍 RAC: <%= character?.reasoning || 1 %></span>
-                        <span>🍀 SOR: <%= character?.luck || 1 %></span>
-                    </div>
-                </div>
-
-                <!-- ================================ -->
-                <!--       BLOCO PRINCIPAL DA CENA   -->
-                <!-- ================================ -->
-                <div class="detail-card scene-container">
-
-                    <h3 class="scene-title">
-                        🎬 <%= scene?.title || "Cena" %>
-                    </h3>
-
-                    <p class="scene-text">
-                        <%= scene?.text || "Carregando cena..." %>
-                    </p>
-
-                    <!-- ================================ -->
-                    <!--           BLOCO DE NPC           -->
-                    <!-- ================================ -->
-                    <% if (npc) { %>
-                        <div class="npc-dialog">
-                            <div class="npc-avatar">
-                                <% if (npc.avatar) { %>
-                                    <img src="<%= npc.avatar %>" alt="<%= npc.name %>"
-                                        onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
-                                    <div class="npc-avatar-placeholder" style="display: none;">👤</div>
-                                    <% } else { %>
-                                        <div class="npc-avatar-placeholder">👤</div>
-                                        <% } %>
-                            </div>
-                            <div class="npc-text">
-                                <h4>
-                                    <%= npc.name %> <small>(<%= npc.type %>)</small>
-                                </h4>
-                                <p>
-                                    "<%= npc.dialogue_greeting || 'Olá, aventureiro!' %>"
-                                </p>
+                <!--   TEMPO RESTANTE                -->
+                <!--  ================================ -->
+                <% if (typeof timeRemaining !=='undefined' && timeRemaining) { %>
+                    <div class="detail-card timer-card <%= timeStatus %>">
+                        <div class="timer-content">
+                            <div class="timer-icon">⏳</div>
+                            <div class="timer-info">
+                                <span class="timer-label">Tempo Restante:</span>
+                                <span class="timer-value">
+                                    <%= timeRemaining %>
+                                </span>
                             </div>
                         </div>
-                        <% } %>
-
-                            <!-- ================================ -->
-                            <!--       BLOCO DE QUIZ (OPC)        -->
-                            <!-- ================================ -->
-                            <% if (typeof question !=='undefined' && question) { %>
-                                <div class="quiz-block">
-                                    <h4>❓ Pergunta</h4>
-                                    <p>
-                                        <%= question.question_text %>
-                                    </p>
-
-                                    <div class="quiz-options">
-                                        <button class="btn-quiz-option">
-                                            <%= question.option_a %>
-                                        </button>
-                                        <button class="btn-quiz-option">
-                                            <%= question.option_b %>
-                                        </button>
-                                        <button class="btn-quiz-option">
-                                            <%= question.option_c %>
-                                        </button>
-                                        <button class="btn-quiz-option">
-                                            <%= question.option_d %>
-                                        </button>
-                                    </div>
-                                </div>
-                                <% } %>
-
-                </div>
-
-                <!-- ================================ -->
-                <!--   RESULTADO DO TESTE (SE HOUVER) -->
-                <!-- ================================ -->
-                <% if (typeof testResult !=='undefined' && testResult) { %>
-                    <div class="detail-card test-result <%= testResult.success ? 'success' : 'fail' %>">
-                        <% if (testResult.success) { %>
-                            <h3>🎉 Sucesso no Teste!</h3>
-                            <% } else { %>
-                                <h3>❌ Falha no Teste</h3>
-                                <% } %>
-                                    <p>
-                                        <%= testResult.message %>
-                                    </p>
                     </div>
                     <% } %>
 
                         <!-- ================================ -->
-                        <!--        ÁREA DE AÇÕES / CAMINHOS -->
+                        <!--   INFO DO PERSONAGEM            -->
                         <!-- ================================ -->
-                        <div class="detail-card choices-container">
-                            <h3>⚡ Ações Disponíveis</h3>
+                        <div class="detail-card character-info">
+                            <h3>🎭 Personagem Atual</h3>
+                            <div class="char-stats-row">
+                                <div class="stat-item">
+                                    <strong>Nome:</strong>
+                                    <%= character?.name || "Desconhecido" %>
+                                </div>
+                                <div class="stat-item">
+                                    <strong>Série:</strong>
+                                    <%= character?.school_year %>º ano
+                                </div>
+                                <div class="stat-item">
+                                    <strong>Nível:</strong>
+                                    <%= character?.level || 1 %>
+                                </div>
+                            </div>
+                            <div class="char-attributes">
+                                <span>💪 FOR: <%= character?.strength || 1 %></span>
+                                <span>🎯 DES: <%= character?.dexterity || 1 %></span>
+                                <span>❤️ CON: <%= character?.constitution || 1 %></span>
+                                <span>🧠 INT: <%= character?.intelligence || 1 %></span>
+                                <span>🔍 RAC: <%= character?.reasoning || 1 %></span>
+                                <span>🍀 SOR: <%= character?.luck || 1 %></span>
+                            </div>
+                        </div>
 
-                            <% if (choices && choices.length> 0) { %>
-                                <% choices.forEach(choice=> { %>
-                                    <form method="POST" action="/player/stories/<%= story.id %>/choice/<%= choice.id %>"
-                                        style="margin-bottom: 10px;">
-                                        <button type="submit" class="btn-action-choice">
-                                            <span class="choice-icon">➡️</span>
-                                            <%= choice.label %>
-                                                <% if (choice.requires_test) { %>
-                                                    <span class="test-indicator">🎲 Teste: <%= choice.test_attribute %>
-                                                            (Dif: <%= choice.test_difficulty %>)</span>
-                                                    <% } %>
-                                        </button>
-                                    </form>
-                                    <% }) %>
-                                        <% } else if (scene && scene.is_ending) { %>
-                                            <div class="ending-message">
-                                                <p>🎊 Esta história chegou ao fim!</p>
-                                                <a href="/player/stories/<%= story.id %>/finish" class="btn-finish">✨
-                                                    Ver Recompensas</a>
+                        <!-- ================================ -->
+                        <!--       BLOCO PRINCIPAL DA CENA   -->
+                        <!-- ================================ -->
+                        <div class="detail-card scene-container">
+
+                            <h3 class="scene-title">
+                                🎬 <%= scene?.title || "Cena" %>
+                            </h3>
+
+                            <p class="scene-text">
+                                <%= scene?.text || "Carregando cena..." %>
+                            </p>
+
+                            <!-- Dica para o Jogador -->
+                            <% if (scene?.hint_text) { %>
+                                <div class="hint-box">
+                                    <div class="hint-icon">💡</div>
+                                    <div class="hint-content">
+                                        <strong>Dica:</strong>
+                                        <%= scene.hint_text %>
+                                    </div>
+                                </div>
+                                <% } %>
+
+                                    <!-- ================================ -->
+                                    <!--           BLOCO DE NPC           -->
+                                    <!-- ================================ -->
+                                    <% if (npc) { %>
+                                        <div class="npc-dialog">
+                                            <div class="npc-avatar">
+                                                <% if (npc.avatar) { %>
+                                                    <img src="<%= npc.avatar %>" alt="<%= npc.name %>"
+                                                        onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+                                                    <div class="npc-avatar-placeholder" style="display: none;">👤</div>
+                                                    <% } else { %>
+                                                        <div class="npc-avatar-placeholder">👤</div>
+                                                        <% } %>
                                             </div>
-                                            <% } else { %>
-                                                <p class="no-choices">Nenhuma escolha disponível nesta cena.</p>
+                                            <div class="npc-text">
+                                                <h4>
+                                                    <%= npc.name %> <small>(<%= npc.type %>)</small>
+                                                </h4>
+                                                <p>
+                                                    "<%= npc.dialogue_greeting || 'Olá, aventureiro!' %>"
+                                                </p>
+                                            </div>
+                                        </div>
+                                        <% } %>
+
+                                            <!-- ================================ -->
+                                            <!--       BLOCO DE QUIZ (OPC)        -->
+                                            <!-- ================================ -->
+                                            <% if (typeof question !=='undefined' && question) { %>
+                                                <div class="quiz-block">
+                                                    <h4>❓ Pergunta</h4>
+                                                    <p>
+                                                        <%= question.question_text %>
+                                                    </p>
+
+                                                    <div class="quiz-options">
+                                                        <button class="btn-quiz-option">
+                                                            <%= question.option_a %>
+                                                        </button>
+                                                        <button class="btn-quiz-option">
+                                                            <%= question.option_b %>
+                                                        </button>
+                                                        <button class="btn-quiz-option">
+                                                            <%= question.option_c %>
+                                                        </button>
+                                                        <button class="btn-quiz-option">
+                                                            <%= question.option_d %>
+                                                        </button>
+                                                    </div>
+                                                </div>
                                                 <% } %>
+
                         </div>
 
-                        <!-- Botão Voltar -->
-                        <div class="back-section">
-                            <a href="/player/stories" class="btn-back">⬅️ Voltar às Histórias</a>
-                        </div>
+                        <!-- ================================ -->
+                        <!--   RESULTADO DO TESTE (SE HOUVER) -->
+                        <!-- ================================ -->
+                        <% if (typeof testResult !=='undefined' && testResult) { %>
+                            <div class="detail-card test-result <%= testResult.success ? 'success' : 'fail' %>">
+                                <% if (testResult.success) { %>
+                                    <h3>🎉 Sucesso no Teste!</h3>
+                                    <% } else { %>
+                                        <h3>❌ Falha no Teste</h3>
+                                        <% } %>
+                                            <p>
+                                                <%= testResult.message %>
+                                            </p>
+                            </div>
+                            <% } %>
+
+                                <!-- ================================ -->
+                                <!--        ÁREA DE AÇÕES / CAMINHOS -->
+                                <!-- ================================ -->
+                                <div class="detail-card choices-container">
+                                    <h3>⚡ Ações Disponíveis</h3>
+
+                                    <% if (choices && choices.length> 0) { %>
+                                        <% choices.forEach(choice=> { %>
+                                            <form method="POST"
+                                                action="/player/stories/<%= story.id %>/choice/<%= choice.id %>"
+                                                style="margin-bottom: 10px;">
+                                                <button type="submit" class="btn-action-choice">
+                                                    <span class="choice-icon">➡️</span>
+                                                    <%= choice.label %>
+                                                        <% if (choice.requires_test) { %>
+                                                            <span class="test-indicator">🎲 Teste: <%=
+                                                                    choice.test_attribute %>
+                                                                    (Dif: <%= choice.test_difficulty %>)</span>
+                                                            <% } %>
+                                                </button>
+                                            </form>
+                                            <% }) %>
+                                                <% } else if (scene && scene.is_ending) { %>
+                                                    <div class="ending-message">
+                                                        <p>🎊 Esta história chegou ao fim!</p>
+                                                        <a href="/player/stories/<%= story.id %>/finish"
+                                                            class="btn-finish">✨
+                                                            Ver Recompensas</a>
+                                                    </div>
+                                                    <% } else { %>
+                                                        <p class="no-choices">Nenhuma escolha disponível nesta cena.</p>
+                                                        <% } %>
+                                </div>
+
+                                <!-- Botão Voltar -->
+                                <div class="back-section">
+                                    <a href="/player/stories" class="btn-back">⬅️ Voltar às Histórias</a>
+                                </div>
 
             </div>
         </main>
@@ -253,6 +284,34 @@
                 background: #F5F5F5;
                 border-left: 4px solid #9C27B0;
                 border-radius: 4px;
+            }
+
+            /* Hint Box */
+            .hint-box {
+                display: flex;
+                gap: 12px;
+                align-items: flex-start;
+                background: #FFF9C4;
+                border-left: 4px solid #FBC02D;
+                padding: 15px;
+                border-radius: 8px;
+                margin-bottom: 20px;
+            }
+
+            .hint-icon {
+                font-size: 1.5rem;
+                flex-shrink: 0;
+            }
+
+            .hint-content {
+                color: #F57F17;
+                font-size: 0.95rem;
+                line-height: 1.6;
+            }
+
+            .hint-content strong {
+                color: #E65100;
+                font-weight: 700;
             }
 
             /* NPC Dialog */
@@ -494,6 +553,81 @@
             .btn-back:hover {
                 transform: translateY(-2px);
                 background: #616161;
+            }
+
+            /* Timer Card */
+            .timer-card {
+                padding: 15px 25px;
+                margin-bottom: 20px;
+                border-radius: 12px;
+                border-left: 5px solid;
+            }
+
+            .timer-card.Normal {
+                background: #E8F5E9;
+                border-color: #4CAF50;
+            }
+
+            .timer-card.Warning {
+                background: #FFF3E0;
+                border-color: #FF9800;
+            }
+
+            .timer-card.Critical {
+                background: #FFEBEE;
+                border-color: #F44336;
+                animation: pulse 1.5s infinite;
+            }
+
+            @keyframes pulse {
+
+                0%,
+                100% {
+                    opacity: 1;
+                }
+
+                50% {
+                    opacity: 0.8;
+                }
+            }
+
+            .timer-content {
+                display: flex;
+                align-items: center;
+                gap: 15px;
+            }
+
+            .timer-icon {
+                font-size: 2rem;
+            }
+
+            .timer-info {
+                display: flex;
+                flex-direction: column;
+                gap: 4px;
+            }
+
+            .timer-label {
+                font-size: 0.9rem;
+                font-weight: 600;
+                color: #424242;
+            }
+
+            .timer-value {
+                font-size: 1.3rem;
+                font-weight: 700;
+            }
+
+            .timer-card.Normal .timer-value {
+                color: #2E7D32;
+            }
+
+            .timer-card.Warning .timer-value {
+                color: #E65100;
+            }
+
+            .timer-card.Critical .timer-value {
+                color: #C62828;
             }
 
             /* Responsive */

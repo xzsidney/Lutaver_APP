@@ -1,0 +1,119 @@
+<h1 class="admin-page-title">📖 Editor de História</h1>
+<p class="admin-page-subtitle">
+    <%= story.title %>
+</p>
+
+<a href="/admin/stories" class="admin-btn admin-btn-secondary" style="margin-bottom: 20px; display: inline-block;">←
+    Voltar</a>
+
+<!-- DADOS GERAIS -->
+<section class="admin-table-card">
+    <div class="admin-table-header">
+        <h2>📋 Dados Gerais</h2>
+    </div>
+    <form action="/admin/stories/<%= story.id %>/update-general" method="POST" class="admin-form">
+        <div class="admin-form-grid">
+            <div class="admin-form-group">
+                <label>Título</label>
+                <input type="text" name="title" class="admin-input" value="<%= story.title %>" required>
+            </div>
+            <div class="admin-form-group">
+                <label>Série Mínima</label>
+                <select name="required_grade" class="admin-input">
+                    <option value="">Qualquer</option>
+                    <option value="6" <%=story.required_grade==6 ? 'selected' : '' %>>6º ano</option>
+                    <option value="7" <%=story.required_grade==7 ? 'selected' : '' %>>7º ano</option>
+                    <option value="8" <%=story.required_grade==8 ? 'selected' : '' %>>8º ano</option>
+                    <option value="9" <%=story.required_grade==9 ? 'selected' : '' %>>9º ano</option>
+                </select>
+            </div>
+            <div class="admin-form-group">
+                <label>⏰ Tempo Limite (min)</label>
+                <input type="number" name="time_limit" class="admin-input" value="<%= story.time_limit || 480 %>"
+                    min="60">
+            </div>
+            <div class="admin-form-group">
+                <label>🎁 XP</label>
+                <input type="number" name="reward_xp" class="admin-input" value="<%= story.reward_xp || 0 %>">
+            </div>
+            <div class="admin-form-group">
+                <label>💰 Moedas</label>
+                <input type="number" name="reward_coins" class="admin-input" value="<%= story.reward_coins || 0 %>">
+            </div>
+            <div class="admin-form-group">
+                <label>Cena Inicial</label>
+                <select name="starting_scene_id" class="admin-input">
+                    <option value="">Selecione</option>
+                    <% allScenes.forEach(s=> { %>
+                        <option value="<%= s.id %>" <%=story.starting_scene_id==s.id ? 'selected' : '' %>>
+                            #<%= s.id %> - <%= s.title %>
+                        </option>
+                        <% }); %>
+                </select>
+            </div>
+            <div class="admin-form-group admin-form-group-inline">
+                <label>Descrição</label>
+                <textarea name="description" class="admin-input" rows="3"><%= story.description || '' %></textarea>
+            </div>
+            <div class="admin-form-group">
+                <label class="admin-checkbox-label">
+                    <input type="checkbox" name="is_active" <%=story.is_active ? 'checked' : '' %>>
+                    ✅ História Ativa
+                </label>
+            </div>
+        </div>
+        <div class="admin-form-actions">
+            <button type="submit" class="admin-btn admin-btn-primary">💾 Salvar História</button>
+        </div>
+    </form>
+</section>
+
+<!-- LISTA DE CENAS -->
+<section class="admin-table-card" style="margin-top: 30px;">
+    <div class="admin-table-header">
+        <h2>🗺️ Cenas (<%= scenes.length %>)</h2>
+        <a href="/admin/story-scenes/new?story_id=<%= story.id %>" class="admin-btn admin-btn-success">+ Nova Cena</a>
+    </div>
+    <% if (scenes.length===0) { %>
+        <p style="padding: 40px; text-align: center; color: #999;">Nenhuma cena. Clique em "+ Nova Cena".</p>
+        <% } else { %>
+            <table class="admin-table">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Título</th>
+                        <th>Time Cost</th>
+                        <th>Choices</th>
+                        <th>Final?</th>
+                        <th>Ações</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <% scenes.forEach(scene=> { %>
+                        <tr>
+                            <td><strong>#<%= scene.id %></strong></td>
+                            <td>
+                                <%= scene.title %>
+                            </td>
+                            <td>
+                                <%= scene.time_cost %>min
+                            </td>
+                            <td>
+                                <%= scene.choices ? scene.choices.length : 0 %> choices
+                            </td>
+                            <td>
+                                <%= scene.is_ending ? '🔴 Sim' : '🔵 Não' %>
+                            </td>
+                            <td>
+                                <a href="/admin/story-scenes/<%= scene.id %>/edit" class="admin-table-action">✏️
+                                    Editar</a>
+                                <a href="/admin/story-scenes/<%= scene.id %>/delete"
+                                    class="admin-table-action admin-table-action-danger"
+                                    onclick="return confirm('Tem certeza?')">🗑️ Remover</a>
+                            </td>
+                        </tr>
+                        <% }); %>
+                </tbody>
+            </table>
+            <% } %>
+</section>

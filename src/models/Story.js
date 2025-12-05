@@ -44,6 +44,12 @@ const Story = sequelize.define('Story', {
         allowNull: true,
         comment: 'ID do item especial de recompensa (FK para items)'
     },
+    time_limit: {
+        type: DataTypes.INTEGER,
+        allowNull: false,
+        defaultValue: 480,
+        comment: 'Tempo total em minutos para completar a história (ex: 480 = 8 horas)'
+    },
     is_active: {
         type: DataTypes.BOOLEAN,
         defaultValue: true,

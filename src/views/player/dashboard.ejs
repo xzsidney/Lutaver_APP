@@ -41,48 +41,6 @@
                 <a href="/player/shop/<%= activeCharacter.id %>" class="action-btn">🛒 Loja</a>
             </div>
             <% } %>
-    </div>
-
-    <!-- Destaques (Adventures) -->
-    <div class="highlights-section">
-        <h2 class="section-title">Destaques</h2>
-        <div class="adventures-grid">
-            <% if (adventures.length===0) { %>
-                <div class="empty-state">
-                    <p>Nenhuma aventura disponível no momento.</p>
-                </div>
-                <% } else { %>
-                    <% adventures.forEach((adventure, index)=> { %>
-                        <div class="adventure-card">
-                            <% if (index < 2) { %>
-                                <span class="new-badge">Novo</span>
-                                <% } %>
-                                    <div class="adventure-image">
-                                        <div class="adventure-placeholder"
-                                            style="background: <%= ['#FF6B9D', '#9B59B6', '#3498DB', '#1ABC9C', '#F39C12', '#E74C3C', '#2ECC71', '#34495E'][index % 8] %>">
-                                            <span class="adventure-icon">🎯</span>
-                                        </div>
-                                    </div>
-                                    <div class="adventure-info">
-                                        <h3 class="adventure-title">
-                                            <%= adventure.title %>
-                                        </h3>
-                                        <% if (adventure.discipline) { %>
-                                            <span class="adventure-discipline">
-                                                <%= adventure.discipline.name %>
-                                            </span>
-                                            <% } %>
-                                    </div>
-                                    <a href="/player/adventures/<%= adventure.id %>" class="play-button">
-                                        <span class="play-icon">▶️</span>
-                                    </a>
-                        </div>
-                        <% }); %>
-                            <% } %>
-        </div>
-    </div>
-
-    <!-- Histórias (Stories) -->
     <% if (stories && stories.length> 0) { %>
         <div class="stories-section">
             <h2 class="section-title">Histórias</h2>

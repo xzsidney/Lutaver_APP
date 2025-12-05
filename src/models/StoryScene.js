@@ -62,6 +62,17 @@ const StoryScene = sequelize.define('StoryScene', {
         type: DataTypes.STRING,
         allowNull: true,
         comment: 'Tipo de final: success, neutral, fail'
+    },
+    time_cost: {
+        type: DataTypes.INTEGER,
+        defaultValue: 30,
+        allowNull: false,
+        comment: 'Tempo consumido ao entrar nesta cena (minutos)'
+    },
+    hint_text: {
+        type: DataTypes.TEXT,
+        allowNull: true,
+        comment: 'Dica em português para o jogador'
     }
 }, {
     tableName: 'story_scenes',

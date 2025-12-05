@@ -62,7 +62,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 // Models principais
 const Discipline = require('./models/Discipline');
 const Quiz = require('./models/Quiz');
-const Scene = require('./models/Scene');
+
 const Question = require('./models/Question');
 
 // RELACIONAMENTOS: Quizzes ↔ Discipline
@@ -86,13 +86,7 @@ Discipline.hasMany(Quiz, { foreignKey: 'discipline_id', as: 'quizzes' });
 // But I should probably keep the association valid for now, just renamed.
 // So `Scene.belongsTo(Quiz)`.
 
-// RELACIONAMENTOS: Scenes ↔ Quiz
-Scene.belongsTo(Quiz, { foreignKey: 'quiz_id', as: 'quiz' });
-Quiz.hasMany(Scene, { foreignKey: 'quiz_id', as: 'scenes' });
 
-// SELF-REFERENCING: scene success/failure
-Scene.belongsTo(Scene, { foreignKey: 'success_scene_id', as: 'successScene' });
-Scene.belongsTo(Scene, { foreignKey: 'failure_scene_id', as: 'failureScene' });
 
 // RELACIONAMENTOS: Questions ↔ Discipline / Quiz
 Question.belongsTo(Discipline, { foreignKey: 'discipline_id', as: 'discipline' });

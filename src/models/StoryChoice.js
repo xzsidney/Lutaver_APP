@@ -47,6 +47,12 @@ const StoryChoice = sequelize.define('StoryChoice', {
         type: DataTypes.INTEGER,
         allowNull: true,
         comment: 'ID da cena em caso de falha (se requires_test = true)'
+    },
+    time_cost: {
+        type: DataTypes.INTEGER,
+        defaultValue: 0,
+        allowNull: false,
+        comment: 'Tempo adicional consumido por esta escolha (minutos)'
     }
 }, {
     tableName: 'story_choices',

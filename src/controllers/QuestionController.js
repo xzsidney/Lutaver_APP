@@ -1,6 +1,6 @@
 const Question = require('../models/Question');
 const Discipline = require('../models/Discipline');
-const Adventure = require('../models/Adventure');
+const Quiz = require('../models/Quiz');
 
 module.exports = {
 
@@ -10,7 +10,7 @@ module.exports = {
             const questions = await Question.findAll({
                 include: [
                     { model: Discipline, as: 'discipline' },
-                    { model: Adventure, as: 'adventure' }
+                    { model: Quiz, as: 'quiz' }
                 ],
                 order: [['id', 'ASC']]
             });
@@ -38,13 +38,13 @@ module.exports = {
     // POST /admin/questions
     async create(req, res) {
         try {
-            const { question_text, correct_answer, discipline_id, adventure_id } = req.body;
+            const { question_text, correct_answer, discipline_id, quiz_id } = req.body;
 
             await Question.create({
                 question_text,
                 correct_answer,
                 discipline_id,
-                adventure_id
+                quiz_id
             });
 
             return res.redirect('/admin/questions');
@@ -62,7 +62,7 @@ module.exports = {
             const question = await Question.findByPk(req.params.id, {
                 include: [
                     { model: Discipline, as: 'discipline' },
-                    { model: Adventure, as: 'adventure' }
+                    { model: Quiz, as: 'quiz' }
                 ]
             });
 
@@ -84,14 +84,14 @@ module.exports = {
     // POST /admin/questions/:id/edit
     async update(req, res) {
         try {
-            const { question_text, correct_answer, discipline_id, adventure_id } = req.body;
+            const { question_text, correct_answer, discipline_id, quiz_id } = req.body;
 
             await Question.update(
                 {
                     question_text,
                     correct_answer,
                     discipline_id,
-                    adventure_id
+                    quiz_id
                 },
                 { where: { id: req.params.id } }
             );

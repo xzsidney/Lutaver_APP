@@ -4,14 +4,14 @@ const StoryChoice = require('../models/StoryChoice');
 const StoryProgress = require('../models/StoryProgress');
 const Character = require('../models/Character');
 const CharacterItem = require('../models/CharacterItem');
-const CharacterAffinity = require('../models/CharacterAffinity');
 const Npc = require('../models/Npc');
 const Item = require('../models/Item');
-const Question = require('../models/Question');
 const sequelize = require('../config/database');
 
-// Valid attributes for test validation
-const VALID_ATTRIBUTES = ['strength', 'dexterity', 'constitution', 'intelligence', 'reasoning', 'luck'];
+// Import Services
+const StoryTestService = require('../services/StoryTestService');
+const StoryTimeService = require('../services/StoryTimeService');
+const StoryRewardService = require('../services/StoryRewardService');
 
 const PlayerStoryController = {
     /**
@@ -47,10 +47,26 @@ const PlayerStoryController = {
                 });
             }
 
+            // Para cada história, verificar se já completou
+            const storiesWithProgress = await Promise.all(stories.map(async (story) => {
+                const progress = await StoryProgress.findOne({
+                    where: {
+                        character_id: activeCharacter?.id,
+                        story_id: story.id,
+                        is_completed: true
+                    }
+                });
+
+                return {
+                    ...story.toJSON(),
+                    isCompleted: !!progress
+                };
+            }));
+
             res.render('player/story/index', {
                 user,
                 character: activeCharacter,
-                stories
+                stories: storiesWithProgress
             });
         } catch (error) {
             console.error('Error listing stories:', error);
@@ -114,7 +130,9 @@ const PlayerStoryController = {
                     character: activeCharacter,
                     progress,
                     savedScene,
-                    lastPlayed: progress.last_played_at
+                    lastPlayed: progress.last_played_at,
+                    timeRemaining: StoryTimeService.formatTimeDisplay(progress.time_remaining || 0),
+                    timeStatus: StoryTimeService.getTimeStatus(progress.time_remaining || 0)
                 });
             }
 
@@ -139,6 +157,8 @@ const PlayerStoryController = {
                     is_completed: false,
                     scenes_visited: 1,
                     choices_history: [],
+                    time_remaining: StoryTimeService.TOTAL_TIME,
+                    locations_visited: [currentSceneId],
                     last_played_at: new Date()
                 });
             }
@@ -167,12 +187,13 @@ const PlayerStoryController = {
                 order: [['id', 'ASC']]
             });
 
-            // Buscar quiz (se houver) - Por enquanto não implementado
-            const question = null;
-
             // Verificar se há informação de teste na sessão
             const testResult = req.session.storyTestResult || null;
             delete req.session.storyTestResult; // Limpar após usar
+
+            // Formatar tempo para exibição
+            const timeRemaining = StoryTimeService.formatTimeDisplay(progress.time_remaining || 0);
+            const timeStatus = StoryTimeService.getTimeStatus(progress.time_remaining || 0);
 
             res.render('player/story/play', {
                 user,
@@ -181,19 +202,23 @@ const PlayerStoryController = {
                 scene,
                 npc,
                 choices,
-                question,
                 testResult,
-                progress // Passar progresso para mostrar informações de save
+                progress,
+                timeRemaining,
+                timeStatus,
+                StoryTestService // Pass service to view for attribute name translation
             });
         } catch (error) {
             console.error('Error playing story:', error);
             res.status(500).send('Erro ao carregar história.');
         }
     },
+
     /**
      * Processar escolha do jogador
      * Executa teste de atributo se necessário
      * Auto-salva progresso após cada escolha
+     * Gerencia tempo restante
      */
     choose: async (req, res) => {
         try {
@@ -221,51 +246,7 @@ const PlayerStoryController = {
                 return res.status(404).send('Personagem não encontrado.');
             }
 
-            let nextSceneId = choice.next_scene_id;
-            let testResult = null;
-
-            // Verificar se a escolha requer teste de atributo
-            if (choice.requires_test) {
-                const testAttribute = choice.test_attribute?.toLowerCase();
-                const difficulty = choice.test_difficulty;
-
-                // Validate attribute
-                if (!VALID_ATTRIBUTES.includes(testAttribute)) {
-                    console.error(`Invalid test attribute: ${choice.test_attribute}`);
-                    return res.status(400).send('Erro: Atributo de teste inválido configurado.');
-                }
-
-                // Pegar valor do atributo do personagem
-                const attributeValue = activeCharacter[testAttribute] || 0;
-
-                // Rolar d10
-                const d10 = Math.floor(Math.random() * 10) + 1;
-                const total = d10 + attributeValue;
-
-                // Determinar sucesso ou falha
-                const success = total >= difficulty;
-
-                // Determinar próxima cena baseado no resultado
-                if (success) {
-                    nextSceneId = choice.success_scene_id;
-                    testResult = {
-                        success: true,
-                        message: `Você rolou ${d10} + ${attributeValue} (${testAttribute}) = ${total}. Sucesso! (Dificuldade: ${difficulty})`
-                    };
-                } else {
-                    nextSceneId = choice.failure_scene_id;
-                    testResult = {
-                        success: false,
-                        message: `Você rolou ${d10} + ${attributeValue} (${testAttribute}) = ${total}. Falha! (Dificuldade: ${difficulty})`
-                    };
-                }
-
-                // Salvar resultado na sessão para mostrar na próxima página
-                req.session.storyTestResult = testResult;
-            }
-
-            // ========== AUTO-SAVE PROGRESS ==========
-            // Buscar ou criar progresso
+            // Buscar progresso
             let progress = await StoryProgress.findOne({
                 where: {
                     character_id: activeCharacter.id,
@@ -274,28 +255,95 @@ const PlayerStoryController = {
                 }
             });
 
-            if (progress) {
-                // Atualizar progresso existente
-                const choicesHistory = progress.choices_history || [];
-                choicesHistory.push({
-                    choice_id: parseInt(choiceId),
-                    scene_id: choice.story_scene_id,
-                    next_scene_id: nextSceneId,
-                    timestamp: new Date().toISOString(),
-                    test_result: testResult ? testResult.success : null
-                });
-
-                progress.current_scene_id = nextSceneId;
-                progress.scenes_visited = (progress.scenes_visited || 0) + 1;
-                progress.choices_history = choicesHistory;
-                progress.last_played_at = new Date();
-                await progress.save();
+            if (!progress) {
+                return res.status(404).send('Progresso não encontrado. Por favor, inicie a história novamente.');
             }
-            // ========================================
+
+            let nextSceneId = choice.next_scene_id;
+            let testResult = null;
+
+            // Verificar se a escolha requer teste de atributo
+            if (choice.requires_test) {
+                const testAttribute = choice.test_attribute?.toLowerCase();
+                const difficulty = choice.test_difficulty;
+
+                try {
+                    // Usar o StoryTestService para realizar o teste
+                    testResult = StoryTestService.performAttributeTest(
+                        activeCharacter,
+                        testAttribute,
+                        difficulty
+                    );
+
+                    // Determinar próxima cena baseado no resultado
+                    if (testResult.success) {
+                        nextSceneId = choice.success_scene_id;
+                    } else {
+                        nextSceneId = choice.failure_scene_id;
+                    }
+
+                    // Salvar resultado na sessão para mostrar na próxima página
+                    req.session.storyTestResult = {
+                        success: testResult.success,
+                        roll: testResult.roll,
+                        attributeValue: testResult.attributeValue,
+                        total: testResult.total,
+                        difficulty: testResult.difficulty,
+                        attribute: testResult.attribute,
+                        attributeNamePT: StoryTestService.getAttributeNamePT(testResult.attribute)
+                    };
+
+                } catch (error) {
+                    console.error('Error performing attribute test:', error);
+                    return res.status(400).send('Erro ao realizar teste de atributo.');
+                }
+            }
+
+            // Buscar próxima cena para obter time_cost
+            const nextScene = await StoryScene.findByPk(nextSceneId);
+            if (!nextScene) {
+                return res.status(404).send('Cena de destino não encontrada.');
+            }
+
+            // Calcular tempo total consumido
+            const timeConsumed = (choice.time_cost || 0) + (nextScene.time_cost || 0);
+
+            // Consumir tempo
+            StoryTimeService.consumeTime(progress, timeConsumed);
+
+            // Verificar se o tempo acabou
+            if (!StoryTimeService.hasTimeRemaining(progress)) {
+                progress.is_completed = true;
+                progress.ending_type = 'timeout';
+                await progress.save();
+                return res.redirect(`/player/stories/${storyId}/timeout`);
+            }
+
+            // Atualizar progresso
+            const choicesHistory = progress.choices_history || [];
+            choicesHistory.push({
+                choice_id: parseInt(choiceId),
+                scene_id: choice.story_scene_id,
+                next_scene_id: nextSceneId,
+                timestamp: new Date().toISOString(),
+                test_result: testResult ? testResult.success : null,
+                time_consumed: timeConsumed
+            });
+
+            const locationsVisited = progress.locations_visited || [];
+            if (!locationsVisited.includes(nextSceneId)) {
+                locationsVisited.push(nextSceneId);
+            }
+
+            progress.current_scene_id = nextSceneId;
+            progress.scenes_visited = (progress.scenes_visited || 0) + 1;
+            progress.choices_history = choicesHistory;
+            progress.locations_visited = locationsVisited;
+            progress.last_played_at = new Date();
+            await progress.save();
 
             // Verificar se a próxima cena é final
-            const nextScene = await StoryScene.findByPk(nextSceneId);
-            if (nextScene && nextScene.is_ending) {
+            if (nextScene.is_ending) {
                 // Redirecionar para tela de finalização
                 return res.redirect(`/player/stories/${storyId}/finish`);
             }
@@ -310,9 +358,8 @@ const PlayerStoryController = {
     },
 
     /**
-     * Tela de finalização da história
-     * Aplica recompensas e mostra estatísticas
-     * Agora verifica se já completou para evitar exploit de recompensas
+     * Tela de finalização da história (sucesso)
+     * Aplica recompensas usando StoryRewardService
      */
     finish: async (req, res) => {
         const transaction = await sequelize.transaction();
@@ -331,11 +378,12 @@ const PlayerStoryController = {
             // Buscar personagem ativo
             let activeCharacter = null;
             if (req.session.activeCharacterId) {
-                activeCharacter = await Character.findByPk(req.session.activeCharacterId);
+                activeCharacter = await Character.findByPk(req.session.activeCharacterId, { transaction });
             } else {
                 activeCharacter = await Character.findOne({
                     where: { user_id: user.id },
-                    order: [['createdAt', 'ASC']]
+                    order: [['createdAt', 'ASC']],
+                    transaction
                 });
             }
 
@@ -344,97 +392,22 @@ const PlayerStoryController = {
                 return res.status(404).send('Personagem não encontrado.');
             }
 
-            // Verificar se já completou esta história com este personagem
-            const existingProgress = await StoryProgress.findOne({
+            // Buscar progresso atual
+            const progress = await StoryProgress.findOne({
                 where: {
                     character_id: activeCharacter.id,
                     story_id: storyId,
-                    is_completed: true
-                }
+                    is_completed: false
+                },
+                transaction
             });
 
-            let rewards = {
-                xp: 0,
-                coins: 0,
-                item: null,
-                leveledUp: false,
-                alreadyCompleted: false
-            };
-
-            if (existingProgress) {
-                // Já completou antes - não dar recompensas novamente
-                rewards.alreadyCompleted = true;
-            } else {
-                // Primeira conclusão - aplicar recompensas
-                const oldLevel = activeCharacter.level;
-                const xpReward = story.reward_xp || 0;
-                const coinsReward = story.reward_coins || 0;
-
-                activeCharacter.total_xp += xpReward;
-                activeCharacter.coins += coinsReward;
-
-                // Verificar level ups em loop (corrige bug de múltiplos níveis)
-                let levelsGained = 0;
-                while (activeCharacter.total_xp >= activeCharacter.level * 100) {
-                    activeCharacter.level += 1;
-                    activeCharacter.evolution_points += 5;
-                    levelsGained++;
-                }
-
-                await activeCharacter.save({ transaction });
-
-                // Processar item de recompensa (se houver)
-                let rewardItem = null;
-                if (story.reward_item_id) {
-                    rewardItem = await Item.findByPk(story.reward_item_id);
-
-                    if (rewardItem) {
-                        // Verificar se o personagem já possui o item
-                        const existingItem = await CharacterItem.findOne({
-                            where: {
-                                character_id: activeCharacter.id,
-                                item_id: rewardItem.id
-                            }
-                        });
-
-                        if (existingItem) {
-                            // Incrementar quantidade
-                            existingItem.quantity += 1;
-                            await existingItem.save({ transaction });
-                        } else {
-                            // Criar novo item no inventário
-                            await CharacterItem.create({
-                                character_id: activeCharacter.id,
-                                item_id: rewardItem.id,
-                                quantity: 1,
-                                is_equipped: false
-                            }, { transaction });
-                        }
-                    }
-                }
-
-                // Registrar progresso
-                await StoryProgress.create({
-                    character_id: activeCharacter.id,
-                    story_id: storyId,
-                    is_completed: true,
-                    ending_type: 'success',
-                    xp_earned: xpReward,
-                    coins_earned: coinsReward,
-                    item_rewarded: !!rewardItem,
-                    completed_at: new Date()
-                }, { transaction });
-
-                // Preparar informações de recompensas
-                rewards = {
-                    xp: xpReward,
-                    coins: coinsReward,
-                    item: rewardItem,
-                    leveledUp: activeCharacter.level > oldLevel,
-                    levelsGained: levelsGained,
-                    alreadyCompleted: false
-                };
-            }
+            // Usar StoryRewardService para aplicar recompensas
+            const rewards = await StoryRewardService.grantRewards(
+                activeCharacter,
+                story,
+                progress || { is_completed: false }
+            );
 
             await transaction.commit();
 
@@ -442,13 +415,51 @@ const PlayerStoryController = {
                 user,
                 story,
                 character: activeCharacter,
-                rewards
+                rewards,
+                rewardsDisplay: StoryRewardService.formatRewardsDisplay(rewards)
             });
 
         } catch (error) {
             await transaction.rollback();
             console.error('Error finishing story:', error);
             res.status(500).send('Erro ao finalizar história.');
+        }
+    },
+
+    /**
+     * Tela de timeout (tempo acabou)
+     */
+    timeout: async (req, res) => {
+        try {
+            const { storyId } = req.params;
+            const user = req.session.user;
+
+            // Buscar história
+            const story = await Story.findByPk(storyId);
+            if (!story) {
+                return res.status(404).send('História não encontrada.');
+            }
+
+            // Buscar personagem ativo
+            let activeCharacter = null;
+            if (req.session.activeCharacterId) {
+                activeCharacter = await Character.findByPk(req.session.activeCharacterId);
+            } else {
+                activeCharacter = await Character.findOne({
+                    where: { user_id: user.id },
+                    order: [['createdAt', 'ASC']]
+                });
+            }
+
+            res.render('player/story/timeout', {
+                user,
+                story,
+                character: activeCharacter
+            });
+
+        } catch (error) {
+            console.error('Error showing timeout screen:', error);
+            res.status(500).send('Erro ao carregar tela de timeout.');
         }
     }
 };

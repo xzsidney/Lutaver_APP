@@ -1,7 +1,6 @@
 const User = require('../models/User');
 const Discipline = require('../models/Discipline');
-const Adventure = require('../models/Adventure');
-const Scene = require('../models/Scene');
+const Quiz = require('../models/Quiz');
 const Question = require('../models/Question');
 const Character = require('../models/Character');
 const Power = require('../models/Power');
@@ -34,8 +33,7 @@ const DashboardController = {
             const stats = {
                 usersCount: await User.count(),
                 disciplinesCount: await Discipline.count(),
-                adventuresCount: await Adventure.count(),
-                scenesCount: await Scene.count(),
+                quizzesCount: await Quiz.count(),
                 questionsCount: await Question.count(),
                 charactersCount: await Character.count(),
                 powersCount: await Power.count(),
