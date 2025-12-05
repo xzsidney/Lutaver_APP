@@ -8,10 +8,23 @@ module.exports = {
     // Listar quizzes disponíveis
     async index(req, res) {
         try {
-            const activeCharacterId = req.session.activeCharacterId;
+            const userId = req.session.user.id;
+            let activeCharacterId = req.session.activeCharacterId;
 
+            // Se não houver personagem ativo, selecionar o primeiro
             if (!activeCharacterId) {
-                return res.redirect('/player/characters');
+                const firstCharacter = await Character.findOne({
+                    where: { user_id: userId },
+                    order: [['createdAt', 'ASC']]
+                });
+
+                if (!firstCharacter) {
+                    return res.redirect('/player/characters');
+                }
+
+                // Definir como ativo
+                activeCharacterId = firstCharacter.id;
+                req.session.activeCharacterId = activeCharacterId;
             }
 
             const character = await Character.findByPk(activeCharacterId);
@@ -47,11 +60,24 @@ module.exports = {
     // Exibir detalhes do quiz
     async show(req, res) {
         try {
-            const activeCharacterId = req.session.activeCharacterId;
+            const userId = req.session.user.id;
+            let activeCharacterId = req.session.activeCharacterId;
             const { id } = req.params;
 
+            // Se não houver personagem ativo, selecionar o primeiro
             if (!activeCharacterId) {
-                return res.redirect('/player/characters');
+                const firstCharacter = await Character.findOne({
+                    where: { user_id: userId },
+                    order: [['createdAt', 'ASC']]
+                });
+
+                if (!firstCharacter) {
+                    return res.redirect('/player/characters');
+                }
+
+                // Definir como ativo
+                activeCharacterId = firstCharacter.id;
+                req.session.activeCharacterId = activeCharacterId;
             }
 
             const character = await Character.findByPk(activeCharacterId);
@@ -90,11 +116,24 @@ module.exports = {
     // Iniciar quiz
     async startQuiz(req, res) {
         try {
-            const activeCharacterId = req.session.activeCharacterId;
+            const userId = req.session.user.id;
+            let activeCharacterId = req.session.activeCharacterId;
             const { id } = req.params;
 
+            // Se não houver personagem ativo, selecionar o primeiro
             if (!activeCharacterId) {
-                return res.redirect('/player/characters');
+                const firstCharacter = await Character.findOne({
+                    where: { user_id: userId },
+                    order: [['createdAt', 'ASC']]
+                });
+
+                if (!firstCharacter) {
+                    return res.redirect('/player/characters');
+                }
+
+                // Definir como ativo
+                activeCharacterId = firstCharacter.id;
+                req.session.activeCharacterId = activeCharacterId;
             }
 
             const character = await Character.findByPk(activeCharacterId);
@@ -102,6 +141,19 @@ module.exports = {
 
             if (!quiz) {
                 return res.status(404).send('Quiz não encontrado');
+            }
+
+            // Verificar se já completou
+            const progress = await QuizProgress.findOne({
+                where: {
+                    character_id: activeCharacterId,
+                    quiz_id: id,
+                    is_completed: true
+                }
+            });
+
+            if (progress) {
+                return res.redirect(`/player/quizzes/${id}`);
             }
 
             // Buscar questões

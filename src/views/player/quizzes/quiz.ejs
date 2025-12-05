@@ -1,7 +1,7 @@
 <div class="player-home-container">
     <div class="quiz-header">
         <h1 class="quiz-title">
-            <%= adventure.title %>
+            <%= quiz.title %>
         </h1>
         <div class="quiz-progress">
             <span class="progress-text">Questão <%= questionIndex %> de <%= totalQuestions %></span>
@@ -19,7 +19,7 @@
                 <%= question.question_text %>
             </h2>
 
-            <form action="/player/adventures/<%= adventure.id %>/answer" method="POST" class="quiz-form">
+            <form action="/player/quizzes/<%= quiz.id %>/answer" method="POST" class="quiz-form">
                 <div class="options-list">
                     <label class="option-item">
                         <input type="radio" name="answer" value="A" required>

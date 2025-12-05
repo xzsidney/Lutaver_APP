@@ -1,10 +1,10 @@
 <div class="player-home-container">
     <div class="section-header">
         <h1 class="home-title">
-            <%= adventure.title %>
+            <%= quiz.title %>
         </h1>
         <p class="home-subtitle">
-            <%= adventure.discipline ? adventure.discipline.name : 'Aventura Educacional' %>
+            <%= quiz.discipline ? quiz.discipline.name : 'Quiz Educacional' %>
         </p>
     </div>
 
@@ -21,48 +21,48 @@
         </div>
     </div>
 
-    <div class="adventure-detail-container">
+    <div class="quiz-detail-container">
         <!-- Main Info Card -->
         <div class="detail-card">
-            <h2 class="card-title">📖 Sobre a Aventura</h2>
+            <h2 class="card-title">🎯 Sobre o Quiz</h2>
 
             <div class="detail-meta">
                 <div class="meta-row">
                     <span class="meta-label">Ano Escolar:</span>
                     <span class="meta-value">
-                        <%= adventure.school_year %>
+                        <%= quiz.school_year %>
                     </span>
                 </div>
                 <div class="meta-row">
                     <span class="meta-label">Dificuldade:</span>
                     <span class="meta-value">
-                        <% for(let i=0; i < adventure.difficulty; i++) { %>⭐<% } %>
+                        <% for(let i=0; i < quiz.difficulty; i++) { %>⭐<% } %>
                     </span>
                 </div>
                 <div class="meta-row">
                     <span class="meta-label">Recompensa XP:</span>
-                    <span class="meta-value">🎯 <%= adventure.reward_xp %></span>
+                    <span class="meta-value">🎯 <%= quiz.reward_xp %></span>
                 </div>
                 <div class="meta-row">
                     <span class="meta-label">Recompensa Moedas:</span>
-                    <span class="meta-value">💰 <%= adventure.reward_item || 50 %></span>
+                    <span class="meta-value">💰 <%= quiz.reward_coins || 50 %></span>
                 </div>
             </div>
 
-            <% if (adventure.description) { %>
+            <% if (quiz.description) { %>
                 <div class="description-box">
                     <h3>Descrição</h3>
                     <p>
-                        <%= adventure.description %>
+                        <%= quiz.description %>
                     </p>
                 </div>
                 <% } %>
 
-                    <% if (adventure.objectives) { %>
+                    <% if (quiz.objectives) { %>
                         <div class="objectives-box">
                             <h3>Objetivos de Aprendizagem</h3>
                             <p>
-                                <%= adventure.objectives %>
+                                <%= quiz.objectives %>
                             </p>
                         </div>
                         <% } %>
@@ -75,8 +75,8 @@
             <% if (isCompleted) { %>
                 <div class="status-completed">
                     <div class="status-icon">✅</div>
-                    <h3>Aventura Concluída!</h3>
-                    <p>Você já completou esta aventura.</p>
+                    <h3>Quiz Concluído!</h3>
+                    <p>Você já completou este quiz.</p>
 
                     <% if (progress) { %>
                         <div class="progress-stats">
@@ -101,18 +101,18 @@
                         </div>
                         <% } %>
 
-                            <a href="/player/adventures/<%= adventure.id %>/start" class="btn btn-retry">
-                                🔄 Tentar Novamente
-                            </a>
+                            <button class="btn btn-disabled" disabled style="background: #ccc; cursor: not-allowed;">
+                                ✅ Concluído
+                            </button>
                 </div>
                 <% } else { %>
                     <div class="status-available">
                         <div class="status-icon">🎮</div>
                         <h3>Pronto para Começar!</h3>
-                        <p>Esta aventura está disponível. Teste seus conhecimentos!</p>
+                        <p>Este quiz está disponível. Teste seus conhecimentos!</p>
 
-                        <a href="/player/adventures/<%= adventure.id %>/start" class="btn btn-start">
-                            ▶️ Iniciar Aventura
+                        <a href="/player/quizzes/<%= quiz.id %>/start" class="btn btn-start">
+                            ▶️ Iniciar Quiz
                         </a>
                     </div>
                     <% } %>
@@ -155,7 +155,7 @@
         margin-top: 4px;
     }
 
-    .adventure-detail-container {
+    .quiz-detail-container {
         display: grid;
         grid-template-columns: 2fr 1fr;
         gap: 25px;
@@ -314,7 +314,7 @@
     }
 
     @media (max-width: 768px) {
-        .adventure-detail-container {
+        .quiz-detail-container {
             grid-template-columns: 1fr;
         }
     }

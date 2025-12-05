@@ -1,8 +1,8 @@
 <div class="player-home-container">
     <div class="results-header">
-        <h1 class="results-title">🎯 Resultados da Aventura</h1>
-        <h2 class="adventure-name">
-            <%= adventure.title %>
+        <h1 class="results-title">🎯 Resultados do Quiz</h1>
+        <h2 class="quiz-name">
+            <%= quiz.title %>
         </h2>
     </div>
 
@@ -93,8 +93,8 @@
     </div>
 
     <div class="results-actions">
-        <a href="/player/adventures" class="btn btn-primary">📚 Ver Outras Aventuras</a>
-        <a href="/player/adventures/<%= adventure.id %>/start" class="btn btn-secondary">🔄 Tentar Novamente</a>
+        <a href="/player/dashboard" class="btn btn-primary">🏠 Voltar ao Dashboard</a>
+        <a href="/player/quizzes/<%= quiz.id %>/start" class="btn btn-secondary">🔄 Tentar Novamente</a>
         <a href="/player/characters/<%= character.id %>" class="btn btn-tertiary">👤 Ver Personagem</a>
     </div>
 </div>
@@ -112,7 +112,7 @@
         margin-bottom: 10px;
     }
 
-    .adventure-name {
+    .quiz-name {
         font-size: 1.3rem;
         color: #4b6688;
         font-weight: 600;
