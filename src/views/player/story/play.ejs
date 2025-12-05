@@ -799,3 +799,466 @@
             }
         }
     </style>
+
+    <!-- Test Result Modal -->
+    <% if (typeof testResult !=='undefined' && testResult) { %>
+        <div class="test-modal-overlay" id="testModal">
+            <div class="test-modal-container">
+
+                <!-- Dice Animation -->
+                <div class="test-dice-animation">
+                    <div class="test-dice" id="testDice">🎲</div>
+                </div>
+
+                <!-- Test Info (Hidden initially) -->
+                <div class="test-modal-info" id="testModalInfo" style="display: none;">
+
+                    <!-- Warning Icon -->
+                    <div class="test-icon-warning">⚠️</div>
+
+                    <!-- Title -->
+                    <h2 class="test-modal-title">Teste de <%= testResult.attributeNamePT %>
+                    </h2>
+
+                    <!-- Results Grid -->
+                    <div class="test-results-grid">
+                        <div class="test-result-item">
+                            <span class="test-label">Dado (1d10):</span>
+                            <span class="test-value dice-roll">🎲 <%= testResult.roll %></span>
+                        </div>
+                        <div class="test-result-item">
+                            <span class="test-label">
+                                <%= testResult.attributeNamePT %>:
+                            </span>
+                            <span class="test-value">+ <%= testResult.attributeValue %></span>
+                        </div>
+                        <div class="test-result-divider"></div>
+                        <div class="test-result-item total">
+                            <span class="test-label">Total:</span>
+                            <span class="test-value">
+                                <%= testResult.total %>
+                            </span>
+                        </div>
+                        <div class="test-result-item">
+                            <span class="test-label">Dificuldade:</span>
+                            <span class="test-value">
+                                <%= testResult.difficulty %>
+                            </span>
+                        </div>
+                    </div>
+
+                    <!-- Final Result Box -->
+                    <div class="test-final-result <%= testResult.success ? 'success' : 'failure' %>">
+                        <div class="test-result-icon">
+                            <%= testResult.success ? '✅' : '❌' %>
+                        </div>
+                        <p class="test-result-text">
+                            <%= testResult.success ? 'SUCESSO!' : 'FALHA!' %>
+                        </p>
+                        <p class="test-result-desc">
+                            <%= testResult.success ? `Você conseguiu! (${testResult.total}>= ${testResult.difficulty})`
+                                :
+                                `Você não conseguiu. (${testResult.total} < ${testResult.difficulty})` %>
+                        </p>
+                    </div>
+
+                    <!-- Action Buttons -->
+                    <div class="test-modal-actions">
+                        <button class="test-btn test-btn-continue" onclick="window.location.reload()">
+                            Continuar
+                        </button>
+                    </div>
+
+                </div>
+
+                <!-- Confetti (only for success) -->
+                <% if (testResult.success) { %>
+                    <div class="test-confetti-container" id="testConfetti"></div>
+                    <% } %>
+
+            </div>
+        </div>
+
+        <style>
+            /* Test Modal Overlay */
+            .test-modal-overlay {
+                position: fixed;
+                top: 0;
+                left: 0;
+                right: 0;
+                bottom: 0;
+                background: rgba(0, 0, 0, 0.85);
+                z-index: 99999;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                animation: testFadeIn 0.3s ease;
+            }
+
+            @keyframes testFadeIn {
+                from {
+                    opacity: 0;
+                }
+
+                to {
+                    opacity: 1;
+                }
+            }
+
+            /* Modal Container */
+            .test-modal-container {
+                background: #FFFFFF;
+                border-radius: 20px;
+                padding: 40px 35px;
+                max-width: 480px;
+                width: 90%;
+                text-align: center;
+                box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+                position: relative;
+                overflow: hidden;
+                animation: testSlideUp 0.4s ease;
+            }
+
+            @keyframes testSlideUp {
+                from {
+                    transform: translateY(50px);
+                    opacity: 0;
+                }
+
+                to {
+                    transform: translateY(0);
+                    opacity: 1;
+                }
+            }
+
+            /* Dice Animation */
+            .test-dice-animation {
+                margin-bottom: 20px;
+            }
+
+            .test-dice {
+                font-size: 5rem;
+                display: inline-block;
+                animation: testRollDice 2s ease-in-out;
+            }
+
+            @keyframes testRollDice {
+
+                0%,
+                100% {
+                    transform: rotate(0deg) scale(1);
+                }
+
+                10% {
+                    transform: rotate(72deg) scale(1.1);
+                }
+
+                20% {
+                    transform: rotate(144deg) scale(1);
+                }
+
+                30% {
+                    transform: rotate(216deg) scale(1.1);
+                }
+
+                40% {
+                    transform: rotate(288deg) scale(1);
+                }
+
+                50% {
+                    transform: rotate(360deg) scale(1.1);
+                }
+
+                60% {
+                    transform: rotate(432deg) scale(1);
+                }
+
+                70% {
+                    transform: rotate(504deg) scale(1.1);
+                }
+
+                80% {
+                    transform: rotate(576deg) scale(1);
+                }
+
+                90% {
+                    transform: rotate(648deg) scale(1.1);
+                }
+            }
+
+            /* Warning Icon */
+            .test-icon-warning {
+                font-size: 3.5rem;
+                margin-bottom: 10px;
+                animation: testPulse 1.5s ease infinite;
+            }
+
+            @keyframes testPulse {
+
+                0%,
+                100% {
+                    transform: scale(1);
+                }
+
+                50% {
+                    transform: scale(1.1);
+                }
+            }
+
+            /* Modal Title */
+            .test-modal-title {
+                font-size: 1.6rem;
+                font-weight: 700;
+                color: #D32F2F;
+                margin: 0 0 20px 0;
+            }
+
+            /* Results Grid */
+            .test-results-grid {
+                background: #F5F5F5;
+                border-radius: 12px;
+                padding: 15px;
+                margin-bottom: 20px;
+            }
+
+            .test-result-item {
+                display: flex;
+                justify-content: space-between;
+                padding: 8px 0;
+            }
+
+            .test-result-item.total {
+                background: linear-gradient(135deg, #E3F2FD, #BBDEFB);
+                border-radius: 8px;
+                padding: 10px 12px;
+                margin: 8px 0;
+            }
+
+            .test-label {
+                font-weight: 600;
+                color: #616161;
+                font-size: 0.95rem;
+            }
+
+            .test-value {
+                font-weight: 700;
+                color: #212121;
+                font-size: 1rem;
+            }
+
+            .test-value.dice-roll {
+                color: #1976D2;
+                font-size: 1.2rem;
+            }
+
+            .test-result-item.total .test-value {
+                color: #1976D2;
+                font-size: 1.3rem;
+            }
+
+            .test-result-divider {
+                height: 2px;
+                background: linear-gradient(90deg, transparent, #BDBDBD, transparent);
+                margin: 8px 0;
+            }
+
+            /* Final Result */
+            .test-final-result {
+                padding: 20px;
+                border-radius: 12px;
+                margin-bottom: 20px;
+                animation: testPopIn 0.5s ease 0.3s backwards;
+            }
+
+            @keyframes testPopIn {
+                from {
+                    transform: scale(0.8);
+                    opacity: 0;
+                }
+
+                to {
+                    transform: scale(1);
+                    opacity: 1;
+                }
+            }
+
+            .test-final-result.success {
+                background: linear-gradient(135deg, #C8E6C9, #A5D6A7);
+                border: 3px solid #4CAF50;
+            }
+
+            .test-final-result.failure {
+                background: linear-gradient(135deg, #FFCDD2, #EF9A9A);
+                border: 3px solid #F44336;
+                animation: testShake 0.5s ease 0.3s backwards;
+            }
+
+            @keyframes testShake {
+
+                0%,
+                100% {
+                    transform: translateX(0);
+                }
+
+                10%,
+                30%,
+                50%,
+                70%,
+                90% {
+                    transform: translateX(-5px);
+                }
+
+                20%,
+                40%,
+                60%,
+                80% {
+                    transform: translateX(5px);
+                }
+            }
+
+            .test-result-icon {
+                font-size: 3rem;
+                margin-bottom: 8px;
+                animation: testBounce 0.6s ease 0.5s backwards;
+            }
+
+            @keyframes testBounce {
+
+                0%,
+                100% {
+                    transform: scale(1);
+                }
+
+                50% {
+                    transform: scale(1.2);
+                }
+            }
+
+            .test-result-text {
+                font-size: 1.6rem;
+                font-weight: 800;
+                margin: 0 0 5px 0;
+            }
+
+            .test-final-result.success .test-result-text {
+                color: #2E7D32;
+            }
+
+            .test-final-result.failure .test-result-text {
+                color: #C62828;
+            }
+
+            .test-result-desc {
+                font-size: 0.9rem;
+                color: #424242;
+                margin: 0;
+            }
+
+            /* Action Buttons */
+            .test-modal-actions {
+                display: flex;
+                gap: 12px;
+                justify-content: center;
+            }
+
+            .test-btn {
+                flex: 1;
+                padding: 14px 24px;
+                border-radius: 10px;
+                font-weight: 600;
+                font-size: 1rem;
+                cursor: pointer;
+                border: none;
+                transition: all 0.2s ease;
+                animation: testFadeIn 0.5s ease 0.8s backwards;
+            }
+
+            .test-btn-continue {
+                background: linear-gradient(135deg, #EF5350, #D32F2F);
+                color: #FFFFFF;
+                box-shadow: 0 4px 12px rgba(211, 47, 47, 0.3);
+            }
+
+            .test-btn-continue:hover {
+                transform: translateY(-2px);
+                box-shadow: 0 6px 16px rgba(211, 47, 47, 0.4);
+            }
+
+            /* Confetti */
+            .test-confetti-container {
+                position: absolute;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                pointer-events: none;
+                overflow: hidden;
+            }
+
+            @keyframes testConfetti {
+                0% {
+                    transform: translateY(-20px) rotate(0deg);
+                    opacity: 1;
+                }
+
+                100% {
+                    transform: translateY(100vh) rotate(720deg);
+                    opacity: 0;
+                }
+            }
+
+            /* Responsive */
+            @media (max-width: 480px) {
+                .test-modal-container {
+                    padding: 30px 20px;
+                }
+
+                .test-dice {
+                    font-size: 4rem;
+                }
+
+                .test-modal-title {
+                    font-size: 1.4rem;
+                }
+            }
+        </style>
+
+        <script>
+            // Show modal info after dice animation
+            setTimeout(() => {
+                document.getElementById('testModalInfo').style.display = 'block';
+
+                // Show confetti if success
+                const testSuccess = <%= testResult.success ? 'true' : 'false' %>;
+                if (testSuccess) {
+                    createTestConfetti();
+                }
+            }, 2000);
+
+            // Create confetti animation
+            function createTestConfetti() {
+                const container = document.getElementById('testConfetti');
+                if (!container) return;
+
+                const colors = ['#FF6B6B', '#4ECDC4', '#45B7D1', '#FFA07A', '#98D8C8', '#F7DC6F'];
+
+                for (let i = 0; i < 50; i++) {
+                    setTimeout(() => {
+                        const confetti = document.createElement('div');
+                        confetti.style.position = 'absolute';
+                        confetti.style.width = '10px';
+                        confetti.style.height = '10px';
+                        confetti.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
+                        confetti.style.left = Math.random() * 100 + '%';
+                        confetti.style.top = '-20px';
+                        confetti.style.borderRadius = '50%';
+                        confetti.style.animation = `testConfetti ${2 + Math.random() * 2}s linear forwards`;
+
+                        container.appendChild(confetti);
+
+                        setTimeout(() => confetti.remove(), 4000);
+                    }, i * 30);
+                }
+            }
+        </script>
+        <% } %>

@@ -208,6 +208,11 @@ const PlayerStoryController = {
                 timeStatus,
                 StoryTestService // Pass service to view for attribute name translation
             });
+
+            // Clear test result from session after rendering once
+            if (testResult) {
+                delete req.session.storyTestResult;
+            }
         } catch (error) {
             console.error('Error playing story:', error);
             res.status(500).send('Erro ao carregar história.');
@@ -360,7 +365,8 @@ const PlayerStoryController = {
                 // Adicionar nextSceneId à sessão
                 req.session.storyTestResult.nextSceneId = nextSceneId;
                 req.session.storyTestResult.storyId = storyId;
-                return res.redirect(`/player/stories/${storyId}/test-result`);
+                // Redirecionar para a cena com resultado do teste na sessão
+                return res.redirect(`/player/stories/${storyId}/play?sceneId=${nextSceneId}`);
             }
 
             // Redirecionar para a próxima cena (sem teste)
