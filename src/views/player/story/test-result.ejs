@@ -1,0 +1,478 @@
+<%- include('../../partials/player/header') %>
+
+    <!-- Fullscreen Modal -->
+    <div class="test-result-overlay">
+        <div class="test-result-container">
+
+            <!-- Dice Animation -->
+            <div class="dice-animation-container">
+                <div class="dice" id="dice">🎲</div>
+            </div>
+
+            <!-- Test Info (Hidden initially) -->
+            <div class="test-info" id="testInfo" style="display: none;">
+
+                <!-- Attribute -->
+                <div class="test-attribute">
+                    <span class="attribute-icon">
+                        <% if (testResult.attribute==='strength' ) { %>💪
+                            <% } else if (testResult.attribute==='dexterity' ) { %>🎯
+                                <% } else if (testResult.attribute==='constitution' ) { %>❤️
+                                    <% } else if (testResult.attribute==='intelligence' ) { %>🧠
+                                        <% } else if (testResult.attribute==='reasoning' ) { %>🔍
+                                            <% } else if (testResult.attribute==='luck' ) { %>🍀
+                                                <% } %>
+                    </span>
+                    <h2>Teste de <%= testResult.attributeNamePT %>
+                    </h2>
+                </div>
+
+                <!-- Dice Result -->
+                <div class="result-row">
+                    <span class="result-label">Dado (1d10):</span>
+                    <span class="result-value dice-value">🎲 <%= testResult.roll %></span>
+                </div>
+
+                <!-- Attribute Value -->
+                <div class="result-row">
+                    <span class="result-label">
+                        <%= testResult.attributeNamePT %>:
+                    </span>
+                    <span class="result-value">+ <%= testResult.attributeValue %></span>
+                </div>
+
+                <!-- Divider -->
+                <div class="result-divider"></div>
+
+                <!-- Total -->
+                <div class="result-row total-row">
+                    <span class="result-label">Total:</span>
+                    <span class="result-value total-value">
+                        <%= testResult.total %>
+                    </span>
+                </div>
+
+                <!-- Difficulty -->
+                <div class="result-row difficulty-row">
+                    <span class="result-label">Dificuldade:</span>
+                    <span class="result-value">
+                        <%= testResult.difficulty %>
+                    </span>
+                </div>
+
+                <!-- Final Result -->
+                <div class="final-result <%= testResult.success ? 'success' : 'failure' %>">
+                    <div class="result-icon">
+                        <%= testResult.success ? '✅' : '❌' %>
+                    </div>
+                    <h1 class="result-text">
+                        <%= testResult.success ? 'SUCESSO!' : 'FALHA!' %>
+                    </h1>
+                    <p class="result-description">
+                        <%= testResult.success ? `Você conseguiu! (${testResult.total}>= ${testResult.difficulty})` :
+                            `Você não conseguiu. (${testResult.total} < ${testResult.difficulty})` %>
+                    </p>
+                </div>
+
+                <!-- Continue Button -->
+                <a href="/player/stories/<%= testResult.storyId %>/play?sceneId=<%= testResult.nextSceneId %>"
+                    class="btn-continue" id="btnContinue">
+                    <span class="btn-icon">▶️</span>
+                    <span class="btn-text">Continuar</span>
+                </a>
+
+            </div>
+
+            <!-- Confetti (only for success) -->
+            <% if (testResult.success) { %>
+                <div class="confetti-container" id="confetti"></div>
+                <% } %>
+
+        </div>
+    </div>
+
+    <style>
+        /* Fullscreen Overlay */
+        .test-result-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: radial-gradient(circle at center, #1a237e 0%, #0d1117 100%);
+            z-index: 10000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            animation: fadeIn 0.3s ease;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+
+            to {
+                opacity: 1;
+            }
+        }
+
+        /* Container */
+        .test-result-container {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 24px;
+            padding: 50px 40px;
+            max-width: 500px;
+            width: 90%;
+            text-align: center;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+            position: relative;
+            overflow: hidden;
+        }
+
+        /* Dice Animation */
+        .dice-animation-container {
+            margin-bottom: 30px;
+        }
+
+        .dice {
+            font-size: 6rem;
+            display: inline-block;
+            animation: rollDice 2s ease-in-out;
+        }
+
+        @keyframes rollDice {
+
+            0%,
+            100% {
+                transform: rotate(0deg) scale(1);
+            }
+
+            10% {
+                transform: rotate(72deg) scale(1.1);
+            }
+
+            20% {
+                transform: rotate(144deg) scale(1);
+            }
+
+            30% {
+                transform: rotate(216deg) scale(1.1);
+            }
+
+            40% {
+                transform: rotate(288deg) scale(1);
+            }
+
+            50% {
+                transform: rotate(360deg) scale(1.1);
+            }
+
+            60% {
+                transform: rotate(432deg) scale(1);
+            }
+
+            70% {
+                transform: rotate(504deg) scale(1.1);
+            }
+
+            80% {
+                transform: rotate(576deg) scale(1);
+            }
+
+            90% {
+                transform: rotate(648deg) scale(1.1);
+            }
+        }
+
+        /* Test Info */
+        .test-info {
+            animation: slideUp 0.5s ease;
+        }
+
+        @keyframes slideUp {
+            from {
+                transform: translateY(30px);
+                opacity: 0;
+            }
+
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+
+        .test-attribute {
+            margin-bottom: 25px;
+        }
+
+        .attribute-icon {
+            font-size: 3rem;
+            display: block;
+            margin-bottom: 10px;
+        }
+
+        .test-attribute h2 {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: #1976D2;
+            margin: 0;
+        }
+
+        /* Result Rows */
+        .result-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px 20px;
+            margin-bottom: 8px;
+            background: #F5F5F5;
+            border-radius: 10px;
+        }
+
+        .result-label {
+            font-weight: 600;
+            color: #616161;
+            font-size: 1rem;
+        }
+
+        .result-value {
+            font-weight: 700;
+            color: #212121;
+            font-size: 1.1rem;
+        }
+
+        .dice-value {
+            color: #1976D2;
+            font-size: 1.3rem;
+        }
+
+        .total-row {
+            background: linear-gradient(135deg, #E3F2FD 0%, #BBDEFB 100%);
+            border: 2px solid #1976D2;
+        }
+
+        .total-value {
+            color: #1976D2;
+            font-size: 1.5rem;
+        }
+
+        .difficulty-row {
+            background: #FFF3E0;
+        }
+
+        /* Divider */
+        .result-divider {
+            height: 2px;
+            background: linear-gradient(90deg, transparent, #1976D2, transparent);
+            margin: 15px 0;
+        }
+
+        /* Final Result */
+        .final-result {
+            margin: 30px 0;
+            padding: 25px;
+            border-radius: 16px;
+            animation: popIn 0.5s ease 0.3s backwards;
+        }
+
+        @keyframes popIn {
+            from {
+                transform: scale(0.8);
+                opacity: 0;
+            }
+
+            to {
+                transform: scale(1);
+                opacity: 1;
+            }
+        }
+
+        .final-result.success {
+            background: linear-gradient(135deg, #C8E6C9 0%, #A5D6A7 100%);
+            border: 3px solid #4CAF50;
+        }
+
+        .final-result.failure {
+            background: linear-gradient(135deg, #FFCDD2 0%, #EF9A9A 100%);
+            border: 3px solid #F44336;
+            animation: shake 0.5s ease 0.3s backwards;
+        }
+
+        @keyframes shake {
+
+            0%,
+            100% {
+                transform: translateX(0);
+            }
+
+            10%,
+            30%,
+            50%,
+            70%,
+            90% {
+                transform: translateX(-5px);
+            }
+
+            20%,
+            40%,
+            60%,
+            80% {
+                transform: translateX(5px);
+            }
+        }
+
+        .result-icon {
+            font-size: 4rem;
+            margin-bottom: 10px;
+            animation: bounce 0.6s ease 0.5s backwards;
+        }
+
+        @keyframes bounce {
+
+            0%,
+            100% {
+                transform: scale(1);
+            }
+
+            50% {
+                transform: scale(1.2);
+            }
+        }
+
+        .result-text {
+            font-size: 2rem;
+            font-weight: 800;
+            margin: 0 0 10px 0;
+        }
+
+        .final-result.success .result-text {
+            color: #2E7D32;
+        }
+
+        .final-result.failure .result-text {
+            color: #C62828;
+        }
+
+        .result-description {
+            font-size: 1rem;
+            color: #424242;
+            margin: 0;
+        }
+
+        /* Continue Button */
+        .btn-continue {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            padding: 16px 32px;
+            background: linear-gradient(135deg, #1976D2 0%, #1565C0 100%);
+            color: #FFFFFF;
+            text-decoration: none;
+            border-radius: 50px;
+            font-weight: 700;
+            font-size: 1.1rem;
+            box-shadow: 0 6px 20px rgba(25, 118, 210, 0.4);
+            transition: all 0.3s ease;
+            margin-top: 20px;
+            animation: fadeIn 0.5s ease 0.8s backwards;
+        }
+
+        .btn-continue:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 30px rgba(25, 118, 210, 0.6);
+        }
+
+        .btn-icon {
+            font-size: 1.3rem;
+        }
+
+        /* Confetti */
+        .confetti-container {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            overflow: hidden;
+        }
+
+        /* Responsive */
+        @media (max-width: 480px) {
+            .test-result-container {
+                padding: 40px 25px;
+            }
+
+            .dice {
+                font-size: 4rem;
+            }
+
+            .test-attribute h2 {
+                font-size: 1.5rem;
+            }
+
+            .result-icon {
+                font-size: 3rem;
+            }
+
+            .result-text {
+                font-size: 1.6rem;
+            }
+        }
+    </style>
+
+    <script>
+        // Show test info after dice animation
+        setTimeout(() => {
+            document.getElementById('testInfo').style.display = 'block';
+
+            // Show confetti if success
+            const success = <%= testResult.success ? 'true' : 'false' %>;
+            if (success) {
+                createConfetti();
+            }
+        }, 2000);
+
+        // Create confetti animation
+        function createConfetti() {
+            const container = document.getElementById('confetti');
+            if (!container) return;
+
+            const colors = ['#FF6B6B', '#4ECDC4', '#45B7D1', '#FFA07A', '#98D8C8', '#F7DC6F'];
+
+            for (let i = 0; i < 50; i++) {
+                setTimeout(() => {
+                    const confetti = document.createElement('div');
+                    confetti.style.position = 'absolute';
+                    confetti.style.width = '10px';
+                    confetti.style.height = '10px';
+                    confetti.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
+                    confetti.style.left = Math.random() * 100 + '%';
+                    confetti.style.top = '-20px';
+                    confetti.style.borderRadius = '50%';
+                    confetti.style.animation = `confetti ${2 + Math.random() * 2}s linear forwards`;
+
+                    container.appendChild(confetti);
+
+                    setTimeout(() => confetti.remove(), 4000);
+                }, i * 30);
+            }
+        }
+    </script>
+
+    <style>
+        @keyframes confetti {
+            0% {
+                transform: translateY(-20px) rotate(0deg);
+                opacity: 1;
+            }
+
+            100% {
+                transform: translateY(100vh) rotate(720deg);
+                opacity: 0;
+            }
+        }
+    </style>
+
+    <%- include('../../partials/player/footer') %>

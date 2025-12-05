@@ -75,8 +75,7 @@
                     <span class="btn-icon">▶️</span>
                     <span class="btn-text">Continuar Aventura</span>
                 </a>
-                <a href="/player/stories/<%= story.id %>/play?restart=true" class="btn-restart"
-                    onclick="return confirm('Tem certeza que deseja reiniciar? Todo o progresso será perdido!')">
+                <a href="#" class="btn-restart" id="restartBtn">
                     <span class="btn-icon">🔄</span>
                     <span class="btn-text">Reiniciar do Início</span>
                 </a>
@@ -87,6 +86,22 @@
         </div>
     </div>
 
+</div>
+
+<!-- Custom Modal for Restart Confirmation -->
+<div id="restartModal" class="modal-overlay">
+    <div class="modal-container">
+        <div class="modal-icon">⚠️</div>
+        <h2 class="modal-title">Confirmar Reinício</h2>
+        <p class="modal-message">Tem certeza que deseja reiniciar? Todo o progresso será perdido!</p>
+        <div class="modal-actions">
+            <button class="modal-btn modal-btn-cancel" id="cancelBtn">Cancelar</button>
+            <a href="/player/stories/<%= story.id %>/play?restart=true" class="modal-btn modal-btn-confirm"
+                id="confirmBtn">
+                Sim, Reiniciar
+            </a>
+        </div>
+    </div>
 </div>
 
 <style>
@@ -307,6 +322,7 @@
         font-weight: 600;
         font-size: 1rem;
         transition: all 0.3s ease;
+        cursor: pointer;
     }
 
     .btn-restart:hover {
@@ -332,6 +348,130 @@
         color: #1976D2;
     }
 
+    /* Modal Styles */
+    .modal-overlay {
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: rgba(0, 0, 0, 0.6);
+        z-index: 9999;
+        align-items: center;
+        justify-content: center;
+        animation: fadeIn 0.2s ease;
+    }
+
+    .modal-overlay.active {
+        display: flex;
+    }
+
+    @keyframes fadeIn {
+        from {
+            opacity: 0;
+        }
+
+        to {
+            opacity: 1;
+        }
+    }
+
+    .modal-container {
+        background: #FFFFFF;
+        border-radius: 20px;
+        padding: 35px 30px;
+        max-width: 420px;
+        width: 90%;
+        box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+        text-align: center;
+        animation: slideUp 0.3s ease;
+    }
+
+    @keyframes slideUp {
+        from {
+            transform: translateY(30px);
+            opacity: 0;
+        }
+
+        to {
+            transform: translateY(0);
+            opacity: 1;
+        }
+    }
+
+    .modal-icon {
+        font-size: 4rem;
+        margin-bottom: 15px;
+        animation: bounce 0.6s ease;
+    }
+
+    @keyframes bounce {
+
+        0%,
+        100% {
+            transform: scale(1);
+        }
+
+        50% {
+            transform: scale(1.1);
+        }
+    }
+
+    .modal-title {
+        font-size: 1.5rem;
+        font-weight: 700;
+        color: #D32F2F;
+        margin: 0 0 12px 0;
+    }
+
+    .modal-message {
+        font-size: 1rem;
+        color: #616161;
+        line-height: 1.6;
+        margin: 0 0 25px 0;
+    }
+
+    .modal-actions {
+        display: flex;
+        gap: 12px;
+        justify-content: center;
+    }
+
+    .modal-btn {
+        flex: 1;
+        padding: 12px 20px;
+        border-radius: 10px;
+        font-weight: 600;
+        font-size: 1rem;
+        text-decoration: none;
+        text-align: center;
+        transition: all 0.2s ease;
+        cursor: pointer;
+        border: none;
+    }
+
+    .modal-btn-cancel {
+        background: #E0E0E0;
+        color: #616161;
+    }
+
+    .modal-btn-cancel:hover {
+        background: #BDBDBD;
+        transform: translateY(-2px);
+    }
+
+    .modal-btn-confirm {
+        background: linear-gradient(135deg, #EF5350 0%, #D32F2F 100%);
+        color: #FFFFFF;
+        box-shadow: 0 4px 12px rgba(211, 47, 47, 0.3);
+    }
+
+    .modal-btn-confirm:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 6px 16px rgba(211, 47, 47, 0.4);
+    }
+
     /* Responsive */
     @media (max-width: 480px) {
         .resume-card {
@@ -350,5 +490,49 @@
             padding: 8px 16px;
             font-size: 0.9rem;
         }
+
+        .modal-container {
+            padding: 30px 20px;
+        }
+
+        .modal-actions {
+            flex-direction: column;
+        }
+
+        .modal-btn {
+            width: 100%;
+        }
     }
 </style>
+
+<script>
+    // Modal control
+    const restartBtn = document.getElementById('restartBtn');
+    const modal = document.getElementById('restartModal');
+    const cancelBtn = document.getElementById('cancelBtn');
+
+    // Open modal
+    restartBtn.addEventListener('click', function (e) {
+        e.preventDefault();
+        modal.classList.add('active');
+    });
+
+    // Close modal on cancel
+    cancelBtn.addEventListener('click', function () {
+        modal.classList.remove('active');
+    });
+
+    // Close modal on overlay click
+    modal.addEventListener('click', function (e) {
+        if (e.target === modal) {
+            modal.classList.remove('active');
+        }
+    });
+
+    // Close modal on ESC key
+    document.addEventListener('keydown', function (e) {
+        if (e.key === 'Escape' && modal.classList.contains('active')) {
+            modal.classList.remove('active');
+        }
+    });
+</script>

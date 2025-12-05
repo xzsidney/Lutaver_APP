@@ -327,6 +327,13 @@ const PlayerStoryController = {
                 next_scene_id: nextSceneId,
                 timestamp: new Date().toISOString(),
                 test_result: testResult ? testResult.success : null,
+                test_details: testResult ? {
+                    roll: testResult.roll,
+                    attributeValue: testResult.attributeValue,
+                    total: testResult.total,
+                    difficulty: testResult.difficulty,
+                    attribute: testResult.attribute
+                } : null,
                 time_consumed: timeConsumed
             });
 
@@ -348,7 +355,15 @@ const PlayerStoryController = {
                 return res.redirect(`/player/stories/${storyId}/finish`);
             }
 
-            // Redirecionar para a próxima cena
+            // Se teve teste, redirecionar para página de resultado
+            if (testResult) {
+                // Adicionar nextSceneId à sessão
+                req.session.storyTestResult.nextSceneId = nextSceneId;
+                req.session.storyTestResult.storyId = storyId;
+                return res.redirect(`/player/stories/${storyId}/test-result`);
+            }
+
+            // Redirecionar para a próxima cena (sem teste)
             res.redirect(`/player/stories/${storyId}/play?sceneId=${nextSceneId}`);
 
         } catch (error) {
@@ -423,6 +438,53 @@ const PlayerStoryController = {
             await transaction.rollback();
             console.error('Error finishing story:', error);
             res.status(500).send('Erro ao finalizar história.');
+        }
+    },
+
+    /**
+     * Tela de resultado do teste de atributo
+     * Mostra animação de dado e resultado antes de continuar
+     */
+    showTestResult: async (req, res) => {
+        try {
+            const { storyId } = req.params;
+            const user = req.session.user;
+
+            // Buscar resultado do teste na sessão
+            const testResult = req.session.storyTestResult;
+            if (!testResult) {
+                // Se não há resultado na sessão, redirecionar para a história
+                return res.redirect(`/player/stories/${storyId}/play`);
+            }
+
+            // Buscar história
+            const story = await Story.findByPk(storyId);
+            if (!story) {
+                return res.status(404).send('História não encontrada.');
+            }
+
+            // Buscar personagem ativo
+            let activeCharacter = null;
+            if (req.session.activeCharacterId) {
+                activeCharacter = await Character.findByPk(req.session.activeCharacterId);
+            } else {
+                activeCharacter = await Character.findOne({
+                    where: { user_id: user.id },
+                    order: [['createdAt', 'ASC']]
+                });
+            }
+
+            // Renderizar página de resultado
+            res.render('player/story/test-result', {
+                user,
+                story,
+                character: activeCharacter,
+                testResult
+            });
+
+        } catch (error) {
+            console.error('Error showing test result:', error);
+            res.status(500).send('Erro ao exibir resultado do teste.');
         }
     },
 

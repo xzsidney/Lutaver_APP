@@ -15,6 +15,9 @@ router.get('/:storyId/play', PlayerStoryController.play);
 // Processar escolha
 router.post('/:storyId/choice/:choiceId', PlayerStoryController.choose);
 
+// Tela de resultado do teste de atributo
+router.get('/:storyId/test-result', PlayerStoryController.showTestResult);
+
 // Tela de finalização
 router.get('/:storyId/finish', PlayerStoryController.finish);
 

@@ -38,6 +38,8 @@ const Character = sequelize.define('Character', {
     intelligence: { type: DataTypes.INTEGER, defaultValue: 1 },
     reasoning: { type: DataTypes.INTEGER, defaultValue: 1 },
     luck: { type: DataTypes.INTEGER, defaultValue: 1 },
+    life: { type: DataTypes.INTEGER, defaultValue: 10 },
+    max_life: { type: DataTypes.INTEGER, defaultValue: 10 },
 
     // Pontos e Progresso
     evolution_points: {
