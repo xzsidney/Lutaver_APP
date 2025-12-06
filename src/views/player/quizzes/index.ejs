@@ -19,55 +19,54 @@
                             <%= character.name %>
                         </strong>
                         <small>Nv <%= character.level %> | <%= character.total_xp %> XP | 💰 <%= character.coins %>
-                                        </small>
+                        </small>
                     </div>
                 </div>
             </div>
 
-            <% if (adventures.length===0) { %>
+            <% if (quizzes.length===0) { %>
                 <div class="empty-state">
                     <div class="empty-icon">🗺️</div>
-                    <h2>Nenhuma aventura disponível</h2>
-                    <p>Aguarde novas aventuras serem criadas!</p>
+                    <h2>Nenhum quiz disponível</h2>
+                    <p>Aguarde novos quizzes serem criados!</p>
                 </div>
                 <% } else { %>
                     <div class="adventures-grid">
-                        <% adventures.forEach(adventure=> { %>
-                            <div
-                                class="adventure-card <%= completedAdventureIds.includes(adventure.id) ? 'completed' : '' %>">
-                                <% if (completedAdventureIds.includes(adventure.id)) { %>
-                                    <div class="completed-badge">✓ Concluída</div>
+                        <% quizzes.forEach(quiz=> { %>
+                            <div class="adventure-card <%= completedQuizIds.includes(quiz.id) ? 'completed' : '' %>">
+                                <% if (completedQuizIds.includes(quiz.id)) { %>
+                                    <div class="completed-badge">✓ Concluído</div>
                                     <% } %>
 
                                         <div class="adventure-header">
                                             <h3 class="adventure-title">
-                                                <%= adventure.title %>
+                                                <%= quiz.title %>
                                             </h3>
                                             <span class="adventure-discipline">
-                                                <%= adventure.discipline ? adventure.discipline.name : 'Geral' %>
+                                                <%= quiz.discipline ? quiz.discipline.name : 'Geral' %>
                                             </span>
                                         </div>
 
                                         <div class="adventure-meta">
-                                            <span class="meta-item">📚 <%= adventure.school_year %></span>
+                                            <span class="meta-item">📚 <%= quiz.school_year %></span>
                                             <span class="meta-item">
-                                                <% for(let i=0; i < adventure.difficulty; i++) { %>⭐<% } %>
+                                                <% for(let i=0; i < quiz.difficulty; i++) { %>⭐<% } %>
                                             </span>
                                         </div>
 
                                         <p class="adventure-description">
-                                            <%= adventure.description ? adventure.description.substring(0, 100) + '...'
+                                            <%= quiz.description ? quiz.description.substring(0, 100) + '...'
                                                 : 'Descrição não disponível' %>
                                         </p>
 
                                         <div class="adventure-rewards">
-                                            <span class="reward-item">🎯 <%= adventure.reward_xp %> XP</span>
-                                            <span class="reward-item">💰 <%= adventure.reward_item || 50 %>
+                                            <span class="reward-item">🎯 <%= quiz.reward_xp %> XP</span>
+                                            <span class="reward-item">💰 <%= quiz.reward_item || 50 %>
                                                     Moedas</span>
                                         </div>
 
                                         <div class="adventure-actions">
-                                            <a href="/player/adventures/<%= adventure.id %>" class="btn btn-view">
+                                            <a href="/player/quizzes/<%= quiz.id %>" class="btn btn-view">
                                                 👁️ Ver Detalhes
                                             </a>
                                         </div>

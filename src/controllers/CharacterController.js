@@ -3,6 +3,8 @@ const User = require('../models/User');
 const fs = require('fs');
 const path = require('path');
 
+const MAX_CHARACTERS_PER_USER = process.env.MAX_CHARACTERS_PER_USER || 1;
+
 module.exports = {
     // Listar personagens do jogador
     async index(req, res) {
@@ -19,7 +21,8 @@ module.exports = {
                 title: 'Meus Personagens',
                 user: req.session.user,
                 characters,
-                activeCharacterId: req.session.activeCharacterId || null
+                activeCharacterId: req.session.activeCharacterId || null,
+                maxCharacters: MAX_CHARACTERS_PER_USER
             });
         } catch (error) {
             console.error('Error loading characters:', error);
@@ -30,6 +33,13 @@ module.exports = {
     // Exibir formulário de criação
     async create(req, res) {
         try {
+            const userId = req.session.user.id;
+            const count = await Character.count({ where: { user_id: userId } });
+
+            if (count >= MAX_CHARACTERS_PER_USER) {
+                return res.redirect('/player/characters');
+            }
+
             return res.render('player/character/new', {
                 layout: 'layouts/player',
                 title: 'Criar Personagem',
@@ -46,6 +56,21 @@ module.exports = {
     async store(req, res) {
         try {
             const userId = req.session.user.id;
+
+            // Validate character limit
+            const count = await Character.count({ where: { user_id: userId } });
+            if (count >= MAX_CHARACTERS_PER_USER) {
+                return res.status(403).render('player/character/index', {
+                    layout: 'layouts/player',
+                    title: 'Meus Personagens',
+                    user: req.session.user,
+                    characters: await Character.findAll({ where: { user_id: userId } }),
+                    activeCharacterId: req.session.activeCharacterId || null,
+                    maxCharacters: MAX_CHARACTERS_PER_USER,
+                    error: 'Limite de personagens atingido.'
+                });
+            }
+
             const { name, school_year } = req.body;
 
             // Validação básica

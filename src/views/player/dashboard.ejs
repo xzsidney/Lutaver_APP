@@ -94,5 +94,180 @@
                     <% } %>
 
         </section>
+
+        <!-- SESSÃO: HISTÓRIAS DISPONÍVEIS -->
+        <section class="stories-section">
+            <div class="section-header-custom">
+                <h2>📖 Histórias Disponíveis</h2>
+            </div>
+
+            <% if (!stories || stories.length===0) { %>
+                <div class="empty-state-card">
+                    <p>Nenhuma história disponível no momento.</p>
+                </div>
+                <% } else { %>
+                    <div class="cards-grid">
+                        <% stories.forEach(function(story) { %>
+                            <div class="game-card story-card">
+                                <div class="card-icon">📜</div>
+                                <div class="card-content">
+                                    <h3>
+                                        <%= story.title %>
+                                    </h3>
+                                    <p>
+                                        <%= story.description ? story.description.substring(0, 60) + '...'
+                                            : 'Prepare-se para esta aventura!' %>
+                                    </p>
+                                    <a href="/player/stories/<%= story.id %>/play" class="btn-play">Jogar</a>
+                                </div>
+                            </div>
+                            <% }) %>
+                    </div>
+                    <% } %>
+        </section>
+
+        <!-- SESSÃO: QUIZZES DISPONÍVEIS -->
+        <section class="quizzes-section">
+            <div class="section-header-custom">
+                <h2>🎯 Quizzes Disponíveis</h2>
+            </div>
+
+            <% if (!quizzes || quizzes.length===0) { %>
+                <div class="empty-state-card">
+                    <p>Nenhum quiz disponível no momento.</p>
+                </div>
+                <% } else { %>
+                    <div class="cards-grid">
+                        <% quizzes.forEach(function(quiz) { %>
+                            <div class="game-card quiz-card">
+                                <div class="card-icon">🧠</div>
+                                <div class="card-content">
+                                    <h3>
+                                        <%= quiz.title %>
+                                    </h3>
+                                    <span class="badge-discipline">
+                                        <%= quiz.discipline ? quiz.discipline.name : 'Geral' %>
+                                    </span>
+                                    <a href="/player/quizzes/<%= quiz.id %>" class="btn-play btn-quiz">Responder</a>
+                                </div>
+                            </div>
+                            <% }) %>
+                    </div>
+                    <% } %>
+        </section>
+
     </div>
 </div>
+
+<style>
+    /* Estilos para as novas seções de Histórias e Quizzes */
+    .stories-section,
+    .quizzes-section {
+        margin-top: 40px;
+        padding: 0 20px;
+    }
+
+    .section-header-custom h2 {
+        color: #123055;
+        font-size: 1.5rem;
+        margin-bottom: 20px;
+        border-left: 5px solid #1E90FF;
+        padding-left: 15px;
+    }
+
+    .cards-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+        gap: 20px;
+    }
+
+    .game-card {
+        background: white;
+        border-radius: 12px;
+        padding: 20px;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+        border: 1px solid #eef2f7;
+        transition: transform 0.2s, box-shadow 0.2s;
+        display: flex;
+        align-items: flex-start;
+        gap: 15px;
+    }
+
+    .game-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+    }
+
+    .card-icon {
+        font-size: 2rem;
+        background: #f0f7ff;
+        width: 50px;
+        height: 50px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 10px;
+        flex-shrink: 0;
+    }
+
+    .card-content {
+        flex: 1;
+    }
+
+    .card-content h3 {
+        margin: 0 0 5px 0;
+        font-size: 1.1rem;
+        color: #123055;
+    }
+
+    .card-content p {
+        font-size: 0.9rem;
+        color: #6c757d;
+        margin-bottom: 15px;
+        line-height: 1.4;
+    }
+
+    .badge-discipline {
+        display: inline-block;
+        background-color: #e3f2fd;
+        color: #1976d2;
+        padding: 2px 8px;
+        border-radius: 4px;
+        font-size: 0.8rem;
+        font-weight: 600;
+        margin-bottom: 10px;
+    }
+
+    .btn-play {
+        display: inline-block;
+        background-color: #00C853;
+        color: white;
+        padding: 8px 16px;
+        border-radius: 20px;
+        text-decoration: none;
+        font-weight: bold;
+        font-size: 0.9rem;
+        transition: background-color 0.2s;
+    }
+
+    .btn-play:hover {
+        background-color: #00a844;
+    }
+
+    .btn-quiz {
+        background-color: #1E90FF;
+    }
+
+    .btn-quiz:hover {
+        background-color: #1565C0;
+    }
+
+    .empty-state-card {
+        background: #f8f9fa;
+        padding: 20px;
+        border-radius: 8px;
+        text-align: center;
+        color: #6c757d;
+        border: 1px dashed #dee2e6;
+    }
+</style>

@@ -5,7 +5,15 @@
     </div>
 
     <div class="action-bar">
-        <a href="/player/characters/new" class="btn btn-create">➕ Criar Novo Personagem</a>
+        <% if (typeof maxCharacters==='undefined' || characters.length < maxCharacters) { %>
+            <a href="/player/characters/new" class="btn btn-create">➕ Criar Novo Personagem</a>
+            <% } else { %>
+                <div class="limit-reached-msg">
+                    <p>Você já possui o limite de <strong>
+                            <%= maxCharacters %>
+                        </strong> personagem(ns).</p>
+                </div>
+                <% } %>
     </div>
 
     <% if (characters.length===0) { %>
@@ -62,11 +70,11 @@
                         </div>
 
                         <% if (activeCharacterId==character.id) { %>
-                            <button class="btn-selected" disabled>✓ Selecionado</button>
+                            <button class="btn-selected" disabled>✓ Jogando</button>
                             <% } else { %>
                                 <form action="/player/characters/select" method="POST" class="character-select-form">
                                     <input type="hidden" name="characterId" value="<%= character.id %>">
-                                    <button type="submit" class="btn-select">Selecionar</button>
+                                    <button type="submit" class="btn-select">Jogar</button>
                                 </form>
                                 <% } %>
 
@@ -191,5 +199,14 @@
 
     .action-delete:hover {
         color: #c92a2a;
+    }
+
+    .limit-reached-msg {
+        background: #fff3cd;
+        border: 1px solid #ffeeba;
+        color: #856404;
+        padding: 10px;
+        border-radius: 8px;
+        display: inline-block;
     }
 </style>

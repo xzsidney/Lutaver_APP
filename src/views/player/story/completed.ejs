@@ -1,0 +1,96 @@
+<div class="story-completed-container">
+    <div class="card completed-card">
+        <div class="card-header">
+            <h1>🏆 Aventura Concluída!</h1>
+        </div>
+        <div class="card-body">
+            <h2 class="story-title">
+                <%= story.title %>
+            </h2>
+            <p>Você já completou esta aventura com este personagem.</p>
+            <p class="warning-text" style="background-color: #d4edda; color: #155724; border-color: #c3e6cb;">✅
+                Parabéns! Fique atento(a) para novas aventuras em breve.</p>
+
+            <div class="actions">
+                <a href="/player/stories" class="btn btn-secondary">Voltar para Histórias</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .story-completed-container {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        min-height: 60vh;
+        padding: 20px;
+    }
+
+    .completed-card {
+        background: white;
+        border-radius: 16px;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        max-width: 500px;
+        width: 100%;
+        text-align: center;
+        overflow: hidden;
+    }
+
+    .card-header {
+        background: #00C853;
+        color: white;
+        padding: 30px 20px;
+    }
+
+    .card-header h1 {
+        margin: 0;
+        font-size: 1.8rem;
+    }
+
+    .card-body {
+        padding: 40px 30px;
+    }
+
+    .story-title {
+        color: #123055;
+        margin-bottom: 20px;
+    }
+
+    .warning-text {
+        background: #fff3cd;
+        color: #856404;
+        padding: 15px;
+        border-radius: 8px;
+        margin: 20px 0 30px;
+        font-size: 0.9rem;
+    }
+
+    .actions {
+        display: flex;
+        gap: 15px;
+        justify-content: center;
+    }
+
+    .btn {
+        padding: 12px 24px;
+        border-radius: 50px;
+        text-decoration: none;
+        font-weight: 600;
+        transition: transform 0.2s;
+    }
+
+    .btn:hover {
+        transform: translateY(-2px);
+    }
+
+    .btn-primary {
+        background: #1E90FF;
+        color: white;
+    }
+
+    .btn-secondary {
+        background: #f0f2f5;
+        color: #5f6368;
+    }
+</style>

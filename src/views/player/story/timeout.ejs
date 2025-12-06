@@ -63,27 +63,24 @@
 
     <style>
         body {
-            margin: 0;
-            padding: 0;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            min-height: 100vh;
-            display: flex;
-            align-items: center;
-            justify-content: center;
+            background-color: #f0f2f5;
+            /* Removed flex centering on body to avoid conflicts with main layout if present */
         }
 
         .player-container {
             width: 100%;
-            max-width: 700px;
+            max-width: 600px;
+            margin: 40px auto;
             padding: 20px;
+            box-sizing: border-box;
         }
 
         .timeout-container {
             background: #FFFFFF;
             border-radius: 20px;
-            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
             overflow: hidden;
+            width: 100%;
         }
 
         /* Header */
@@ -91,12 +88,12 @@
             background: linear-gradient(135deg, #FF6B6B 0%, #FF8E53 100%);
             color: #FFFFFF;
             text-align: center;
-            padding: 40px 20px;
+            padding: 30px 20px;
         }
 
         .timeout-icon {
-            font-size: 4rem;
-            margin-bottom: 15px;
+            font-size: 3.5rem;
+            margin-bottom: 10px;
             animation: pulse 2s infinite;
         }
 
@@ -113,21 +110,23 @@
         }
 
         .timeout-title {
-            font-size: 2rem;
+            font-size: 1.8rem;
             font-weight: 700;
             margin: 0;
         }
 
         /* Message */
         .timeout-message {
-            padding: 30px;
+            padding: 25px 30px;
             text-align: center;
             background: #FFF3E0;
             border-left: 5px solid #FF9800;
+            border-right: 5px solid #FF9800;
+            /* Added symmetry */
         }
 
         .timeout-text {
-            font-size: 1.2rem;
+            font-size: 1.1rem;
             color: #E65100;
             line-height: 1.6;
             margin: 0;
@@ -135,33 +134,38 @@
 
         /* Story Info */
         .story-info-card {
-            padding: 25px 30px;
+            padding: 20px 30px;
             border-bottom: 2px solid #F5F5F5;
+            background-color: #FAFAFA;
+            /* Subtle background */
         }
 
         .story-info-card h3 {
-            font-size: 1.4rem;
+            font-size: 1.3rem;
             color: #1976D2;
-            margin: 0 0 10px 0;
+            margin: 0 0 8px 0;
         }
 
         .story-info-card p {
             color: #616161;
             line-height: 1.5;
             margin: 0;
+            font-size: 0.95rem;
         }
 
         /* Tips Card */
         .tips-card {
-            padding: 25px 30px;
+            padding: 20px 30px;
             background: #E8F5E9;
             border-left: 5px solid #4CAF50;
+            margin-top: 0;
+            /* Remove potential gap */
         }
 
         .tips-card h4 {
-            font-size: 1.2rem;
+            font-size: 1.1rem;
             color: #2E7D32;
-            margin: 0 0 15px 0;
+            margin: 0 0 12px 0;
         }
 
         .tips-card ul {
@@ -171,8 +175,9 @@
         }
 
         .tips-card li {
-            margin-bottom: 8px;
+            margin-bottom: 6px;
             line-height: 1.5;
+            font-size: 0.95rem;
         }
 
         .tips-card strong {
@@ -185,16 +190,18 @@
             display: flex;
             flex-direction: column;
             gap: 12px;
+            background-color: #fff;
         }
 
         .action-buttons a {
-            padding: 15px;
+            padding: 14px;
             text-align: center;
             text-decoration: none;
             border-radius: 10px;
             font-weight: 600;
-            font-size: 1.05rem;
+            font-size: 1rem;
             transition: transform 0.2s, box-shadow 0.2s;
+            display: block;
         }
 
         .btn-retry {
@@ -231,6 +238,11 @@
 
         /* Responsive */
         @media (max-width: 600px) {
+            .player-container {
+                padding: 15px;
+                margin: 10px auto;
+            }
+
             .timeout-title {
                 font-size: 1.6rem;
             }

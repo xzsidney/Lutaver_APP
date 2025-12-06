@@ -73,6 +73,7 @@ const setUserLayout = (req, res, next) => {
 
     // Usuário logado
     const userRole = req.session.user.role;
+    res.locals.user = req.session.user; // Disponibilizar usuário para todas as views
 
     switch (userRole) {
         case 'admin':

@@ -43,14 +43,35 @@ module.exports = {
                 console.log('Stories not available');
             }
 
+            // Notifications mock logic (can be replaced with real logic later)
+            const notifications = {
+                newQuiz: quizzes.length > 0,
+                newItems: true, // Placeholder
+                lastStoryCompleted: false // Placeholder
+            };
+
+            // Prepare active character data if exists
+            let activeCharacterData = null;
+            if (activeCharacter) {
+                const nextLevelXp = activeCharacter.level * 100; // Formula example
+                activeCharacterData = {
+                    ...activeCharacter.toJSON(),
+                    hpCurrent: activeCharacter.life,
+                    hpMax: activeCharacter.max_life,
+                    xp: activeCharacter.total_xp,
+                    xpNextLevel: nextLevelXp
+                };
+            }
+
             return res.render('player/dashboard', {
                 layout: 'layouts/player',
                 title: 'Área do Jogador',
                 user: req.session.user,
                 characters,
-                activeCharacter,
+                activeCharacter: activeCharacterData,
                 quizzes,
-                stories
+                stories,
+                notifications
             });
         } catch (error) {
             console.error('Error loading player dashboard:', error);

@@ -106,16 +106,26 @@ const PlayerStoryController = {
                 return res.status(404).send('Personagem não encontrado. Crie um personagem primeiro.');
             }
 
-            // Buscar progresso existente (não completado)
+            // Buscar progresso existente (incluindo completados)
             let progress = await StoryProgress.findOne({
                 where: {
                     character_id: activeCharacter.id,
-                    story_id: storyId,
-                    is_completed: false
+                    story_id: storyId
                 }
             });
 
-            // Se forceRestart, deletar progresso existente
+            // Se já completou COM SUCESSO, não permitir jogar novamente
+            if (progress && progress.is_completed && progress.ending_type === 'success') {
+                return res.render('player/story/completed', {
+                    layout: 'layouts/player',
+                    title: 'Aventura Concluída',
+                    user,
+                    story,
+                    character: activeCharacter
+                });
+            }
+
+            // Se forçar reinício (apenas se não estiver concluído), deletar progresso
             if (forceRestart && progress) {
                 await progress.destroy();
                 progress = null;
@@ -423,11 +433,19 @@ const PlayerStoryController = {
                 transaction
             });
 
+            // Marcar como concluído com sucesso
+            if (progress) {
+                progress.is_completed = true;
+                progress.ending_type = 'success';
+                progress.completed_at = new Date();
+                await progress.save({ transaction });
+            }
+
             // Usar StoryRewardService para aplicar recompensas
             const rewards = await StoryRewardService.grantRewards(
                 activeCharacter,
                 story,
-                progress || { is_completed: false }
+                progress || { is_completed: true }
             );
 
             await transaction.commit();
