@@ -2,6 +2,8 @@ const Character = require('../models/Character');
 const Quiz = require('../models/Quiz');
 const Story = require('../models/Story');
 const Discipline = require('../models/Discipline');
+const Npc = require('../models/Npc');
+const Sequelize = require('sequelize');
 
 module.exports = {
     // Player Dashboard
@@ -76,6 +78,81 @@ module.exports = {
         } catch (error) {
             console.error('Error loading player dashboard:', error);
             return res.status(500).send('Erro ao carregar dashboard');
+        }
+    },
+
+    // Battle View
+    async battle(req, res) {
+        try {
+            const user = req.session.user;
+            const userId = req.session.user.id;
+            let activeCharacterId = req.session.activeCharacterId;
+            let character;
+
+            // 1. Try to fetch by Session ID first
+            if (activeCharacterId) {
+                character = await Character.findByPk(activeCharacterId);
+            }
+
+            // 2. If no valid character from session (or ID was invalid), try to fetch ANY character from user
+            if (!character) {
+                const userCharacters = await Character.findAll({
+                    where: { user_id: userId },
+                    order: [['updatedAt', 'DESC']], // Get most recently used/created
+                    limit: 1
+                });
+
+                if (userCharacters.length > 0) {
+                    character = userCharacters[0];
+                    // Auto-set as active to persist selection for next time
+                    req.session.activeCharacterId = character.id;
+                }
+            }
+
+            // 3. If still no character, we can't battle.
+            if (!character) {
+                return res.redirect('/player/dashboard');
+            }
+
+            // Character is guaranteed to be set here due to checks above
+
+            // Try to find a random NPC or creating a mock one if empty
+            let npc = await Npc.findOne({
+                order: [
+                    [Sequelize.fn('RAND')]
+                ]
+            });
+
+            if (!npc) {
+                // Fallback Mock NPC if DB is empty
+                npc = {
+                    id: 999,
+                    name: "Inimigo de Treino",
+                    type: "creature",
+                    subject: "Geral",
+                    grade_level: 1,
+                    stat_strength: 8,
+                    stat_dexterity: 8,
+                    stat_constitution: 20, // Hp base multiplier usually handles this
+                    stat_intelligence: 5,
+                    stat_reasoning: 5,
+                    stat_luck: 5,
+                    difficulty: "easy"
+                };
+            }
+
+            return res.render('player/battle', {
+                layout: 'layouts/player', // Maintain layout consistency
+                title: 'Batalha',
+                user,
+                character: character.toJSON(),
+                npc: npc.toJSON ? npc.toJSON() : npc
+            });
+
+        } catch (error) {
+            console.error('Error loading battle:', error);
+            // Fallback to dashboard on error
+            return res.redirect('/player/dashboard');
         }
     }
 };

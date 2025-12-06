@@ -1,70 +1,244 @@
 <div class="player-home-container">
     <div class="section-header">
         <h1 class="home-title">Criar Novo Personagem</h1>
-        <p class="home-subtitle">Comece sua jornada educacional</p>
+        <p class="home-subtitle">Personalize seu herói e prepare-se para a aventura!</p>
     </div>
 
-    <option value="1">1º Ano</option>
-    <option value="2">2º Ano</option>
-    <option value="3">3º Ano</option>
-    <option value="4">4º Ano</option>
-    <option value="5">5º Ano</option>
-    <option value="6">6º Ano</option>
-    <option value="7">7º Ano</option>
-    <option value="8">8º Ano</option>
-    <option value="9">9º Ano</option>
-    <option value="10">10º Ano</option>
-    </select>
-    <small>Selecione seu ano escolar atual</small>
+    <% if (typeof error !=='undefined' && error) { %>
+        <div class="alert alert-danger">
+            <%= error %>
+        </div>
+        <% } %>
+
+            <form action="/player/characters" method="POST" enctype="multipart/form-data" class="edit-container"
+                id="createCharacterForm">
+                <!-- Left Column: Basic Info -->
+                <div class="form-card">
+                    <h2 class="form-title">📝 Dados Básicos</h2>
+
+                    <div class="form-group">
+                        <label for="name">Nome do Personagem</label>
+                        <input type="text" id="name" name="name" required placeholder="Ex: Guerreiro da Luz"
+                            class="form-control">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="school_year">Ano Escolar</label>
+                        <input type="text" class="form-control" value="1º Ano" disabled
+                            style="background-color: #f8f9fa;">
+                        <input type="hidden" name="school_year" value="1">
+                        <small style="color: #666;">Todos os novos personagens iniciam no 1º Ano.</small>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="avatar">Avatar (Opcional)</label>
+                        <input type="file" id="avatar" name="avatar" accept="image/*" class="form-control">
+                        <small style="color: #666; font-size: 0.85rem;">Escolha uma imagem para representar seu
+                            personagem</small>
+                    </div>
+
+                    <div class="form-actions">
+                        <button type="submit" class="btn btn-primary" id="submit-btn" disabled>Criar Personagem</button>
+                        <a href="/player/dashboard" class="btn btn-secondary">Cancelar</a>
+                    </div>
+                </div>
+
+                <!-- Right Column: Attribute Allocation -->
+                <div class="form-card">
+                    <h2 class="form-title">⚔️ Distribuir Atributos</h2>
+                    <p style="color: #666; margin-bottom: 15px; font-size: 0.9rem;">
+                        Você tem <strong>10 pontos</strong> para distribuir. Ajuste os valores conforme desejar.
+                    </p>
+
+                    <div class="evolution-points-display">
+                        <span class="points-label">Pontos Disponíveis:</span>
+                        <span class="points-value" id="remaining-points">10</span>
+                    </div>
+
+                    <div class="alert alert-info" id="points-alert">
+                        💡 Distribua todos os pontos para habilitar a criação.
+                    </div>
+
+                    <div class="attributes-compact">
+                        <!-- Força -->
+                        <div class="attr-row">
+                            <span class="attr-icon">💪</span>
+                            <span class="attr-label">Força</span>
+                            <button type="button" class="btn-allocate-small minus"
+                                onclick="updateAttribute('strength', -1)">-</button>
+                            <span class="attr-current" id="val-strength">1</span>
+                            <button type="button" class="btn-allocate-small plus"
+                                onclick="updateAttribute('strength', 1)">+</button>
+                            <input type="hidden" name="strength" id="input-strength" value="1">
+                        </div>
+
+                        <!-- Destreza -->
+                        <div class="attr-row">
+                            <span class="attr-icon">🎯</span>
+                            <span class="attr-label">Destreza</span>
+                            <button type="button" class="btn-allocate-small minus"
+                                onclick="updateAttribute('dexterity', -1)">-</button>
+                            <span class="attr-current" id="val-dexterity">1</span>
+                            <button type="button" class="btn-allocate-small plus"
+                                onclick="updateAttribute('dexterity', 1)">+</button>
+                            <input type="hidden" name="dexterity" id="input-dexterity" value="1">
+                        </div>
+
+                        <!-- Constituição -->
+                        <div class="attr-row">
+                            <span class="attr-icon">🛡️</span>
+                            <span class="attr-label">Constituição</span>
+                            <button type="button" class="btn-allocate-small minus"
+                                onclick="updateAttribute('constitution', -1)">-</button>
+                            <span class="attr-current" id="val-constitution">1</span>
+                            <button type="button" class="btn-allocate-small plus"
+                                onclick="updateAttribute('constitution', 1)">+</button>
+                            <input type="hidden" name="constitution" id="input-constitution" value="1">
+                        </div>
+
+                        <!-- Inteligência -->
+                        <div class="attr-row">
+                            <span class="attr-icon">🧠</span>
+                            <span class="attr-label">Inteligência</span>
+                            <button type="button" class="btn-allocate-small minus"
+                                onclick="updateAttribute('intelligence', -1)">-</button>
+                            <span class="attr-current" id="val-intelligence">1</span>
+                            <button type="button" class="btn-allocate-small plus"
+                                onclick="updateAttribute('intelligence', 1)">+</button>
+                            <input type="hidden" name="intelligence" id="input-intelligence" value="1">
+                        </div>
+
+                        <!-- Raciocínio -->
+                        <div class="attr-row">
+                            <span class="attr-icon">🤔</span>
+                            <span class="attr-label">Raciocínio</span>
+                            <button type="button" class="btn-allocate-small minus"
+                                onclick="updateAttribute('reasoning', -1)">-</button>
+                            <span class="attr-current" id="val-reasoning">1</span>
+                            <button type="button" class="btn-allocate-small plus"
+                                onclick="updateAttribute('reasoning', 1)">+</button>
+                            <input type="hidden" name="reasoning" id="input-reasoning" value="1">
+                        </div>
+
+                        <!-- Sorte -->
+                        <div class="attr-row">
+                            <span class="attr-icon">🍀</span>
+                            <span class="attr-label">Sorte</span>
+                            <button type="button" class="btn-allocate-small minus"
+                                onclick="updateAttribute('luck', -1)">-</button>
+                            <span class="attr-current" id="val-luck">1</span>
+                            <button type="button" class="btn-allocate-small plus"
+                                onclick="updateAttribute('luck', 1)">+</button>
+                            <input type="hidden" name="luck" id="input-luck" value="1">
+                        </div>
+                    </div>
+                </div>
+            </form>
 </div>
 
-<div class="info-box">
-    <h3>📊 Atributos Iniciais</h3>
-    <p>Seu personagem começará com:</p>
-    <ul>
-        <li>Nível 1</li>
-        <li>100 moedas</li>
-        <li><strong>10 pontos de evolução</strong> para distribuir nos atributos</li>
-        <li>Todos os atributos em nível 1</li>
-    </ul>
-    <p class="info-note">💡 Após criar o personagem, você poderá distribuir os pontos de
-        evolução na tela de detalhes!</p>
-</div>
+<script>
+    let remainingPoints = 10;
 
-<div class="form-actions">
-    <button type="submit" class="btn btn-primary">🎮 Criar Personagem</button>
-    <a href="/player/dashboard" class="btn btn-secondary">Cancelar</a>
-</div>
-</form>
-</div>
-</div>
-</div>
+    function updateAttribute(attr, change) {
+        const input = document.getElementById(`input-${attr}`);
+        const display = document.getElementById(`val-${attr}`);
+        let currentValue = parseInt(input.value);
+
+        // Regras de validação
+        if (change > 0) {
+            // Adicionando ponto
+            if (remainingPoints <= 0) return; // Sem pontos
+            remainingPoints--;
+            currentValue++;
+        } else {
+            // Removendo ponto
+            if (currentValue <= 1) return; // Mínimo é 1
+            remainingPoints++;
+            currentValue--;
+        }
+
+        // Atualizar UI
+        input.value = currentValue;
+        display.textContent = currentValue;
+        document.getElementById('remaining-points').textContent = remainingPoints;
+
+        validateSubmit();
+    }
+
+    function validateSubmit() {
+        const btn = document.getElementById('submit-btn');
+        const alertBox = document.getElementById('points-alert');
+
+        if (remainingPoints === 0) {
+            btn.disabled = false;
+            btn.innerHTML = '✨ Criar Personagem';
+
+            alertBox.classList.remove('alert-info', 'alert-warning');
+            alertBox.classList.add('alert-success');
+            alertBox.innerHTML = '<strong>✅ Tudo pronto!</strong> Pode criar seu personagem.';
+        } else {
+            btn.disabled = true;
+            btn.innerHTML = `Distribua os pontos (${remainingPoints})`;
+
+            alertBox.classList.remove('alert-success');
+            alertBox.classList.add('alert-info');
+            alertBox.innerHTML = `💡 Você ainda tem <strong>${remainingPoints}</strong> pontos para distribuir.`;
+        }
+    }
+
+    // Inicialização
+    validateSubmit();
+</script>
 
 <style>
-    .form-container {
-        max-width: 600px;
-        margin: 0 auto;
+    .edit-container {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 25px;
+        max-width: 1000px;
+        margin: 0 auto 30px;
     }
 
     .form-card {
         background: #ffffff;
         border-radius: 18px;
         border: 2px solid #e2ecff;
-        padding: 30px;
+        padding: 25px;
         box-shadow: 0 4px 10px rgba(15, 49, 96, 0.06);
     }
 
-    .alert {
-        padding: 15px 20px;
-        border-radius: 12px;
+    .form-title {
+        font-size: 1.2rem;
+        font-weight: 700;
+        color: #123055;
         margin-bottom: 20px;
-        font-weight: 500;
+        padding-bottom: 12px;
+        border-bottom: 2px solid #f0f4f8;
+    }
+
+    .alert {
+        padding: 12px 16px;
+        border-radius: 10px;
+        margin-bottom: 20px;
+        font-size: 0.9rem;
     }
 
     .alert-danger {
         background: #ffe6e6;
         color: #c92a2a;
         border: 1px solid #ffc9c9;
+    }
+
+    .alert-info {
+        background: #e7f2ff;
+        color: #0a2a4f;
+        border: 2px solid #1E90FF;
+    }
+
+    .alert-success {
+        background: #d3f9d8;
+        color: #2b8a3e;
+        border: 2px solid #00C853;
     }
 
     .form-group {
@@ -96,65 +270,111 @@
         box-shadow: 0 0 0 3px rgba(30, 144, 255, 0.1);
     }
 
-    .form-group small {
-        display: block;
-        margin-top: 6px;
-        color: #7a8dab;
-        font-size: 0.85rem;
-    }
-
-    .info-box {
-        background: linear-gradient(135deg, #e7f2ff, #f0f8ff);
-        border: 2px solid #1E90FF;
+    .evolution-points-display {
+        background: linear-gradient(135deg, #fff9e6, #fffbf0);
+        border: 2px solid #F7D046;
         border-radius: 12px;
-        padding: 20px;
-        margin-bottom: 25px;
+        padding: 15px;
+        margin-bottom: 20px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
     }
 
-    .info-box h3 {
+    .points-label {
+        font-weight: 600;
         color: #123055;
-        margin-bottom: 10px;
+        font-size: 1rem;
+    }
+
+    .points-value {
+        font-size: 1.5rem;
+        font-weight: 700;
+        color: #123055;
+    }
+
+    .attributes-compact {
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+    }
+
+    .attr-row {
+        display: grid;
+        grid-template-columns: 35px 1fr 35px 40px 35px;
+        /* Icon Label - Val + */
+        align-items: center;
+        gap: 8px;
+        padding: 10px;
+        background: #f8f9fa;
+        border-radius: 10px;
+        transition: 0.2s ease-in-out;
+    }
+
+    .attr-row:hover {
+        background: #e7f2ff;
+    }
+
+    .attr-icon {
+        font-size: 1.3rem;
+        text-align: center;
+    }
+
+    .attr-label {
+        font-weight: 600;
+        color: #123055;
+    }
+
+    .attr-current {
+        font-weight: 700;
+        color: #1E90FF;
+        text-align: center;
         font-size: 1.1rem;
     }
 
-    .info-box p {
-        color: #4b6688;
-        margin-bottom: 10px;
+    .btn-allocate-small {
+        width: 32px;
+        height: 32px;
+        border-radius: 50%;
+        font-size: 1.2rem;
+        font-weight: 700;
+        cursor: pointer;
+        transition: 0.2s ease-in-out;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border: none;
     }
 
-    .info-box ul {
-        list-style: none;
-        padding-left: 0;
+    .btn-allocate-small.plus {
+        background: #1E90FF;
+        color: #ffffff;
     }
 
-    .info-box li {
-        color: #4b6688;
-        padding: 4px 0;
-        padding-left: 20px;
-        position: relative;
+    .btn-allocate-small.plus:hover {
+        background: #0f6fd1;
+        transform: scale(1.1);
     }
 
-    .info-box li:before {
-        content: "✓";
-        position: absolute;
-        left: 0;
-        color: #00C853;
-        font-weight: bold;
+    .btn-allocate-small.minus {
+        background: #e9ecef;
+        color: #495057;
     }
 
-    .info-note {
-        margin-top: 15px;
-        padding: 10px;
-        background: rgba(255, 255, 255, 0.7);
-        border-radius: 8px;
-        font-size: 0.9rem;
-        font-weight: 600;
+    .btn-allocate-small.minus:hover {
+        background: #dee2e6;
+        transform: scale(1.1);
+    }
+
+    .btn-allocate-small:active {
+        transform: scale(0.95);
     }
 
     .form-actions {
         display: flex;
         gap: 12px;
-        justify-content: center;
+        justify-content: flex-start;
+        margin-top: 25px;
     }
 
     .btn {
@@ -177,6 +397,11 @@
         background: #0f6fd1;
     }
 
+    .btn-primary:disabled {
+        background: #a0cfee;
+        cursor: not-allowed;
+    }
+
     .btn-secondary {
         background: #6c757d;
         color: #ffffff;
@@ -184,5 +409,11 @@
 
     .btn-secondary:hover {
         background: #5a6268;
+    }
+
+    @media (max-width: 768px) {
+        .edit-container {
+            grid-template-columns: 1fr;
+        }
     }
 </style>

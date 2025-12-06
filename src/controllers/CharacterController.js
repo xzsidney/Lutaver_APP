@@ -71,15 +71,39 @@ module.exports = {
                 });
             }
 
-            const { name, school_year } = req.body;
+            const { name } = req.body;
+            // Forçar 1º Ano sempre na criação
+            const school_year = 1;
 
             // Validação básica
-            if (!name || !school_year) {
+            if (!name) {
                 return res.render('player/character/new', {
                     layout: 'layouts/player',
                     title: 'Criar Personagem',
                     user: req.session.user,
-                    error: 'Nome e ano escolar são obrigatórios'
+                    error: 'Nome do personagem é obrigatório'
+                });
+            }
+
+            // Pegar atributos do body, convertendo para inteiro e garantindo mínimo 1
+            const strength = parseInt(req.body.strength) || 1;
+            const dexterity = parseInt(req.body.dexterity) || 1;
+            const constitution = parseInt(req.body.constitution) || 1;
+            const intelligence = parseInt(req.body.intelligence) || 1;
+            const reasoning = parseInt(req.body.reasoning) || 1;
+            const luck = parseInt(req.body.luck) || 1;
+
+            // Validar total de pontos
+            // Base = 6 (1 para cada um dos 6 atributos)
+            // Pontos extras = 10
+            // Total permitido = 16
+            const totalStats = strength + dexterity + constitution + intelligence + reasoning + luck;
+            if (totalStats !== 16) {
+                return res.render('player/character/new', {
+                    layout: 'layouts/player',
+                    title: 'Criar Personagem',
+                    user: req.session.user,
+                    error: 'A soma dos atributos deve utilizar exatamente os 10 pontos disponíveis.'
                 });
             }
 
@@ -90,13 +114,13 @@ module.exports = {
                 level: 1,
                 total_xp: 0,
                 coins: 100, // Moedas iniciais
-                strength: 1,
-                dexterity: 1,
-                constitution: 1,
-                intelligence: 1,
-                reasoning: 1,
-                luck: 1,
-                evolution_points: 10
+                strength,
+                dexterity,
+                constitution,
+                intelligence,
+                reasoning,
+                luck,
+                evolution_points: 0 // Pontos já foram distribuídos na criação
             });
 
             // Definir como personagem ativo se for o primeiro

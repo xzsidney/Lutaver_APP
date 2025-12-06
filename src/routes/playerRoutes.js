@@ -9,6 +9,8 @@ const playerQuizRoutes = require('./playerQuizRoutes');
 const playerShopRoutes = require('./playerShopRoutes');
 const playerStoryRoutes = require('./playerStoryRoutes');
 const DashboardPlayerController = require('../controllers/DashboardPlayerController');
+const battleController = require('../controllers/battleController');
+
 
 /**
  * Player Routes
@@ -19,6 +21,12 @@ const DashboardPlayerController = require('../controllers/DashboardPlayerControl
 // Dashboard (home page for player)
 router.get('/dashboard', authMiddleware, DashboardPlayerController.dashboard);
 router.get('/', authMiddleware, DashboardPlayerController.dashboard); // Alias
+router.get('/battle', authMiddleware, DashboardPlayerController.battle);
+// Versão sem parâmetro na URL
+router.get('/player/battle', authMiddleware, battleController.showBattle);
+
+
+
 
 // Account management: /player/account/*
 router.use('/account', accountRoutes);

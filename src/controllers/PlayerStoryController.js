@@ -91,19 +91,27 @@ const PlayerStoryController = {
                 return res.status(404).send('História não encontrada.');
             }
 
-            // Buscar personagem ativo
+            // Buscar personagem ativo do jogador
             let activeCharacter = null;
             if (req.session.activeCharacterId) {
                 activeCharacter = await Character.findByPk(req.session.activeCharacterId);
-            } else {
-                activeCharacter = await Character.findOne({
+            }
+
+            // Se ainda não tem personagem ativo, tentar pegar o primeiro
+            if (!activeCharacter) {
+                const firstCharacter = await Character.findOne({
                     where: { user_id: user.id },
                     order: [['createdAt', 'ASC']]
                 });
-            }
 
-            if (!activeCharacter) {
-                return res.status(404).send('Personagem não encontrado. Crie um personagem primeiro.');
+                if (!firstCharacter) {
+                    // SE NÃO TIVER NENHUM PERSONAGEM, REDIRECIONAR PARA TELA DE PERSONAGENS (ONDE CRIA)
+                    return res.redirect('/player/characters');
+                }
+
+                // Se achou, define como ativo e segue
+                activeCharacter = firstCharacter;
+                req.session.activeCharacterId = activeCharacter.id;
             }
 
             // Buscar progresso existente (incluindo completados)

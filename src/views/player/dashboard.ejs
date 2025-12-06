@@ -156,13 +156,32 @@
                     <% } %>
         </section>
 
+        <!-- SESSÃO: ARENA DE BATALHA -->
+        <section class="battle-section">
+            <div class="section-header-custom">
+                <h2>⚔️ Arena de Batalha</h2>
+            </div>
+
+            <div class="cards-grid">
+                <div class="game-card battle-card">
+                    <div class="card-icon" style="background-color: #ffebee; color: #d32f2f;">🥊</div>
+                    <div class="card-content">
+                        <h3>Batalha Rápida</h3>
+                        <p>Entre na arena e teste sua força em um combate por turnos.</p>
+                        <a href="/player/battle" class="btn-play btn-battle-start">Lutar Agora</a>
+                    </div>
+                </div>
+            </div>
+        </section>
+
     </div>
 </div>
 
 <style>
     /* Estilos para as novas seções de Histórias e Quizzes */
     .stories-section,
-    .quizzes-section {
+    .quizzes-section,
+    .battle-section {
         margin-top: 40px;
         padding: 0 20px;
     }
@@ -260,6 +279,14 @@
 
     .btn-quiz:hover {
         background-color: #1565C0;
+    }
+
+    .btn-battle-start {
+        background-color: #d32f2f;
+    }
+
+    .btn-battle-start:hover {
+        background-color: #b71c1c;
     }
 
     .empty-state-card {

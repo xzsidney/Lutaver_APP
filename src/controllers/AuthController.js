@@ -46,6 +46,50 @@ const AuthController = {
         }
     },
 
+    registerPage: (req, res) => {
+        res.render('auth/register', { error: null, name: '', email: '' });
+    },
+
+    register: async (req, res) => {
+        const { name, email, password, confirm_password } = req.body;
+
+        try {
+            if (password !== confirm_password) {
+                return res.render('auth/register', {
+                    error: 'As senhas não conferem',
+                    name,
+                    email
+                });
+            }
+
+            const existingUser = await User.findOne({ where: { email } });
+            if (existingUser) {
+                return res.render('auth/register', {
+                    error: 'Este e-mail já está em uso',
+                    name,
+                    email
+                });
+            }
+
+            await User.create({
+                name,
+                email,
+                password_hash: password,
+                role: 'player',
+                is_active: true
+            });
+
+            return res.render('auth/login', { error: 'Conta criada com sucesso! Faça login.' });
+        } catch (error) {
+            console.error(error);
+            return res.render('auth/register', {
+                error: 'Erro ao criar conta. Tente novamente.',
+                name,
+                email
+            });
+        }
+    },
+
     logout: (req, res) => {
         req.session.destroy((err) => {
             if (err) console.log(err);

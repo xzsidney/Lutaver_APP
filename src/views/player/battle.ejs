@@ -1,0 +1,525 @@
+<div class="container mt-4 battle-page">
+
+    <h2 class="mb-3 battle-title">Batalha Escolar</h2>
+
+    <!-- BLOCO GERAL DA BATALHA -->
+    <div class="battle-wrapper">
+
+        <!-- HUD de cima: HP e nomes -->
+        <div class="battle-hud">
+            <div class="hud-side hud-player">
+                <div class="hud-name">
+                    <%= character.name %>
+                </div>
+                <div class="hud-hp-bar">
+                    <div id="playerHpFill" class="hud-hp-fill"></div>
+                </div>
+                <div class="hud-hp-text">
+                    <span id="playerHpText"></span>
+                </div>
+            </div>
+
+            <div class="hud-side hud-enemy">
+                <div class="hud-name">
+                    <%= npc.name %>
+                </div>
+                <div class="hud-hp-bar">
+                    <div id="enemyHpFill" class="hud-hp-fill enemy"></div>
+                </div>
+                <div class="hud-hp-text">
+                    <span id="enemyHpText"></span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Canvas central -->
+        <div class="battle-canvas-wrapper">
+            <canvas id="battleCanvas" width="960" height="540">
+                Seu navegador não suporta Canvas.
+            </canvas>
+        </div>
+
+        <!-- Log de batalha + ações -->
+        <div class="battle-bottom-row">
+            <div class="col-md-8 mb-3 mb-md-0">
+                <div class="battle-card">
+                    <h5 class="battle-card-title">📜 Registro da Batalha</h5>
+                    <div id="battleLog" class="battle-log">
+                        <p>Prepare-se para a batalha!</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="battle-card">
+                    <h5 class="battle-card-title">🎮 Ações de Combate</h5>
+                    <p class="battle-actions-help">
+                        Escolha uma ação no seu turno. Sua ficha e atributos afetam o resultado!
+                    </p>
+                    <div class="battle-actions">
+                        <button id="btnAttack" class="btn btn-primary w-100 mb-2">🥊 Ataque Físico</button>
+                        <button id="btnSkill" class="btn btn-warning w-100 mb-2">📘 Habilidade da Matéria</button>
+                        <button id="btnItem" class="btn btn-success w-100 mb-2">🎒 Usar Item</button>
+                        <button id="btnDefend" class="btn btn-secondary w-100 mb-2">🛡️ Defender</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    /* Container geral da página de batalha */
+    .battle-page {
+        margin-bottom: 40px;
+    }
+
+    .battle-title {
+        font-weight: 700;
+        color: #123055;
+    }
+
+    .battle-wrapper {
+        background: #f5f7fb;
+        border-radius: 16px;
+        padding: 16px 18px 20px 18px;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.04);
+        border: 1px solid #e2e8f0;
+    }
+
+    /* HUD SUPERIOR */
+    .battle-hud {
+        display: flex;
+        justify-content: space-between;
+        gap: 1.5rem;
+        flex-wrap: wrap;
+        margin-bottom: 16px;
+    }
+
+    .hud-side {
+        flex: 1 1 240px;
+        min-width: 0;
+        background: #ffffff;
+        border-radius: 12px;
+        padding: 10px 12px;
+        box-shadow: 0 2px 6px rgba(0, 0, 0, 0.03);
+        border: 1px solid #e5e9f0;
+    }
+
+    .hud-name {
+        font-weight: 700;
+        margin-bottom: 6px;
+        color: #123055;
+        font-size: 1rem;
+    }
+
+    .hud-hp-bar {
+        width: 100%;
+        height: 18px;
+        background-color: #f1f3f5;
+        border-radius: 10px;
+        overflow: hidden;
+        border: 1px solid #d0d7e2;
+    }
+
+    .hud-hp-fill {
+        height: 100%;
+        width: 100%;
+        background: linear-gradient(90deg, #2ecc71, #27ae60);
+        transition: width 0.2s;
+    }
+
+    .hud-hp-fill.enemy {
+        background: linear-gradient(90deg, #e74c3c, #c0392b);
+    }
+
+    .hud-hp-text {
+        font-size: 0.85rem;
+        margin-top: 4px;
+        color: #34495e;
+        text-align: right;
+    }
+
+    /* CANVAS */
+    .battle-canvas-wrapper {
+        display: flex;
+        justify-content: center;
+        margin: 8px 0 18px 0;
+    }
+
+    #battleCanvas {
+        border: 2px solid #123055;
+        background-color: #87CEFA;
+        /* céu */
+        border-radius: 12px;
+        max-width: 100%;
+        height: auto;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+    }
+
+    /* PARTE INFERIOR: LOG + AÇÕES */
+    .battle-bottom-row {
+        margin-top: 6px;
+    }
+
+    .battle-card {
+        background: #ffffff;
+        border-radius: 12px;
+        padding: 12px 14px 14px 14px;
+        border: 1px solid #e5e9f0;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.03);
+        height: 100%;
+    }
+
+    .battle-card-title {
+        margin: 0 0 8px 0;
+        font-size: 0.95rem;
+        color: #123055;
+        font-weight: 600;
+    }
+
+    .battle-log {
+        height: 190px;
+        border-radius: 8px;
+        border: 1px solid #dde2e8;
+        padding: 8px;
+        background-color: #fdfdfd;
+        overflow-y: auto;
+        font-size: 0.85rem;
+    }
+
+    .battle-log p {
+        margin-bottom: 4px;
+    }
+
+    .battle-actions-help {
+        font-size: 0.85rem;
+        color: #6c757d;
+        margin-bottom: 10px;
+    }
+
+    .battle-actions .btn {
+        border-radius: 999px;
+        font-weight: 600;
+        font-size: 0.9rem;
+    }
+
+    /* Ajuste de cores dos botões (mantendo estilo Bootstrap) */
+    #btnAttack {
+        background-color: #1E90FF;
+        border-color: #1E90FF;
+    }
+
+    #btnAttack:hover {
+        background-color: #1565C0;
+        border-color: #1565C0;
+    }
+
+    #btnSkill {
+        color: #123055;
+    }
+
+    #btnItem {
+        background-color: #34D399;
+        border-color: #34D399;
+        color: #123055;
+    }
+
+    #btnItem:hover {
+        background-color: #059669;
+        border-color: #059669;
+        color: #ffffff;
+    }
+
+    #btnDefend {
+        background-color: #9CA3AF;
+        border-color: #9CA3AF;
+    }
+
+    /* Força o layout da parte inferior da batalha para duas colunas */
+    .battle-bottom-row {
+        display: grid !important;
+        grid-template-columns: 2fr 1fr;
+        gap: 20px;
+        margin-top: 20px;
+    }
+
+    /* Em telas pequenas, fica uma coluna só */
+    @media (max-width: 768px) {
+        .battle-bottom-row {
+            grid-template-columns: 1fr;
+        }
+    }
+
+    /* Ajuste dos cards internos */
+    .battle-card {
+        height: 100%;
+        display: flex;
+        flex-direction: column;
+    }
+
+    .battle-actions {
+        margin-top: auto;
+    }
+</style>
+
+<script>
+    // ========= 1. SETUP BÁSICO DO CANVAS =========
+    const canvas = document.getElementById('battleCanvas');
+    const ctx = canvas.getContext('2d');
+
+    // ========= 2. ESTADO DA BATALHA (PLAYER / ENEMY) =========
+
+    const player = {
+        name: "<%= character.name %>",
+        level: <%= character.level %>,
+        schoolYear: <%= character.school_year %>,
+        strength: <%= character.strength %>,
+        dexterity: <%= character.dexterity %>,
+        constitution: <%= character.constitution %>,
+        intelligence: <%= character.intelligence %>,
+        reasoning: <%= character.reasoning %>,
+        luck: <%= character.luck %>,
+        maxHp: <%= character.max_life %>,
+        hp: <%= character.life %>,
+        x: 200,
+        y: 340,
+        width: 80,
+        height: 140,
+        color: '#1e90ff'
+    };
+
+    const enemyBaseHp = 80 + (<%= npc.stat_constitution || 1 %> * 5);
+
+    const enemy = {
+        name: "<%= npc.name %>",
+        type: "<%= npc.type %>",
+        subject: "<%= npc.subject %>",
+        difficulty: "<%= npc.difficulty %>",
+        strength: <%= npc.stat_strength || 1 %>,
+        dexterity: <%= npc.stat_dexterity || 1 %>,
+        constitution: <%= npc.stat_constitution || 1 %>,
+        intelligence: <%= npc.stat_intelligence || 1 %>,
+        reasoning: <%= npc.stat_reasoning || 1 %>,
+        luck: <%= npc.stat_luck || 1 %>,
+        maxHp: enemyBaseHp,
+        hp: enemyBaseHp,
+        x: 680,
+        y: 340,
+        width: 80,
+        height: 140,
+        color: '#e74c3c'
+    };
+
+    let currentTurn = null; // 'player' ou 'enemy'
+    let battleEnded = false;
+
+    // ========= 3. HUD (ATUALIZAÇÃO DAS BARRAS) =========
+
+    const playerHpFill = document.getElementById('playerHpFill');
+    const enemyHpFill = document.getElementById('enemyHpFill');
+    const playerHpText = document.getElementById('playerHpText');
+    const enemyHpText = document.getElementById('enemyHpText');
+
+    function updateHud() {
+        const playerPercent = Math.max(0, (player.hp / player.maxHp) * 100);
+        const enemyPercent = Math.max(0, (enemy.hp / enemy.maxHp) * 100);
+
+        playerHpFill.style.width = playerPercent + '%';
+        enemyHpFill.style.width = enemyPercent + '%';
+
+        playerHpText.textContent = `${player.hp} / ${player.maxHp} HP`;
+        enemyHpText.textContent = `${enemy.hp} / ${enemy.maxHp} HP`;
+    }
+
+    // ========= 4. DESENHO NO CANVAS =========
+
+    function drawScene() {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+        // Céu
+        ctx.fillStyle = '#87CEFA';
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+        // Faixa de fundo
+        ctx.fillStyle = '#27ae60';
+        ctx.fillRect(0, 360, canvas.width, 20);
+
+        // Chão
+        ctx.fillStyle = '#2c3e50';
+        ctx.fillRect(0, 460, canvas.width, 80);
+
+        // Player
+        ctx.fillStyle = player.color;
+        ctx.fillRect(player.x, player.y, player.width, player.height);
+
+        // Enemy
+        ctx.fillStyle = enemy.color;
+        ctx.fillRect(enemy.x, enemy.y, enemy.width, enemy.height);
+    }
+
+    // ========= 5. LOOP DE ANIMAÇÃO =========
+
+    function gameLoop() {
+        drawScene();
+        updateHud();
+        if (!battleEnded) {
+            requestAnimationFrame(gameLoop);
+        }
+    }
+
+    // ========= 6. LOG DE BATALHA =========
+
+    const battleLogEl = document.getElementById('battleLog');
+
+    function logMessage(message) {
+        const p = document.createElement('p');
+        p.textContent = message;
+        battleLogEl.appendChild(p);
+        battleLogEl.scrollTop = battleLogEl.scrollHeight;
+    }
+
+    // ========= 7. LÓGICA DE TURNO =========
+
+    function decideFirstTurn() {
+        const playerIni = player.dexterity + Math.floor(Math.random() * 10) + 1;
+        const enemyIni = enemy.dexterity + Math.floor(Math.random() * 10) + 1;
+
+        if (playerIni >= enemyIni) {
+            currentTurn = 'player';
+            logMessage('Você age primeiro!');
+        } else {
+            currentTurn = 'enemy';
+            logMessage(`${enemy.name} age primeiro!`);
+            setTimeout(enemyTurn, 800);
+        }
+    }
+
+    function checkBattleEnd() {
+        if (enemy.hp <= 0) {
+            enemy.hp = 0;
+            battleEnded = true;
+            updateHud();
+            logMessage('🎉 Você venceu a batalha!');
+            disableActionButtons();
+            return true;
+        }
+
+        if (player.hp <= 0) {
+            player.hp = 0;
+            battleEnded = true;
+            updateHud();
+            logMessage('💀 Você foi derrotado...');
+            disableActionButtons();
+            return true;
+        }
+
+        return false;
+    }
+
+    function disableActionButtons() {
+        document.getElementById('btnAttack').disabled = true;
+        document.getElementById('btnSkill').disabled = true;
+        document.getElementById('btnItem').disabled = true;
+        document.getElementById('btnDefend').disabled = true;
+    }
+
+    // ========= 8. AÇÕES DO JOGADOR =========
+
+    function playerPhysicalAttack() {
+        if (battleEnded || currentTurn !== 'player') return;
+
+        const playerHit = player.dexterity + player.luck + rollD10();
+        const enemyAvoid = enemy.dexterity + enemy.luck + rollD10();
+
+        if (playerHit >= enemyAvoid) {
+            let baseDamage = player.strength + rollD6();
+            const defense = Math.floor(enemy.constitution / 2);
+            let finalDamage = Math.max(1, baseDamage - defense);
+
+            enemy.hp = Math.max(0, enemy.hp - finalDamage);
+            logMessage(`Você acerta um golpe físico e causa ${finalDamage} de dano em ${enemy.name}!`);
+        } else {
+            logMessage('Você errou o ataque!');
+        }
+
+        if (!checkBattleEnd()) {
+            currentTurn = 'enemy';
+            setTimeout(enemyTurn, 800);
+        }
+    }
+
+    function playerDefend() {
+        if (battleEnded || currentTurn !== 'player') return;
+        logMessage('Você se prepara e assume uma postura defensiva (+defesa neste turno).');
+        player.tempDefense = true;
+        currentTurn = 'enemy';
+        setTimeout(enemyTurn, 800);
+    }
+
+    function playerSkill() {
+        if (battleEnded || currentTurn !== 'player') return;
+        logMessage('Habilidade da Matéria ainda será ligada ao sistema de quiz no futuro.');
+    }
+
+    function playerUseItem() {
+        if (battleEnded || currentTurn !== 'player') return;
+        logMessage('Uso de itens ainda será conectado ao inventário e efeitos.');
+    }
+
+    // ========= 9. TURNO DO INIMIGO =========
+
+    function enemyTurn() {
+        if (battleEnded || currentTurn !== 'enemy') return;
+
+        logMessage(`${enemy.name} se prepara para atacar!`);
+
+        const enemyHit = enemy.dexterity + enemy.luck + rollD10();
+        const playerAvoid = player.dexterity + player.luck + rollD10();
+
+        if (enemyHit >= playerAvoid) {
+            let baseDamage = enemy.strength + rollD6();
+            let defense = Math.floor(player.constitution / 2);
+
+            if (player.tempDefense) {
+                defense += 3;
+            }
+
+            let finalDamage = Math.max(1, baseDamage - defense);
+            player.hp = Math.max(0, player.hp - finalDamage);
+
+            logMessage(`${enemy.name} acerta você e causa ${finalDamage} de dano!`);
+        } else {
+            logMessage(`${enemy.name} errou o ataque!`);
+        }
+
+        player.tempDefense = false;
+
+        if (!checkBattleEnd()) {
+            currentTurn = 'player';
+            logMessage('É o seu turno!');
+        }
+    }
+
+    // ========= 10. DADOS AUXILIARES =========
+
+    function rollD6() {
+        return Math.floor(Math.random() * 6) + 1;
+    }
+
+    function rollD10() {
+        return Math.floor(Math.random() * 10) + 1;
+    }
+
+    // ========= 11. BOTÕES =========
+
+    document.getElementById('btnAttack').addEventListener('click', playerPhysicalAttack);
+    document.getElementById('btnDefend').addEventListener('click', playerDefend);
+    document.getElementById('btnSkill').addEventListener('click', playerSkill);
+    document.getElementById('btnItem').addEventListener('click', playerUseItem);
+
+    // ========= 12. INICIALIZAÇÃO =========
+
+    updateHud();
+    decideFirstTurn();
+    gameLoop();
+</script>
